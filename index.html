@@ -11,32 +11,10 @@
     <link rel="icon" href="icons/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="icons/icon-180.png">
     <script>try{var s=JSON.parse(localStorage.getItem('tf_settings')||'{}'),t=s.theme||'auto';if(t==='dark'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark')}catch(e){}</script>
     <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tailwind Config for Dark Mode & Custom Colors -->
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: { extend: {
-                colors: {
-                    slate:{50:'rgb(var(--s50) / <alpha-value>)',100:'rgb(var(--s100) / <alpha-value>)',200:'rgb(var(--s200) / <alpha-value>)',300:'rgb(var(--s300) / <alpha-value>)',400:'rgb(var(--s400) / <alpha-value>)',500:'rgb(var(--s500) / <alpha-value>)',600:'rgb(var(--s600) / <alpha-value>)',700:'rgb(var(--s700) / <alpha-value>)',800:'rgb(var(--s800) / <alpha-value>)',900:'rgb(var(--s900) / <alpha-value>)',950:'rgb(var(--s950) / <alpha-value>)'},
-                    blue:{300:'rgb(var(--b300) / <alpha-value>)',400:'rgb(var(--b400) / <alpha-value>)',500:'#7B65D9',600:'#6F5BD0',900:'#3B2D86'},
-                    indigo:{500:'#8B6FE0',600:'#5A44B8'},
-                    emerald:{200:'rgb(var(--e300) / <alpha-value>)',300:'rgb(var(--e300) / <alpha-value>)',400:'rgb(var(--e400) / <alpha-value>)',500:'#16A34A',600:'#15803D',950:'rgb(var(--s900) / <alpha-value>)'},
-                    amber:{300:'rgb(var(--a300) / <alpha-value>)',400:'rgb(var(--a400) / <alpha-value>)',500:'#D97706',600:'#D97706'},
-                    rose:{300:'rgb(var(--r300) / <alpha-value>)',400:'rgb(var(--r400) / <alpha-value>)'},
-                    purple:{300:'rgb(var(--p300) / <alpha-value>)',400:'rgb(var(--p400) / <alpha-value>)',500:'#8B5CF6',600:'#7C3AED',950:'rgb(var(--s900) / <alpha-value>)'},
-                    orange:{300:'rgb(var(--o300) / <alpha-value>)',500:'rgb(var(--o500) / <alpha-value>)',600:'#EA580C'}
-                },
-                fontFamily:{ sans:['Plus Jakarta Sans','sans-serif'] }
-            }}
-        }
-    </script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Font Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    
+    
+    
 
     <style>
         :root{--s50:42 33 80;--s100:42 33 80;--s200:58 48 104;--s300:91 83 128;--s400:107 100 144;--s500:138 132 173;--s600:201 192 234;--s700:221 214 245;--s800:255 255 255;--s900:243 239 252;--s950:251 246 243;--b300:90 68 184;--b400:123 101 217;--e300:21 128 61;--e400:21 128 61;--a300:146 64 14;--a400:180 83 9;--r300:190 18 60;--r400:225 29 72;--p300:109 40 217;--p400:124 58 237;--o300:194 65 12;--o500:234 88 12;--toast:255 255 255;--bgpage:linear-gradient(135deg,#CFC4F5,#E9E2FB 50%,#F6E4EF);--shell:#FBF6F3;--panel:#fff;--panelb:#EDE8FA;--card:#F5F1FB;--inp:#FBFAFF;--inpb:#DDD6F5;--ink:#2A2150;--focus:linear-gradient(120deg,#CBBFF3,#DDD5F7);--st1:#E8E2FA;--st2:#FADCDC;--st3:#FDEFC9;--st4:#DAE7FC;--shadow:rgba(111,91,208,.10)}
@@ -69,6 +47,7 @@
         @keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}@keyframes load{to{width:100%}}
         @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.sp-bar span{width:100%}}
     </style>
+    <link rel="stylesheet" href="assets/app.css">
 </head>
 <body class="min-h-screen pb-12 text-slate-100 selection:bg-blue-600 selection:text-white">
 <div id="splash" role="status" aria-label="Memuat TeacherFlow"><div class="sp-logo" data-logo></div><div class="sp-title">TeacherFlow</div><div class="sp-sub">Agenda &amp; pengingat guru terpadu</div><div class="sp-bar"><span></span></div></div>
@@ -109,6 +88,8 @@
                 </div>
 
                 <div class="flex items-center gap-2">
+                    <span id="net-badge" class="hidden px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30"><i class="fa-solid fa-wifi"></i> Offline</span>
+                    <button id="install-btn" onclick="installApp()" class="hidden px-3 h-10 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold" aria-label="Pasang aplikasi"><i class="fa-solid fa-download"></i> Pasang</button>
                     <button onclick="toggleTheme()" class="w-10 h-10 rounded-xl glass-card text-slate-300 hover:text-slate-100" aria-label="Ganti tema terang/gelap" title="Tema"><i id="theme-icon" class="fa-solid fa-moon"></i></button>
                     <button id="sync-btn" onclick="openSettings()" class="w-10 h-10 rounded-xl glass-card" aria-label="Sinkronisasi cloud" title="Sinkronisasi cloud"><i id="sync-icon" class="fa-solid fa-cloud text-slate-400"></i></button>
                     <button onclick="openSettings()" class="w-10 h-10 rounded-xl glass-card text-slate-300 hover:text-slate-100" aria-label="Pengaturan" title="Pengaturan"><i class="fa-solid fa-gear"></i></button>
@@ -1746,7 +1727,7 @@ function openRecap(cid){
 }
 
 /* ---------- Pengaturan, cadangan, install ---------- */
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e});
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;if(typeof tfNetUi==='function')tfNetUi()});
 const TF_LOCAL=['tf_fired','tf_fbconfig','tf_device','tf_updatedAt','tf_dinasDate','tf_fbon'];
 const tfKeys=()=>Object.keys(localStorage).filter(k=>/^(gf_|tf_)/.test(k)&&!TF_LOCAL.includes(k));
 function openSettings(){setTimeout(fbUi,0);
@@ -1754,29 +1735,49 @@ function openSettings(){setTimeout(fbUi,0);
   tfModal('<i class="fa-solid fa-gear text-blue-400"></i> Pengaturan',`<div class="grid grid-cols-2 gap-3"><div><label class="${LB}">Tema</label><select name="th" class="${TI}"><option value="auto" ${s.theme==='auto'?'selected':''}>Otomatis (ikuti perangkat)</option><option value="light" ${s.theme==='light'?'selected':''}>Terang</option><option value="dark" ${s.theme==='dark'?'selected':''}>Gelap</option></select></div>
   <div><label class="${LB}">Ingatkan sebelum mulai</label><select name="ld" class="${TI}">${[5,10,15,20,30].map(n=>`<option value="${n}" ${+s.lead===n?'selected':''}>${n} menit</option>`).join('')}</select></div></div>
   <label class="flex items-center gap-2 text-slate-200"><input type="checkbox" name="sn" ${s.sound?'checked':''}> Bunyi pengingat</label><label class="flex items-center gap-2 text-slate-200"><input type="checkbox" name="vb" ${s.vibrate?'checked':''}> Getar (Android)</label>
-  <div class="glass-card rounded-xl p-3 space-y-2"><p class="text-slate-300">Izin notifikasi: <b>${perm}</b></p><div class="flex gap-2 flex-wrap"><button type="button" id="st-perm" class="px-3 py-2 rounded-xl bg-blue-600 text-white font-semibold">Aktifkan notifikasi</button><button type="button" id="st-test" class="px-3 py-2 rounded-xl glass-card text-slate-200 font-semibold">Uji pengingat</button>${deferredInstall?'<button type="button" id="st-inst" class="px-3 py-2 rounded-xl bg-emerald-600 text-white font-semibold">Pasang aplikasi</button>':''}</div><p class="text-[11px] text-slate-400">Pengingat berbunyi selama TeacherFlow terbuka (tab atau aplikasi terpasang). Browser dapat menunda tab yang tertutup.</p></div>
+  <div class="glass-card rounded-xl p-3 space-y-2"><p class="text-slate-300">Izin notifikasi: <b>${perm}</b></p><div class="flex gap-2 flex-wrap"><button type="button" id="st-perm" class="px-3 py-2 rounded-xl bg-blue-600 text-white font-semibold">Aktifkan notifikasi</button><button type="button" id="st-test" class="px-3 py-2 rounded-xl glass-card text-slate-200 font-semibold">Uji pengingat</button>${deferredInstall&&!isStandalone()?'<button type="button" id="st-inst" class="px-3 py-2 rounded-xl bg-emerald-600 text-white font-semibold">Pasang aplikasi</button>':''}</div><p class="text-[11px] text-slate-300"><i class="fa-solid fa-mobile-screen"></i> ${installHelp()}</p><p class="text-[11px] text-slate-400">Setelah dibuka sekali saat online, TeacherFlow berjalan penuh tanpa internet. Pengingat berbunyi selama aplikasi terbuka; browser dapat menunda aplikasi yang tertutup.</p></div>
   <div id="st-sync-box" class="glass-card rounded-xl p-3 space-y-2"></div>
   <div class="glass-card rounded-xl p-3 space-y-2"><p class="font-semibold text-slate-200">Cadangan data</p><div class="flex gap-2 flex-wrap"><button type="button" id="st-exp" class="px-3 py-2 rounded-xl bg-blue-600 text-white font-semibold">Ekspor JSON</button><label class="px-3 py-2 rounded-xl glass-card text-slate-200 font-semibold cursor-pointer">Impor JSON<input type="file" id="st-imp" accept=".json,application/json" hidden></label><button type="button" id="st-rst" class="px-3 py-2 rounded-xl bg-rose-600 text-white font-semibold">Hapus semua data</button></div></div>`,f=>{
     state.settings={theme:f.th.value,lead:+f.ld.value,sound:f.sn.checked,vibrate:f.vb.checked};saveStateToStorage();tfApplyTheme();showToast('Pengaturan disimpan.','success')});
   $('st-perm').onclick=async()=>{if('Notification'in window){await Notification.requestPermission();openSettings()}};
   $('st-test').onclick=()=>tfAlert('Uji pengingat','Jika Anda mendengar bunyi atau melihat notifikasi ini, pengingat siap.');
-  if($('st-inst'))$('st-inst').onclick=()=>deferredInstall.prompt();
+  if($('st-inst'))$('st-inst').onclick=installApp;
   $('st-exp').onclick=()=>{const o={};tfKeys().forEach(k=>o[k]=localStorage.getItem(k));const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:'application/json'}));a.download='teacherflow-cadangan-'+dstr()+'.json';a.click()};
   $('st-imp').onchange=e=>{const fl=e.target.files[0];if(!fl)return;fl.text().then(t=>{try{const o=JSON.parse(t);const ks=Object.keys(o).filter(k=>/^(gf_|tf_)/.test(k)&&!TF_LOCAL.includes(k));if(!ks.length)throw 0;ks.forEach(k=>{JSON.parse(o[k]);localStorage.setItem(k,String(o[k]).replace(/</g,'&lt;'))});location.reload()}catch(x){showToast('Berkas bukan cadangan TeacherFlow yang valid.','error')}})};
   $('st-rst').onclick=()=>{if(confirm('Hapus SEMUA data TeacherFlow di perangkat ini'+(fbUser?' dan di cloud':'')+'? Tindakan ini tidak bisa dibatalkan.')){fbWipe().finally(()=>{tfKeys().concat(['tf_fired','tf_updatedAt']).forEach(k=>localStorage.removeItem(k));location.reload()})}};
 }
 
 
-/* ---------- Sinkronisasi Firebase (opsional: login Google + Firestore) ---------- */
 
-const TF_FIREBASE={
-  apiKey:"AIzaSyCIAaCeGoXk7Cwhrlli26oDvd1bt0WjFjM",
-  authDomain:"teacherflow-f19d6.firebaseapp.com",
-  projectId:"teacherflow-f19d6",
-  storageBucket:"teacherflow-f19d6.firebasestorage.app",
-  messagingSenderId:"764903525171",
-  appId:"1:764903525171:web:f12cc63ba10adb47f34c46"
-};
+/* ---------- Pasang aplikasi (PWA) & status offline ---------- */
+const isStandalone=()=>(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
+function installHelp(){
+  if(isStandalone())return 'Aplikasi sudah terpasang di perangkat ini.';
+  const ua=navigator.userAgent;
+  if(/iphone|ipad|ipod/i.test(ua))return 'iPhone/iPad: buka di Safari, ketuk ikon Bagikan, lalu pilih "Tambah ke Layar Utama".';
+  if(/android/i.test(ua))return 'Android: ketuk tombol Pasang, atau menu Chrome (titik tiga) lalu "Instal aplikasi".';
+  return 'Laptop: klik tombol Pasang di header, atau ikon pasang di kanan address bar Chrome/Edge.';
+}
+async function installApp(){
+  if(!deferredInstall)return showToast(installHelp(),'info',8000);
+  deferredInstall.prompt();const c=await deferredInstall.userChoice;deferredInstall=null;tfNetUi();
+  if(c.outcome==='accepted')showToast('TeacherFlow sedang dipasang...','success');
+}
+window.addEventListener('appinstalled',()=>{deferredInstall=null;tfNetUi();showToast('TeacherFlow terpasang. Buka dari layar utama atau daftar aplikasi.','success',6000)});
+function tfNetUi(){
+  const ib=$('install-btn');if(ib)ib.classList.toggle('hidden',!deferredInstall||isStandalone());
+  const nb=$('net-badge');if(nb)nb.classList.toggle('hidden',navigator.onLine!==false);
+}
+let fbPending=false;
+window.addEventListener('offline',()=>{tfNetUi();showToast('Anda offline. TeacherFlow tetap bisa dipakai; data disinkronkan saat online lagi.','warn',6000)});
+window.addEventListener('online',()=>{
+  tfNetUi();showToast('Kembali online.','success');
+  if(fbCfg()&&localStorage.getItem('tf_fbon')==='1'&&!fb)fbInit().catch(()=>{});
+  else if(fbUser&&fb&&fbPending){fbPending=false;fbPush().then(()=>{fbState='in';fbUi()}).catch(()=>{fbState='err';fbUi()})}
+});
+
+/* ---------- Sinkronisasi Firebase (opsional: login Google + Firestore) ---------- */
+const TF_FIREBASE=null; /* opsional: tempel objek firebaseConfig di sini, atau isi lewat Pengaturan */
 const FBV='10.12.2';
 let fb=null,fbUser=null,fbUnsub=null,fbPushT=null,fbState='off';
 const tfDevice=(()=>{let d=localStorage.getItem('tf_device');if(!d){d=Math.random().toString(36).slice(2,10);try{localStorage.setItem('tf_device',d)}catch(e){}}return d})();
@@ -1788,7 +1789,7 @@ saveStateToStorage=function(silent){
   _tfSave();
   if(silent===true)return;
   try{localStorage.setItem('tf_updatedAt',String(Date.now()))}catch(e){}
-  if(fbUser&&fb){clearTimeout(fbPushT);fbState='busy';fbUi();fbPushT=setTimeout(()=>fbPush().then(()=>{fbState='in';fbUi()}).catch(e=>{fbState='err';fbUi();showToast('Gagal mengunggah ke cloud ('+(e.code||e.message)+'). Data tetap aman di perangkat.','error',6000)}),1500)}
+  if(fbUser&&fb){clearTimeout(fbPushT);fbState='busy';fbUi();fbPushT=setTimeout(()=>{if(!navigator.onLine){fbPending=true;fbState='ready';fbUi();return}fbPush().then(()=>{fbState='in';fbUi()}).catch(e=>{fbPending=true;fbState='err';fbUi();showToast('Gagal mengunggah ke cloud ('+(e.code||e.message)+'). Data tetap aman di perangkat.','error',6000)})},1500)}
 };
 async function fbInit(){
   if(fb)return fb;const c=fbCfg();if(!c||!c.apiKey||!c.projectId)throw new Error('Konfigurasi Firebase belum diisi.');
@@ -1853,12 +1854,13 @@ tfApplyTheme();
 if(window.matchMedia)matchMedia('(prefers-color-scheme: dark)').addEventListener&&matchMedia('(prefers-color-scheme: dark)').addEventListener('change',tfApplyTheme);
 document.querySelectorAll('[data-logo]').forEach(e=>e.innerHTML=TF_LOGO);
 window.addEventListener('load',()=>{
-  renderClasses();updateStats();tfCheck();fbUi();
+  renderClasses();updateStats();tfCheck();fbUi();tfNetUi();
+  const qt=new URLSearchParams(location.search).get('tab');if(['timeline','tasks','class','notes'].includes(qt))switchTab(qt);
   if(fbCfg()&&localStorage.getItem('tf_fbon')==='1')fbInit().catch(()=>{});
   setInterval(updateStats,1000);setInterval(tfCheck,15000);
   document.addEventListener('visibilitychange',()=>{if(!document.hidden){tfCheck();renderTimeline()}});
   const sp=$('splash');if(sp){setTimeout(()=>{sp.classList.add('hide');setTimeout(()=>sp.remove(),500)},window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches?300:1700)}
-  if('serviceWorker'in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
+  if('serviceWorker'in navigator&&/^https?:$/.test(location.protocol)){const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.register('sw.js').catch(()=>{});navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had)showToast('Pembaruan TeacherFlow terpasang. Muat ulang untuk memakainya.','info',8000)})}
 });
 
     </script>
