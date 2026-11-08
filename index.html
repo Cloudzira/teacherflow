@@ -77,9 +77,9 @@
             <!-- Digital Clock & Desktop Status Switcher -->
             <div class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end border-t border-slate-700/50 md:border-t-0 pt-3 md:pt-0">
                 <!-- Realtime Digital Clock -->
-                <div class="glass-card px-4 py-2 rounded-xl border border-white/10 text-center">
-                    <span id="live-clock" class="text-xl sm:text-2xl font-mono font-bold tracking-wider text-blue-400">00:00:00</span>
-                    <span class="text-[10px] text-slate-400 block -mt-1 font-semibold uppercase tracking-wider">WIB</span>
+                <div class="glass-card px-4 py-2 rounded-xl border border-white/10 text-center min-w-[7.5rem]">
+                    <div class="flex items-baseline justify-center gap-0.5 leading-none"><span id="live-hm" class="text-2xl sm:text-3xl font-bold tabular-nums tracking-tight text-slate-100">00:00</span><span id="live-sec" class="text-sm font-semibold tabular-nums text-blue-400 w-6 text-left">:00</span></div>
+                    <span id="live-tz" class="mt-1.5 inline-block px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide bg-blue-500/15 text-blue-400">WIB</span>
                 </div>
 
                 <div class="flex items-center gap-2">
@@ -208,10 +208,13 @@
                 <button onclick="shiftWeek(1)" class="w-9 h-9 rounded-xl glass-card text-slate-300" aria-label="Pekan berikutnya"><i class="fa-solid fa-chevron-right"></i></button>
                 <button onclick="shiftWeek(0)" class="px-3 py-2 rounded-xl glass-card text-xs font-semibold text-slate-200">Pekan ini</button>
                 <select id="week-filter" onchange="renderWeek()" class="glass-input rounded-xl p-2 text-xs" aria-label="Filter jenis kegiatan"><option value="ALL">Semua kegiatan</option><option value="Mengajar">Mengajar saja</option><option value="Halaqah">Halaqah</option><option value="Ekstrakurikuler">Ekstrakurikuler</option><option value="Piket">Piket</option><option value="Lainnya">Lainnya</option></select>
+                <div class="flex glass-card rounded-xl p-1 gap-1" role="group" aria-label="Tampilan jadwal"><button id="wv-table" onclick="setWeekView('table')" class="px-3 py-2 text-xs font-semibold rounded-lg">Tabel jam</button><button id="wv-card" onclick="setWeekView('card')" class="px-3 py-2 text-xs font-semibold rounded-lg">Kartu</button></div>
                 <button onclick="copyWeek()" class="ml-auto px-3 py-2 rounded-xl glass-card text-xs font-semibold text-slate-200"><i class="fa-regular fa-copy"></i> Salin jadwal</button>
                 <button onclick="openAgendaModal()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md"><i class="fa-solid fa-plus"></i> Tambah</button>
             </div>
             <p id="week-summary" class="text-xs text-slate-400"></p>
+            <p class="text-[11px] text-slate-400 -mt-2"><i class="fa-solid fa-lock"></i> Jadwal tetap tersimpan di perangkat ini dan berulang tiap pekan sampai Anda menghapusnya.</p>
+            <div id="week-table" class="glass-panel rounded-2xl p-2 overflow-x-auto hidden"></div>
             <div id="week-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3"></div>
         </main>
 
@@ -308,6 +311,12 @@
                     <input type="text" id="agenda-title" required placeholder="Contoh: Matematika Wajib Kelas X-A" class="glass-input rounded-xl p-2.5 w-full">
                 </div>
 
+                <div class="glass-card rounded-xl p-3 space-y-2">
+                    <label class="block text-slate-300 font-medium">Jam pelajaran ke (opsional)</label>
+                    <div class="grid grid-cols-2 gap-3"><select id="agenda-jam-from" onchange="onJamChange()" class="glass-input rounded-xl p-2.5 w-full" aria-label="Mulai jam ke"></select><select id="agenda-jam-to" onchange="onJamChange()" class="glass-input rounded-xl p-2.5 w-full" aria-label="Sampai jam ke"></select></div>
+                    <p id="jam-hint" class="text-[11px] text-slate-400"></p>
+                </div>
+
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-slate-300 font-medium mb-1">Jam Mulai</label>
@@ -318,6 +327,8 @@
                         <input type="time" id="agenda-end-time" required class="glass-input rounded-xl p-2.5 w-full">
                     </div>
                 </div>
+
+                <div class="flex items-center gap-2 flex-wrap -mt-1"><span class="text-[11px] text-slate-400">Durasi cepat:</span><button type="button" onclick="setDur(35)" class="px-3 py-1 rounded-full glass-card text-slate-200 text-[11px] font-semibold">35 mnt</button><button type="button" onclick="setDur(40)" class="px-3 py-1 rounded-full glass-card text-slate-200 text-[11px] font-semibold">40 mnt</button><button type="button" onclick="setDur(45)" class="px-3 py-1 rounded-full glass-card text-slate-200 text-[11px] font-semibold">45 mnt</button><button type="button" onclick="setDur(60)" class="px-3 py-1 rounded-full glass-card text-slate-200 text-[11px] font-semibold">60 mnt</button><button type="button" onclick="setDur(90)" class="px-3 py-1 rounded-full glass-card text-slate-200 text-[11px] font-semibold">90 mnt</button></div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -470,23 +481,6 @@
         }
 
         /* ================= LIVE CLOCK & DATE ================= */
-        function startLiveClock() {
-            function updateClock() {
-                const now = new Date();
-                
-                // Clock string
-                const hours = String(now.getHours()).padStart(2, '0');
-                const minutes = String(now.getMinutes()).padStart(2, '0');
-                const seconds = String(now.getSeconds()).padStart(2, '0');
-                document.getElementById('live-clock').innerText = `${hours}:${minutes}:${seconds}`;
-
-                // Date string
-                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                document.getElementById('live-date').innerText = now.toLocaleDateString('id-ID', options);
-            }
-            updateClock();
-            setInterval(updateClock, 1000);
-        }
 
 
 
@@ -542,7 +536,7 @@
 
                 // Format Deadline String
                 const dDate = new Date(task.deadline);
-                const dFormatted = isNaN(dDate.getTime()) ? task.deadline : `${dDate.toLocaleDateString('id-ID')} - ${String(dDate.getHours()).padStart(2,'0')}:${String(dDate.getMinutes()).padStart(2,'0')} WIB`;
+                const dFormatted = isNaN(dDate.getTime()) ? task.deadline : `${tfDMY(dDate)} - ${String(dDate.getHours()).padStart(2,'0')}:${String(dDate.getMinutes()).padStart(2,'0')} WIB`;
 
                 const card = document.createElement('div');
                 card.className = `glass-panel p-4 rounded-xl border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
@@ -789,7 +783,7 @@
             const tag = document.getElementById('note-tag').value;
             const content = document.getElementById('note-content').value;
             const pinned = document.getElementById('note-pinned').checked;
-            const date = new Date().toLocaleDateString('id-ID');
+            const date = tfDMY(new Date());
 
             if (id) {
                 const idx = state.notes.findIndex(n => n.id === id);
@@ -903,13 +897,118 @@ function tfApplyTheme(){
   const i=$('theme-icon');if(i)i.className='fa-solid '+(dark?'fa-sun':'fa-moon');
 }
 
+/* ---------- Komponen waktu & tanggal (24 jam, dd/mm/yyyy) dan jam pelajaran ---------- */
+const p2=n=>String(n).padStart(2,'0');
+const tfDMY=d=>`${p2(d.getDate())}/${p2(d.getMonth()+1)}/${d.getFullYear()}`;
+const jamText=a=>a&&a.jamFrom?(a.jamTo&&a.jamTo!==a.jamFrom?`Jam ke-${a.jamFrom}–${a.jamTo}`:`Jam ke-${a.jamFrom}`):'';
+const minToT=m=>p2(Math.floor(m/60)%24)+':'+p2(m%60);
+function tfTZ(){const o=-new Date().getTimezoneOffset()/60,u='UTC'+(o>=0?'+':'')+o;return{short:{7:'WIB',8:'WITA',9:'WIT'}[o]||u,utc:u}}
+function startLiveClock(){
+  const tick=()=>{const n=new Date(),z=tfTZ();
+    $('live-hm').textContent=p2(n.getHours())+':'+p2(n.getMinutes());$('live-sec').textContent=':'+p2(n.getSeconds());
+    $('live-date').textContent=n.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    $('live-tz').textContent=z.short===z.utc?z.utc:z.short+' · '+z.utc};
+  tick();setInterval(tick,1000);
+}
+const _vd=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value');
+function tfEnhance(root=document){
+  root.querySelectorAll('input[type=time]:not([data-tf]),input[type=date]:not([data-tf]),input[type=datetime-local]:not([data-tf])').forEach(inp=>{
+    inp.dataset.tf='1';inp.type==='time'?tfTime(inp):tfDate(inp,inp.type);
+  });
+}
+function tfTime(inp){
+  const cls=inp.className.replace(/\bw-full\b/,'').trim();
+  const mk=(lbl,max)=>{const s=document.createElement('select');s.className=cls+' !px-1 flex-1 min-w-0 text-center tabular-nums';s.setAttribute('aria-label',lbl);s.innerHTML='<option value="">--</option>'+Array.from({length:max},(_,i)=>`<option>${p2(i)}</option>`).join('');return s};
+  const h=mk('Jam',24),mi=mk('Menit',60),wrap=document.createElement('div'),sep=document.createElement('span');
+  wrap.className='flex items-center gap-1.5';sep.textContent=':';sep.className='font-bold text-slate-400';
+  inp.type='hidden';wrap.append(h,sep,mi);inp.after(wrap);
+  const sync=()=>{const v=_vd.get.call(inp);h.value=v?v.slice(0,2):'';mi.value=v?v.slice(3,5):''};
+  const push=()=>{if(h.value&&!mi.value)mi.value='00';_vd.set.call(inp,h.value?h.value+':'+mi.value:'');inp.dispatchEvent(new Event('change',{bubbles:true}))};
+  h.onchange=mi.onchange=push;
+  Object.defineProperty(inp,'value',{get(){return _vd.get.call(inp)},set(v){_vd.set.call(inp,v);sync()},configurable:true});
+  if(inp.form)inp.form.addEventListener('reset',()=>setTimeout(sync,0));
+  sync();
+}
+function tfDate(inp,t){
+  const wrap=document.createElement('div'),disp=document.createElement('div');
+  wrap.className='relative '+(inp.id==='timeline-date'?'inline-block':'');
+  disp.className=inp.className.replace(/\bw-full\b/,'')+' flex items-center justify-between gap-2 w-full pointer-events-none select-none';
+  disp.innerHTML='<span class="txt tabular-nums"></span><i class="fa-regular fa-calendar text-slate-400"></i>';
+  inp.before(wrap);wrap.append(disp,inp);inp.className='absolute inset-0 w-full h-full opacity-0 cursor-pointer';
+  const txt=disp.firstChild,fmt=()=>{const v=_vd.get.call(inp);
+    if(!v){txt.textContent=t==='date'?'dd/mm/yyyy':'dd/mm/yyyy --:--';txt.classList.add('text-slate-500');return}
+    const[d,tm]=v.split('T'),[y,mo,da]=d.split('-');txt.textContent=`${da}/${mo}/${y}`+(tm?' '+tm.slice(0,5):'');txt.classList.remove('text-slate-500')};
+  Object.defineProperty(inp,'value',{get(){return _vd.get.call(inp)},set(v){_vd.set.call(inp,v);fmt()},configurable:true});
+  ['input','change'].forEach(e=>inp.addEventListener(e,fmt));
+  inp.addEventListener('click',()=>{try{inp.showPicker()}catch(e){}});
+  if(inp.form)inp.form.addEventListener('reset',()=>setTimeout(fmt,0));
+  fmt();
+}
+const bellRows=()=>state.settings.bell||[];
+const bellLessons=()=>bellRows().filter(r=>r.n);
+function bellSummary(){const L=bellLessons();return L.length?`${L.length} jam · ${L[0].s}–${L[L.length-1].e}`:'Belum diatur'}
+function tfThemeSeg(){
+  const all=()=>document.querySelectorAll('#theme-seg [data-th]');
+  all().forEach(b=>b.onclick=()=>{state.settings.theme=b.dataset.th;saveStateToStorage();tfApplyTheme();
+    all().forEach(x=>{const on=x===b;x.setAttribute('aria-checked',on);x.className='flex-1 px-2 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 '+(on?'bg-blue-600 text-white':'text-slate-300')})});
+}
+function fillJam(){
+  const L=bellLessons(),nums=L.length?L.map(r=>r.n):Array.from({length:12},(_,i)=>i+1);
+  const opt=n=>{const r=L.find(x=>x.n===n);return `<option value="${n}">Jam ke-${n}${r?` (${r.s}–${r.e})`:''}</option>`};
+  $('agenda-jam-from').innerHTML='<option value="">Tanpa jam ke</option>'+nums.map(opt).join('');
+  $('agenda-jam-to').innerHTML='<option value="">Sampai jam ke…</option>'+nums.map(opt).join('');
+  $('jam-hint').innerHTML=L.length?'Pilih jam ke: waktu mulai dan selesai terisi otomatis dari pengaturan jam pelajaran.':'Jam pelajaran belum diatur. <button type="button" class="text-blue-400 font-semibold underline" onclick="closeModal(\'modal-agenda\');openBellModal()">Atur sekarang</button> agar waktu terisi otomatis.';
+}
+function onJamChange(){
+  const jf=$('agenda-jam-from'),jt=$('agenda-jam-to');let a=+jf.value,b=+jt.value;
+  if(!a&&b){jf.value=jt.value;a=b}
+  if(a&&b&&b<a){jt.value=String(a);b=a}
+  if(!a)return;
+  const L=bellLessons(),ra=L.find(r=>r.n===a),rb=L.find(r=>r.n===(b||a));
+  if(ra&&rb){$('agenda-start-time').value=ra.s;$('agenda-end-time').value=rb.e}
+}
+function setDur(n){const s=$('agenda-start-time').value;if(!s)return showToast('Pilih jam mulai dulu.','info');$('agenda-end-time').value=minToT(tmin(s)+n)}
+function openBellModal(){
+  let rows=JSON.parse(JSON.stringify(bellRows()));
+  const renum=()=>{let n=0;rows.forEach(r=>{if(r.n)r.n=++n})};
+  const f=tfModal('<i class="fa-regular fa-clock text-blue-400"></i> Jam Pelajaran',`<p class="text-slate-400">Atur sekali, lalu pilih "Jam ke" saat menambah jadwal. Waktu terisi otomatis. Setiap baris dapat diubah manual.</p>
+  <div class="glass-card rounded-xl p-3 space-y-3"><p class="font-semibold text-slate-200">Buat otomatis</p>
+  <div class="grid grid-cols-3 gap-2"><div><label class="${LB}">Mulai</label><input type="time" name="g0" value="07:00" class="${TI}"></div><div><label class="${LB}">Menit/jam</label><input type="number" name="g1" value="40" min="10" max="120" class="${TI}"></div><div><label class="${LB}">Jumlah jam</label><input type="number" name="g2" value="10" min="1" max="16" class="${TI}"></div></div>
+  <div class="grid grid-cols-2 gap-3"><div><label class="${LB}">Istirahat 1: setelah jam ke / menit</label><div class="flex gap-2"><input type="number" name="b1a" value="3" min="1" class="${TI}"><input type="number" name="b1b" value="15" min="5" class="${TI}"></div></div><div><label class="${LB}">Istirahat 2: setelah jam ke / menit</label><div class="flex gap-2"><input type="number" name="b2a" value="6" min="1" class="${TI}"><input type="number" name="b2b" value="30" min="5" class="${TI}"></div></div></div>
+  <button type="button" id="bell-gen" class="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold">Buat otomatis</button></div>
+  <div id="bell-rows" class="space-y-2"></div>
+  <div class="flex gap-2"><button type="button" id="bell-addj" class="px-3 py-2 rounded-xl glass-card text-slate-200 font-semibold"><i class="fa-solid fa-plus"></i> Jam</button><button type="button" id="bell-addb" class="px-3 py-2 rounded-xl glass-card text-slate-200 font-semibold"><i class="fa-solid fa-plus"></i> Istirahat</button></div>`,()=>{
+    renum();
+    for(let i=0;i<rows.length;i++){const r=rows[i];
+      if(!r.s||!r.e){showToast('Lengkapi jam mulai dan selesai di semua baris.','error');return false}
+      if(tmin(r.e)<=tmin(r.s)){showToast('Jam selesai harus setelah jam mulai (baris '+(i+1)+').','error');return false}
+      if(i&&tmin(r.s)<tmin(rows[i-1].e)){showToast('Baris '+(i+1)+' tumpang tindih dengan baris sebelumnya.','error');return false}}
+    state.settings.bell=rows;saveStateToStorage();renderWeek();showToast('Jam pelajaran tersimpan.','success');
+  },'Simpan');
+  const box=$('bell-rows');
+  const draw=()=>{renum();
+    box.innerHTML=rows.map((r,i)=>`<div class="glass-card rounded-xl p-2.5 space-y-2"><div class="flex items-center justify-between"><b class="text-xs ${r.n?'text-slate-100':'text-slate-400'}">${r.n?'Jam ke-'+r.n:esc(r.label||'Istirahat')}</b><button type="button" data-del="${i}" class="w-7 h-7 rounded-lg text-rose-400" aria-label="Hapus baris"><i class="fa-solid fa-trash"></i></button></div><div class="flex items-center gap-2"><div class="flex-1 min-w-0"><input type="time" data-i="${i}" data-k="s" value="${r.s}" class="${TI}"></div><span class="text-slate-400">–</span><div class="flex-1 min-w-0"><input type="time" data-i="${i}" data-k="e" value="${r.e}" class="${TI}"></div></div></div>`).join('')||'<p class="text-slate-400">Belum ada jam. Gunakan "Buat otomatis" atau tambah manual.</p>';
+    tfEnhance(box)};
+  box.addEventListener('change',e=>{const t=e.target;if(t.dataset&&t.dataset.k)rows[+t.dataset.i][t.dataset.k]=t.value});
+  box.onclick=e=>{const d=e.target.closest('[data-del]');if(d){rows.splice(+d.dataset.del,1);draw()}};
+  $('bell-gen').onclick=()=>{
+    const g=n=>f[n].value,st=tmin(g('g0')||'07:00'),du=+g('g1')||40,cnt=Math.min(16,+g('g2')||10),br={};
+    [['b1a','b1b'],['b2a','b2b']].forEach(([a,b])=>{if(+g(a)&&+g(b))br[+g(a)]=+g(b)});
+    rows=[];let t=st;for(let i=1;i<=cnt;i++){rows.push({n:i,s:minToT(t),e:minToT(t+du)});t+=du;if(br[i]){rows.push({label:'Istirahat',s:minToT(t),e:minToT(t+br[i])});t+=br[i]}}
+    draw()};
+  const last=()=>rows.length?tmin(rows[rows.length-1].e):tmin(f.g0.value||'07:00');
+  $('bell-addj').onclick=()=>{const du=+f.g1.value||40,s=last();rows.push({n:1,s:minToT(s),e:minToT(s+du)});draw()};
+  $('bell-addb').onclick=()=>{const s=last();rows.push({label:'Istirahat',s:minToT(s),e:minToT(s+15)});draw()};
+  draw();
+}
+
 /* ---------- Agenda: kejadian per tanggal ---------- */
 const occursOn=(a,ds)=>a.date?a.date===ds:(!a.days||!a.days.length||a.days.includes(new Date(ds+'T00:00:00').getDay()));
 const tfOcc=ds=>state.agendas.filter(a=>occursOn(a,ds)).map(a=>({...a,completed:!!state.doneOn[ds+'|'+a.id]})).sort((a,b)=>a.startTime.localeCompare(b.startTime));
 const tfSel=()=>($('timeline-date')&&$('timeline-date').value)||dstr();
 function shiftDate(n){const d=new Date(tfSel()+'T00:00:00');d.setDate(d.getDate()+n);$('timeline-date').value=dstr(d);renderTimeline()}
 function todayDate(){$('timeline-date').value=dstr();renderTimeline()}
-const repeatText=a=>a.date?'Sekali: '+new Date(a.date+'T00:00:00').toLocaleDateString('id-ID',{day:'numeric',month:'short'}):(a.days&&a.days.length?a.days.map(d=>TF_DAYS[d].slice(0,3)).join(', '):'Setiap hari');
+const repeatText=a=>a.date?'Sekali: '+a.date.split('-').reverse().join('/'):(a.days&&a.days.length?a.days.map(d=>TF_DAYS[d].slice(0,3)).join(', '):'Setiap hari');
 
 /* ---------- Kartu fokus ---------- */
 function updateFocusCard(){
@@ -926,12 +1025,12 @@ function updateFocusCard(){
   currentFocusAgenda=next;const c=(TYPEC[next.type]||TYPEC.Lainnya)[0];
   $('focus-action-btn').style.display='flex';
   set('focus-title',next.title);
-  set('focus-subtitle',next.notes||'Tidak ada catatan tambahan');
-  set('focus-location',next.location||'Ruang Kelas');set('focus-time-range',`${next.startTime} - ${next.endTime} WIB`);set('focus-target',next.target||'Anggota');
+  set('focus-subtitle',[jamText(next),next.notes].filter(Boolean).join(' · ')||'Tidak ada catatan tambahan');
+  set('focus-location',next.location||'Ruang Kelas');set('focus-time-range',`${next.startTime} - ${next.endTime} ${tfTZ().short}`);set('focus-target',next.target||'Anggota');
   $('focus-type-badge').className='px-3 py-1 rounded-full text-xs font-semibold border '+BADGE[c];$('focus-type-badge').innerText=next.type;
   const s=tmin(next.startTime)*60,e=tmin(next.endTime)*60,cur=nm*60,cd=$('focus-countdown'),f=x=>{x=Math.max(0,Math.floor(x));return [Math.floor(x/3600),Math.floor(x%3600/60),x%60].map(v=>String(v).padStart(2,'0')).join(':')};
-  if(cur<s){cd.innerText=f(s-cur);cd.className='text-2xl sm:text-3xl font-mono font-bold text-amber-400 tracking-wider'}
-  else{cd.innerText='Berlangsung '+f(e-cur);cd.className='text-xl sm:text-2xl font-mono font-bold text-emerald-400 tracking-wider'}
+  if(cur<s){cd.innerText=f(s-cur);cd.className='text-2xl sm:text-3xl tabular-nums font-bold text-amber-400 tracking-wider'}
+  else{cd.innerText='Berlangsung '+f(e-cur);cd.className='text-xl sm:text-2xl tabular-nums font-bold text-emerald-400 tracking-wider'}
 }
 function completeFocusAgenda(){
   if(!currentFocusAgenda)return;state.doneOn[dstr()+'|'+currentFocusAgenda.id]=1;saveStateToStorage();
@@ -951,7 +1050,7 @@ function renderTimeline(){
     const c=(TYPEC[it.type]||TYPEC.Lainnya),el=document.createElement('div');
     el.className='glass-panel p-4 rounded-xl border border-white/10 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 '+(it.completed?'opacity-60':'');
     el.innerHTML=`<div class="flex items-start gap-3.5 w-full sm:w-auto min-w-0"><button onclick="toggleAgendaComplete('${it.id}')" class="mt-1 text-xl" aria-label="Tandai selesai"><i class="${it.completed?'fa-solid fa-circle-check text-emerald-400':'fa-regular fa-circle text-slate-500'}"></i></button>
-    <div class="space-y-1.5 min-w-0"><div class="flex items-center gap-2 flex-wrap"><span class="text-xs font-mono font-bold text-slate-200"><i class="fa-regular fa-clock ${ICOL[c[0]]}"></i> ${esc(it.startTime)} - ${esc(it.endTime)}</span><span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${BADGE[c[0]]}"><i class="fa-solid ${c[1]}"></i> ${esc(it.type)}</span><span class="text-[10px] text-slate-400"><i class="fa-solid fa-repeat"></i> ${esc(repeatText(it))}</span></div>
+    <div class="space-y-1.5 min-w-0"><div class="flex items-center gap-2 flex-wrap"><span class="text-xs tabular-nums font-bold text-slate-200"><i class="fa-regular fa-clock ${ICOL[c[0]]}"></i> ${esc(it.startTime)} - ${esc(it.endTime)}</span><span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${BADGE[c[0]]}"><i class="fa-solid ${c[1]}"></i> ${esc(it.type)}</span>${jamText(it)?`<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border border-slate-700/60 text-slate-300">${jamText(it)}</span>`:''}<span class="text-[10px] text-slate-400"><i class="fa-solid fa-repeat"></i> ${esc(repeatText(it))}</span></div>
     <h4 class="text-base font-bold text-slate-100 ${it.completed?'line-through':''}">${esc(it.title)}</h4>
     <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-400"><span><i class="fa-solid fa-location-dot"></i> ${esc(it.location||'-')}</span><span><i class="fa-solid fa-users"></i> ${esc(it.target||'Anggota')}</span>${it.notes?`<span><i class="fa-regular fa-note-sticky"></i> ${esc(it.notes)}</span>`:''}</div></div></div>
     <div class="flex gap-2 self-end sm:self-center"><button onclick="editAgenda('${it.id}')" class="p-2 text-xs rounded-lg glass-card text-slate-300 hover:text-slate-100" aria-label="Ubah"><i class="fa-solid fa-pen"></i></button><button onclick="deleteAgenda('${it.id}')" class="p-2 text-xs rounded-lg glass-card text-rose-400" aria-label="Hapus"><i class="fa-solid fa-trash"></i></button></div>`;
@@ -959,9 +1058,10 @@ function renderTimeline(){
   });
 }
 function openAgendaModal(editId=null){
-  $('form-agenda').reset();$('agenda-id').value='';
+  $('form-agenda').reset();$('agenda-id').value='';fillJam();
   const it=editId&&state.agendas.find(a=>a.id===editId);
-  if(it){$('agenda-id').value=it.id;$('agenda-type').value=it.type;$('agenda-title').value=it.title;$('agenda-start-time').value=it.startTime;$('agenda-end-time').value=it.endTime;$('agenda-location').value=it.location||'';$('agenda-target').value=it.target==='Anggota'?'':(it.target||'');$('agenda-notes').value=it.notes||''}
+  if(it){$('agenda-id').value=it.id;$('agenda-type').value=it.type;$('agenda-title').value=it.title;$('agenda-start-time').value=it.startTime;$('agenda-end-time').value=it.endTime;$('agenda-location').value=it.location||'';$('agenda-target').value=it.target==='Anggota'?'':(it.target||'');$('agenda-notes').value=it.notes||'';
+    $('agenda-jam-from').value=it.jamFrom?String(it.jamFrom):'';$('agenda-jam-to').value=it.jamTo?String(it.jamTo):''}
   document.querySelectorAll('[name=agenda-day]').forEach(c=>c.checked=!!it&&(it.days||[]).includes(+c.value));
   $('agenda-date').value=(it&&it.date)||'';
   $('modal-agenda-title-text').innerHTML=`<i class="fa-solid fa-calendar-plus text-blue-400"></i> ${it?'Edit':'Tambah'} Agenda`;
@@ -970,14 +1070,16 @@ function openAgendaModal(editId=null){
 function saveAgenda(e){
   e.preventDefault();
   const id=$('agenda-id').value,o={type:$('agenda-type').value,title:$('agenda-title').value.trim(),startTime:$('agenda-start-time').value,endTime:$('agenda-end-time').value,location:$('agenda-location').value.trim(),target:$('agenda-target').value.trim()||'Anggota',notes:$('agenda-notes').value.trim()};
+  if(!o.startTime||!o.endTime)return showToast('Pilih jam mulai dan jam selesai.','error');
   if(tmin(o.endTime)<=tmin(o.startTime))return showToast('Jam selesai harus setelah jam mulai.','error');
+  o.jamFrom=+$('agenda-jam-from').value||null;o.jamTo=o.jamFrom?(+$('agenda-jam-to').value||o.jamFrom):null;if(o.jamTo&&o.jamTo<o.jamFrom)o.jamTo=o.jamFrom;
   o.date=$('agenda-date').value||null;o.days=o.date?[]:[...document.querySelectorAll('[name=agenda-day]:checked')].map(c=>+c.value);
   let saved;
   if(id){const i=state.agendas.findIndex(a=>a.id===id);state.agendas[i]=saved={...state.agendas[i],...o}}
   else{saved={id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),completed:false,...o};state.agendas.push(saved)}
   const clash=state.agendas.find(b=>b.id!==saved.id&&tmin(b.startTime)<tmin(saved.endTime)&&tmin(b.endTime)>tmin(saved.startTime)&&tfShare(b,saved));
   saveStateToStorage();renderTimeline();renderWeek();updateFocusCard();updateStats();closeModal('modal-agenda');
-  clash?showToast(`Perhatian: bentrok jam dengan "${clash.title}" (${clash.startTime}-${clash.endTime}).`,'warn',7000):showToast('Agenda berhasil disimpan!','success');
+  clash?showToast(`Perhatian: bentrok jam dengan "${clash.title}" (${clash.startTime}-${clash.endTime}).`,'warn',7000):showToast(o.days.length?'Jadwal tetap disimpan. Berulang tiap pekan sampai dihapus.':'Agenda berhasil disimpan!','success',4500);
 }
 function tfShare(a,b){
   if(a.date&&b.date)return a.date===b.date;if(a.date)return occursOn(b,a.date);if(b.date)return occursOn(a,b.date);
@@ -987,23 +1089,42 @@ function tfShare(a,b){
 /* ---------- Jadwal pekan ---------- */
 let tfWeekOff=0;
 const tfMonday=o=>{const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7)+o*7);return d};
-const fmtD=d=>d.toLocaleDateString('id-ID',{day:'numeric',month:'short'});
+const fmtD=d=>p2(d.getDate())+'/'+p2(d.getMonth()+1);
 function shiftWeek(n){tfWeekOff=n===0?0:tfWeekOff+n;renderWeek()}
 function weekData(){
   const f=($('week-filter')||{}).value||'ALL',mon=tfMonday(tfWeekOff),days=[];
   for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);const ds=dstr(d);days.push({d,ds,items:tfOcc(ds).filter(a=>f==='ALL'||a.type===f)})}
   return{days,mon};
 }
+function setWeekView(v){state.settings.weekView=v;saveStateToStorage();renderWeek()}
+function weekChip(a){const c=TYPEC[a.type]||TYPEC.Lainnya;return `<button onclick="editAgenda('${a.id}')" class="w-full text-left rounded-lg border p-2 mb-1 text-[11px] leading-snug ${BADGE[c[0]]} ${a.completed?'opacity-50 line-through':''}"><b class="block tabular-nums text-[10px]">${esc(a.startTime)}–${esc(a.endTime)}${jamText(a)?' · '+jamText(a):''}</b><span class="font-semibold">${esc(a.title)}</span>${a.location?`<span class="block opacity-80"><i class="fa-solid fa-location-dot"></i> ${esc(a.location)}</span>`:''}</button>`}
 function renderWeek(){
   const box=$('week-grid');if(!box)return;
-  const{days,mon}=weekData(),sun=days[6].d,today=dstr();
-  $('week-range').textContent=fmtD(mon)+' – '+fmtD(sun)+' '+sun.getFullYear()+(tfWeekOff===0?' (pekan ini)':'');
+  const{days,mon}=weekData(),sun=days[6].d,today=dstr(),view=state.settings.weekView||(bellLessons().length?'table':'card');
+  $('week-range').textContent=fmtD(mon)+'/'+mon.getFullYear()+' – '+fmtD(sun)+'/'+sun.getFullYear()+(tfWeekOff===0?' (pekan ini)':'');
   let mins=0,cnt=0;days.forEach(x=>x.items.forEach(a=>{if(a.type==='Mengajar'){cnt++;mins+=tmin(a.endTime)-tmin(a.startTime)}}));
   $('week-summary').textContent=cnt+' sesi mengajar · '+Math.floor(mins/60)+' jam '+(mins%60)+' menit pada pekan ini';
+  ['table','card'].forEach(v=>{const b=$('wv-'+v);if(b){b.className='px-3 py-2 text-xs font-semibold rounded-lg '+(view===v?'bg-blue-600 text-white':'text-slate-300');b.setAttribute('aria-pressed',view===v)}});
+  $('week-grid').classList.toggle('hidden',view!=='card');$('week-table').classList.toggle('hidden',view!=='table');
+  if(view==='table')return renderWeekTable(days,today);
   box.innerHTML=days.map(x=>{
     const t=x.ds===today,nm=TF_DAYS[x.d.getDay()];
-    return `<div class="glass-panel p-3 rounded-xl border ${t?'border-blue-500':'border-white/10'} space-y-2 min-h-[120px]"><div class="flex items-center justify-between gap-1"><div><b class="text-sm ${t?'text-blue-400':'text-slate-100'}">${nm}</b><span class="block text-[10px] text-slate-400">${fmtD(x.d)}</span></div><button onclick="addAgendaOn('${x.ds}')" class="w-7 h-7 rounded-lg glass-card text-slate-300 text-xs" aria-label="Tambah agenda hari ${nm}"><i class="fa-solid fa-plus"></i></button></div>`+
-    (x.items.map(a=>{const c=TYPEC[a.type]||TYPEC.Lainnya;return `<button onclick="editAgenda('${a.id}')" class="w-full text-left rounded-lg border p-2 text-[11px] leading-snug ${BADGE[c[0]]} ${a.completed?'opacity-50 line-through':''}"><b class="block font-mono text-[10px]">${esc(a.startTime)}–${esc(a.endTime)}</b><span class="font-semibold">${esc(a.title)}</span>${a.location?`<span class="block opacity-80"><i class="fa-solid fa-location-dot"></i> ${esc(a.location)}</span>`:''}</button>`}).join('')||'<p class="text-[11px] text-slate-500">Kosong</p>')+`</div>`}).join('');
+    return `<div class="glass-panel p-3 rounded-xl border ${t?'border-blue-500':'border-white/10'} space-y-2 min-h-[120px]"><div class="flex items-center justify-between gap-1"><div><b class="text-sm ${t?'text-blue-400':'text-slate-100'}">${nm}</b><span class="block text-[10px] text-slate-400">${fmtD(x.d)}</span></div><button onclick="addAgendaOn('${x.ds}')" class="w-7 h-7 rounded-lg glass-card text-slate-300 text-xs" aria-label="Tambah agenda hari ${nm}"><i class="fa-solid fa-plus"></i></button></div>`+(x.items.map(weekChip).join('')||'<p class="text-[11px] text-slate-500">Kosong</p>')+`</div>`}).join('');
+}
+function renderWeekTable(days,today){
+  const box=$('week-table'),rows=bellRows();
+  if(!bellLessons().length){box.innerHTML=`<div class="p-6 text-center text-slate-400 text-sm space-y-3"><p>Atur jam pelajaran dulu agar jadwal tampil per "Jam ke".</p><button onclick="openBellModal()" class="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold">Atur Jam Pelajaran</button></div>`;return}
+  const cols=days.filter((x,i)=>i<6||x.items.length),has=(x,n)=>x.items.find(a=>a.jamFrom&&a.jamFrom<=n&&n<=(a.jamTo||a.jamFrom));
+  const th=cols.map(x=>`<th class="p-2 text-xs ${x.ds===today?'text-blue-400':'text-slate-100'}">${TF_DAYS[x.d.getDay()]}<span class="block text-[10px] font-normal text-slate-400">${fmtD(x.d)}</span></th>`).join('');
+  const body=rows.map(r=>{
+    if(!r.n)return `<tr><td class="p-2 text-[11px] text-slate-400 whitespace-nowrap tabular-nums">${r.s}–${r.e}</td><td colspan="${cols.length}" class="p-1"><div class="rounded-lg bg-slate-700/30 text-center text-[11px] text-slate-400 py-1">${esc(r.label||'Istirahat')}</div></td></tr>`;
+    return `<tr><td class="p-2 whitespace-nowrap"><b class="text-xs text-slate-100">Jam ke-${r.n}</b><span class="block text-[10px] text-slate-400 tabular-nums">${r.s}–${r.e}</span></td>`+cols.map(x=>{
+      const a=has(x,r.n);if(!a)return `<td class="p-1"><div class="rounded-lg border border-dashed border-slate-700/60 h-12"></div></td>`;
+      const c=TYPEC[a.type]||TYPEC.Lainnya,first=r.n===a.jamFrom;
+      return `<td class="p-1"><button onclick="editAgenda('${a.id}')" aria-label="${esc(a.title)}" class="w-full h-12 text-left rounded-lg border px-2 py-1 text-[11px] leading-tight overflow-hidden ${BADGE[c[0]]} ${a.completed?'opacity-50':''}">${first?`<b class="block truncate">${esc(a.title)}</b><span class="block truncate opacity-80">${esc([a.target&&a.target!=='Anggota'?a.target:'',a.location].filter(Boolean).join(' · ')||a.startTime+'–'+a.endTime)}</span>`:'<span class="opacity-60">↳</span>'}</button></td>`}).join('')+`</tr>`}).join('');
+  const inBell=a=>a.jamFrom&&rows.some(r=>r.n===a.jamFrom);
+  const outside=cols.some(x=>x.items.some(a=>!inBell(a)))?`<tr><td class="p-2 text-[11px] text-slate-400 align-top">Di luar jam pelajaran</td>`+cols.map(x=>`<td class="p-1 align-top">${x.items.filter(a=>!inBell(a)).map(weekChip).join('')}</td>`).join('')+`</tr>`:'';
+  box.innerHTML=`<table class="w-full min-w-[760px]" style="border-collapse:separate;border-spacing:0;table-layout:fixed"><thead><tr><th class="p-2 text-left text-xs text-slate-400" style="width:92px">Jam</th>${th}</tr></thead><tbody>${body}${outside}</tbody></table>`;
 }
 function addAgendaOn(ds){
   openAgendaModal();const dow=new Date(ds+'T12:00:00').getDay();
@@ -1011,10 +1132,10 @@ function addAgendaOn(ds){
 }
 function copyWeek(){
   const{days}=weekData();
-  tfCopy(['Jadwal '+$('week-range').textContent].concat(days.map(x=>TF_DAYS[x.d.getDay()]+' '+fmtD(x.d)+':\n'+(x.items.map(a=>`- ${a.startTime}-${a.endTime} ${a.title}${a.location?' ('+a.location+')':''}`).join('\n')||'- Kosong'))).join('\n\n'));
+  tfCopy(['Jadwal '+$('week-range').textContent].concat(days.map(x=>TF_DAYS[x.d.getDay()]+' '+fmtD(x.d)+':\n'+(x.items.map(a=>`- ${jamText(a)?jamText(a)+' ':''}${a.startTime}-${a.endTime} ${a.title}${a.location?' ('+a.location+')':''}`).join('\n')||'- Kosong'))).join('\n\n'));
 }
 function deleteAgenda(id){
-  if(!confirm('Hapus agenda ini?'))return;
+  const _a=state.agendas.find(a=>a.id===id);if(!confirm(_a&&!_a.date?'Hapus jadwal tetap ini dari SEMUA pekan? Jadwal tidak akan muncul lagi.':'Hapus agenda ini?'))return;
   state.agendas=state.agendas.filter(a=>a.id!==id);saveStateToStorage();
   renderTimeline();renderWeek();updateFocusCard();updateStats();showToast('Agenda dihapus.','info');
 }
@@ -1078,7 +1199,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){tfClose();['modal-a
 function tfModal(title,body,onSave,label='Simpan',wide){
   tfClose();const w=document.createElement('div');w.id='tf-modal';w.className='fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm';
   w.innerHTML=`<div class="glass-panel w-full ${wide?'max-w-2xl':'max-w-lg'} rounded-2xl p-6 border border-white/10 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto"><div class="flex items-center justify-between border-b border-slate-700/60 pb-3"><h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">${title}</h3><button type="button" onclick="tfClose()" class="text-slate-400 hover:text-slate-100 p-1" aria-label="Tutup"><i class="fa-solid fa-xmark text-lg"></i></button></div><form class="space-y-4 text-xs">${body}${onSave?`<div class="flex justify-end gap-3 pt-3 border-t border-slate-700/60"><button type="button" onclick="tfClose()" class="px-4 py-2 rounded-xl text-slate-300 hover:bg-slate-700/60 font-medium">Batal</button><button type="submit" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold shadow-md">${label}</button></div>`:''}</form></div>`;
-  document.body.appendChild(w);const f=w.querySelector('form');f.onsubmit=e=>{e.preventDefault();if(onSave&&onSave(f)!==false)tfClose()};w.onclick=e=>{if(e.target===w)tfClose()};return f;
+  document.body.appendChild(w);tfEnhance(w);const f=w.querySelector('form');f.onsubmit=e=>{e.preventDefault();if(onSave&&onSave(f)!==false)tfClose()};w.onclick=e=>{if(e.target===w)tfClose()};return f;
 }
 function tfCopy(text){(navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject()).catch(()=>{const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();try{document.execCommand('copy')}catch(e){}t.remove()}).finally(()=>showToast('Jadwal disalin ke clipboard.','success'))}
 
@@ -1088,13 +1209,15 @@ const TF_LOCAL=['tf_fired','tf_fbconfig','tf_device','tf_updatedAt','tf_dinasDat
 const tfKeys=()=>Object.keys(localStorage).filter(k=>/^(gf_|tf_)/.test(k)&&!TF_LOCAL.includes(k));
 function openSettings(){setTimeout(fbUi,0);
   const s=state.settings,perm='Notification'in window?Notification.permission:'tidak didukung';
-  tfModal('<i class="fa-solid fa-gear text-blue-400"></i> Pengaturan',`<div class="grid grid-cols-2 gap-3"><div><label class="${LB}">Tema</label><select name="th" class="${TI}"><option value="auto" ${s.theme==='auto'?'selected':''}>Otomatis (ikuti perangkat)</option><option value="light" ${s.theme==='light'?'selected':''}>Terang</option><option value="dark" ${s.theme==='dark'?'selected':''}>Gelap</option></select></div>
-  <div><label class="${LB}">Ingatkan sebelum mulai</label><select name="ld" class="${TI}">${[5,10,15,20,30].map(n=>`<option value="${n}" ${+s.lead===n?'selected':''}>${n} menit</option>`).join('')}</select></div></div>
-  <label class="flex items-center gap-2 text-slate-200"><input type="checkbox" name="sn" ${s.sound?'checked':''}> Bunyi pengingat</label><label class="flex items-center gap-2 text-slate-200"><input type="checkbox" name="vb" ${s.vibrate?'checked':''}> Getar (Android)</label>
+  tfModal('<i class="fa-solid fa-gear text-blue-400"></i> Pengaturan',`<div class="space-y-3"><div><label class="${LB}">Tema tampilan</label><div id="theme-seg" role="radiogroup" aria-label="Tema tampilan" class="flex gap-1 glass-card rounded-xl p-1">${[['auto','Otomatis','fa-circle-half-stroke'],['light','Terang','fa-sun'],['dark','Gelap','fa-moon']].map(([v,t,i])=>`<button type="button" data-th="${v}" role="radio" aria-checked="${s.theme===v}" class="flex-1 px-2 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 ${s.theme===v?'bg-blue-600 text-white':'text-slate-300'}"><i class="fa-solid ${i}"></i>${t}</button>`).join('')}</div></div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="${LB}">Ingatkan sebelum mulai</label><select name="ld" class="${TI}">${[5,10,15,20,30].map(n=>`<option value="${n}" ${+s.lead===n?'selected':''}>${n} menit</option>`).join('')}</select></div>
+  <div><label class="${LB}">Jam pelajaran</label><button type="button" id="st-bell" class="${TI} text-left flex items-center justify-between"><span>${bellSummary()}</span><i class="fa-solid fa-chevron-right text-slate-400"></i></button></div></div></div>
+ ${s.sound?'checked':''}> Bunyi pengingat</label><label class="flex items-center gap-2 text-slate-200"><input type="checkbox" name="vb" ${s.vibrate?'checked':''}> Getar (Android)</label>
   <div class="glass-card rounded-xl p-3 space-y-2"><p class="text-slate-300">Izin notifikasi: <b>${perm}</b></p><div class="flex gap-2 flex-wrap"><button type="button" id="st-perm" class="px-3 py-2 rounded-xl bg-blue-600 text-white font-semibold">Aktifkan notifikasi</button><button type="button" id="st-test" class="px-3 py-2 rounded-xl glass-card text-slate-200 font-semibold">Uji pengingat</button>${deferredInstall&&!isStandalone()?'<button type="button" id="st-inst" class="px-3 py-2 rounded-xl bg-emerald-600 text-white font-semibold">Pasang aplikasi</button>':''}</div><p class="text-[11px] text-slate-300"><i class="fa-solid fa-mobile-screen"></i> ${installHelp()}</p><p class="text-[11px] text-slate-400">Setelah dibuka sekali saat online, TeacherFlow berjalan penuh tanpa internet. Pengingat berbunyi selama aplikasi terbuka; browser dapat menunda aplikasi yang tertutup.</p></div>
   <div id="st-sync-box" class="glass-card rounded-xl p-3 space-y-2"></div>
   <div class="glass-card rounded-xl p-3 space-y-2"><p class="font-semibold text-slate-200">Cadangan data</p><div class="flex gap-2 flex-wrap"><button type="button" id="st-exp" class="px-3 py-2 rounded-xl bg-blue-600 text-white font-semibold">Ekspor JSON</button><label class="px-3 py-2 rounded-xl glass-card text-slate-200 font-semibold cursor-pointer">Impor JSON<input type="file" id="st-imp" accept=".json,application/json" hidden></label><button type="button" id="st-rst" class="px-3 py-2 rounded-xl bg-rose-600 text-white font-semibold">Hapus semua data</button></div></div>`,f=>{
-    state.settings={theme:f.th.value,lead:+f.ld.value,sound:f.sn.checked,vibrate:f.vb.checked};saveStateToStorage();tfApplyTheme();showToast('Pengaturan disimpan.','success')});
+    Object.assign(state.settings,{lead:+f.ld.value,sound:f.sn.checked,vibrate:f.vb.checked});saveStateToStorage();tfApplyTheme();showToast('Pengaturan disimpan.','success')});
+  tfThemeSeg();$('st-bell').onclick=openBellModal;
   $('st-perm').onclick=async()=>{if('Notification'in window){await Notification.requestPermission();openSettings()}};
   $('st-test').onclick=()=>tfAlert('Uji pengingat','Jika Anda mendengar bunyi atau melihat notifikasi ini, pengingat siap.');
   if($('st-inst'))$('st-inst').onclick=installApp;
@@ -1199,7 +1322,7 @@ function fbUi(){
   if(ic){const m={off:['fa-cloud','text-slate-400'],ready:['fa-cloud','text-slate-300'],busy:['fa-arrows-rotate fa-spin','text-blue-400'],in:['fa-cloud-arrow-up','text-emerald-400'],err:['fa-triangle-exclamation','text-amber-400']}[fbState]||['fa-cloud',''];ic.className='fa-solid '+m[0]+' '+m[1];$('sync-btn').title=fbUser?'Tersinkron: '+fbUser.email:'Sinkronisasi cloud (belum masuk)'}
   const box=$('st-sync-box');if(!box)return;
   const cfg=fbCfg();let h='<p class="font-semibold text-slate-200"><i class="fa-solid fa-cloud text-blue-400"></i> Sinkronisasi antar perangkat</p>';
-  if(!cfg)h+=`<p class="text-[11px] text-slate-400">Tempel <b>firebaseConfig</b> dari Firebase Console (Project settings > Your apps > Web). Lihat SETUP-FIREBASE.md.</p><textarea id="fb-cfg" rows="4" class="${TI} font-mono text-[11px]" placeholder='{ apiKey: "...", authDomain: "...", projectId: "...", appId: "..." }'></textarea><button type="button" id="fb-save" class="px-3 py-2 rounded-xl bg-blue-600 text-white font-semibold">Simpan konfigurasi</button>`;
+  if(!cfg)h+=`<p class="text-[11px] text-slate-400">Tempel <b>firebaseConfig</b> dari Firebase Console (Project settings > Your apps > Web). Lihat SETUP-FIREBASE.md.</p><textarea id="fb-cfg" rows="4" class="${TI} tabular-nums text-[11px]" placeholder='{ apiKey: "...", authDomain: "...", projectId: "...", appId: "..." }'></textarea><button type="button" id="fb-save" class="px-3 py-2 rounded-xl bg-blue-600 text-white font-semibold">Simpan konfigurasi</button>`;
   else if(fbUser)h+=`<p class="text-slate-300">Masuk sebagai <b>${esc(fbUser.email)}</b> · ${fbState==='busy'?'menyinkronkan...':fbState==='err'?'ada masalah sinkronisasi':'tersinkron'}</p><div class="flex gap-2 flex-wrap"><button type="button" id="fb-now" class="px-3 py-2 rounded-xl bg-blue-600 text-white font-semibold">Sinkronkan sekarang</button><button type="button" id="fb-out" class="px-3 py-2 rounded-xl glass-card text-slate-200 font-semibold">Keluar</button></div>`;
   else h+=`<p class="text-[11px] text-slate-400">Masuk dengan Google agar agenda, jadwal pekan, tugas, dan catatan sama di HP dan laptop. Aplikasi tetap bisa dipakai tanpa masuk.</p><div class="flex gap-2 flex-wrap"><button type="button" id="fb-in" class="px-3 py-2 rounded-xl bg-white text-slate-900 font-semibold border border-slate-300"><i class="fa-brands fa-google text-rose-500"></i> Masuk dengan Google</button>${TF_FIREBASE?'':'<button type="button" id="fb-reset" class="px-3 py-2 rounded-xl glass-card text-slate-300 font-semibold">Ganti konfigurasi</button>'}</div>`;
   box.innerHTML=h;
@@ -1223,11 +1346,13 @@ const TF_SOCIALS=[
 })();
 
 /* ---------- Init ---------- */
+tfEnhance(document);
 $('timeline-date').value=dstr();
 tfApplyTheme();
 if(window.matchMedia)matchMedia('(prefers-color-scheme: dark)').addEventListener&&matchMedia('(prefers-color-scheme: dark)').addEventListener('change',tfApplyTheme);
 document.querySelectorAll('[data-logo]').forEach(e=>e.innerHTML=TF_LOGO);
 window.addEventListener('load',()=>{
+  if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
   loadStateFromStorage();startLiveClock();renderTimeline();renderWeek();renderTasks();renderNotes();updateFocusCard();setInterval(updateFocusCard,1000);
   updateStats();tfCheck();fbUi();tfNetUi();
   const qt=new URLSearchParams(location.search).get('tab');if(['timeline','week','tasks','notes'].includes(qt))switchTab(qt);
