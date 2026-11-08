@@ -19,7 +19,7 @@
     <style>
         :root{--s50:42 33 80;--s100:42 33 80;--s200:58 48 104;--s300:91 83 128;--s400:107 100 144;--s500:138 132 173;--s600:201 192 234;--s700:221 214 245;--s800:255 255 255;--s900:243 239 252;--s950:251 246 243;--b300:90 68 184;--b400:123 101 217;--e300:21 128 61;--e400:21 128 61;--a300:146 64 14;--a400:180 83 9;--r300:190 18 60;--r400:225 29 72;--p300:109 40 217;--p400:124 58 237;--o300:194 65 12;--o500:234 88 12;--k300:3 105 161;--k400:2 132 199;--f300:162 28 175;--f400:192 38 211;--g300:55 65 81;--g400:75 85 99;--toast:255 255 255;--bgpage:linear-gradient(135deg,#CFC4F5,#E9E2FB 50%,#F6E4EF);--shell:#FBF6F3;--panel:#fff;--panelb:#EDE8FA;--card:#F5F1FB;--inp:#FBFAFF;--inpb:#DDD6F5;--ink:#2A2150;--focus:linear-gradient(120deg,#CBBFF3,#DDD5F7);--st1:#E8E2FA;--st2:#FADCDC;--st3:#FDEFC9;--st4:#DAE7FC;--shadow:rgba(111,91,208,.10)}
         html.dark{--s50:243 240 255;--s100:243 240 255;--s200:218 212 245;--s300:185 177 220;--s400:152 144 192;--s500:122 114 163;--s600:74 67 117;--s700:58 52 99;--s800:42 37 80;--s900:30 26 60;--s950:20 17 43;--b300:196 184 250;--b400:165 150 242;--e300:110 231 183;--e400:52 211 153;--a300:252 211 77;--a400:251 191 36;--r300:253 164 175;--r400:251 113 133;--p300:216 180 254;--p400:192 132 252;--o300:253 186 116;--o500:251 146 60;--k300:125 211 252;--k400:56 189 248;--f300:240 171 252;--f400:232 121 249;--g300:209 213 219;--g400:156 163 175;--toast:42 37 80;color-scheme:dark;--bgpage:linear-gradient(135deg,#14112B,#1B1640 50%,#241B45);--shell:#1A1636;--panel:#241F4A;--panelb:#352F63;--card:#2A2550;--inp:#1E1A3C;--inpb:#3A3463;--ink:#F3F0FF;--focus:linear-gradient(120deg,#3B2F7A,#2C2561);--st1:#2E2763;--st2:#4A2A3F;--st3:#4A3A1E;--st4:#1F3560;--shadow:rgba(0,0,0,.35)}
-        body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--ink);background:var(--bgpage);background-attachment:fixed;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+        body{font-family:'Poppins',sans-serif;color:var(--ink);background:var(--bgpage);background-attachment:fixed;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
         body>div.max-w-6xl{background:var(--shell);border-radius:28px;margin-top:12px;margin-bottom:12px;box-shadow:0 20px 50px var(--shadow)}
         @media(max-width:640px){body>div.max-w-6xl{border-radius:0;margin:0}}
         ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgb(var(--s600));border-radius:9999px}
@@ -37,7 +37,7 @@
         .stat{border-radius:22px;padding:16px;font-size:12px;font-weight:600;color:var(--ink)}
         .stat .ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:16px;color:#fff;margin-bottom:10px}
         .stat b{display:block;font-size:28px;font-weight:800;line-height:1.1}.stat i.s{font-style:normal;font-size:11px;opacity:.7}
-        #splash{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:linear-gradient(160deg,#8B73E8,#4B35A8);color:#fff;transition:opacity .5s,visibility .5s}
+        #splash{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:linear-gradient(160deg,#a855f7,#d946ef 55%,#fb7185);color:#fff;transition:opacity .5s,visibility .5s}
         html.dark #splash{background:linear-gradient(160deg,#2C2561,#14112B)}
         #splash.hide{opacity:0;visibility:hidden}
         .sp-logo{width:112px;height:112px;border-radius:28px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.3);animation:pop .7s cubic-bezier(.2,1.4,.4,1)}
@@ -47,7 +47,7 @@
         @keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}@keyframes load{to{width:100%}}
         @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.sp-bar span{width:100%}}
     </style>
-    <link rel="stylesheet" href="assets/app.css">
+    <link rel="stylesheet" href="assets/app.css"><link rel="stylesheet" href="assets/theme.css">
 </head>
 <body class="min-h-screen pb-12 text-slate-100 selection:bg-blue-600 selection:text-white">
 <div id="splash" role="status" aria-label="Memuat TeacherFlow"><div class="sp-logo" data-logo></div><div class="sp-title">TeacherFlow</div><div class="sp-sub">Agenda &amp; pengingat guru terpadu</div><div class="sp-bar"><span></span></div></div>
@@ -64,7 +64,7 @@
                 <div class="flex items-center gap-3">
                     <div class="w-12 h-12 rounded-xl shadow-lg overflow-hidden shrink-0" data-logo></div>
                     <div>
-                        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-100">TeacherFlow</h1>
+                        <p id="greet">Assalamu'alaikum</p><h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-100">TeacherFlow</h1>
                         <p class="text-xs text-slate-400 flex items-center gap-1.5">
                             <i class="fa-regular fa-calendar-check text-blue-400"></i>
                             <span id="live-date">Sabtu, 7 November 2026</span>
@@ -84,7 +84,7 @@
                 <div class="flex items-center gap-2">
                     <span id="net-badge" class="hidden px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30"><i class="fa-solid fa-wifi"></i> Offline</span>
                     <button id="install-btn" onclick="installApp()" class="hidden px-3 h-10 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold" aria-label="Pasang aplikasi"><i class="fa-solid fa-download"></i> Pasang</button>
-                    <button onclick="openSettings()" class="w-10 h-10 rounded-xl glass-card text-slate-300 hover:text-slate-100" aria-label="Pengaturan" title="Pengaturan"><i class="fa-solid fa-gear"></i></button>
+                    <button onclick="quickTheme()" class="hbtn" aria-label="Ganti tema" title="Ganti tema terang/gelap"><i id="theme-icon" class="fa-solid fa-moon"></i></button><button onclick="openSettings()" class="hbtn" aria-label="Pengaturan" title="Pengaturan"><i class="fa-solid fa-gear"></i></button>
                 </div>
                 
             </div>
@@ -134,7 +134,10 @@
                     </button>
                 </div>
             </div>
+            <div id="focus-bar"><i></i></div>
+            <div id="moti"><span class="mi" id="moti-ic">✨</span><div><b id="moti-t"></b><small id="moti-s"></small></div><button type="button" onclick="motiNext()" aria-label="Pesan lain" title="Pesan lain"><i class="fa-solid fa-shuffle"></i></button></div>
         </section>
+        <div id="clash-banner" class="warnbox hidden" role="alert"></div>
 
         <!-- ================= RINGKASAN HARI INI ================= -->
         <section class="grid grid-cols-2 lg:grid-cols-4 gap-3">
@@ -145,18 +148,18 @@
         </section>
 
         <!-- ================= MAIN NAVIGATION TABS ================= -->
-        <nav class="flex items-center gap-2 border-b border-slate-700/80 pb-1 overflow-x-auto">
-            <button id="tab-timeline-btn" onclick="switchTab('timeline')" class="px-4 py-2.5 rounded-t-xl text-sm font-semibold flex items-center gap-2 border-b-2 border-blue-500 text-blue-400 bg-slate-800/60 transition-all whitespace-nowrap">
-                <i class="fa-solid fa-timeline"></i> Timeline Harian
+        <nav id="main-nav" aria-label="Menu utama">
+            <button id="tab-timeline-btn" onclick="switchTab('timeline')" class="tb">
+                <i class="fa-solid fa-timeline"></i><span>Harian</span>
             </button>
-            <button id="tab-week-btn" onclick="switchTab('week')" class="px-4 py-2.5 rounded-t-xl text-sm font-semibold flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-all whitespace-nowrap"><i class="fa-solid fa-calendar-week"></i> Jadwal Pekan</button>
-            <button id="tab-tasks-btn" onclick="switchTab('tasks')" class="px-4 py-2.5 rounded-t-xl text-sm font-semibold flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-all whitespace-nowrap">
-                <i class="fa-solid fa-list-check"></i> Tugas & Deadline 
-                <span id="task-badge-count" class="px-2 py-0.5 rounded-full text-[10px] bg-blue-500/20 text-blue-300 border border-blue-500/30">0</span>
+            <button id="tab-week-btn" onclick="switchTab('week')" class="tb"><i class="fa-solid fa-calendar-week"></i><span>Pekan</span></button>
+            <button id="tab-tasks-btn" onclick="switchTab('tasks')" class="tb">
+                <i class="fa-solid fa-list-check"></i><span>Tugas</span> 
+                <span id="task-badge-count" class="bd">0</span>
             </button>
-            <button id="tab-notes-btn" onclick="switchTab('notes')" class="px-4 py-2.5 rounded-t-xl text-sm font-semibold flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-all whitespace-nowrap">
-                <i class="fa-solid fa-note-sticky"></i> Catatan Cepat
-                <span id="note-badge-count" class="px-2 py-0.5 rounded-full text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30">0</span>
+            <button id="tab-notes-btn" onclick="switchTab('notes')" class="tb">
+                <i class="fa-solid fa-note-sticky"></i><span>Catatan</span>
+                <span id="note-badge-count" class="bd">0</span>
             </button>
         </nav>
 
@@ -274,10 +277,9 @@
             </div>
         </main>
 
-    <footer id="app-footer" class="mt-8 pt-6 border-t border-slate-700/60 text-center space-y-3">
-            <div class="flex items-center justify-center gap-2.5"><div class="w-8 h-8 rounded-lg overflow-hidden shrink-0" data-logo></div><b class="text-slate-100 text-base">TeacherFlow</b></div>
-            <p class="text-xs text-slate-400 max-w-xl mx-auto">Agenda, jadwal mengajar, tugas, pengingat, dan catatan guru dalam satu aplikasi. Data tersimpan di perangkat Anda.</p>
-            <div id="footer-social" class="flex items-center justify-center gap-2.5 flex-wrap"></div>
+    <footer id="app-footer" class="mt-6 pt-4 border-t border-slate-700/40 text-center space-y-2">
+                        <p class="text-[11px] text-slate-400 max-w-xl mx-auto">Agenda, jadwal mengajar, tugas, pengingat, dan catatan guru dalam satu aplikasi. Data tersimpan di perangkat Anda.</p>
+            <div id="footer-social" class="flex items-center justify-center gap-2 flex-wrap"></div>
             <p class="app-footer text-[11px] text-slate-400">Crafted with <span class="text-rose-400" aria-label="cinta">&hearts;</span> by <a href="https://kurniapedia.my.id" target="_blank" rel="noopener noreferrer" class="text-blue-400 font-bold hover:underline"><strong>Kurniapedia</strong></a> 2026</p>
         </footer>
     </div>
@@ -317,6 +319,7 @@
                     <p id="jam-hint" class="text-[11px] text-slate-400"></p>
                 </div>
 
+                <div id="agenda-clash" class="warnbox hidden" role="alert"></div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-slate-300 font-medium mb-1">Jam Mulai</label>
@@ -475,9 +478,8 @@
 
 
         function getTodayAtHour(hour) {
-            const now = new Date();
-            now.setHours(hour, 0, 0, 0);
-            return now.toISOString().slice(0, 16);
+            const n = new Date(); n.setHours(hour, 0, 0, 0);
+            return dstr(n) + 'T' + p2(n.getHours()) + ':00';
         }
 
         /* ================= LIVE CLOCK & DATE ================= */
@@ -554,14 +556,14 @@
                                     Prioritas ${task.priority}
                                 </span>
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-800 text-slate-300 border border-slate-700">
-                                    ${task.category || 'Administrasi'}
+                                    ${esc(task.category || 'Administrasi')}
                                 </span>
                                 <span class="text-xs text-rose-400 font-mono font-medium">
                                     <i class="fa-regular fa-clock"></i> Batas: ${dFormatted}
                                 </span>
                             </div>
-                            <h4 class="text-base font-bold text-slate-100 ${task.completed ? 'line-through' : ''}">${task.title}</h4>
-                            ${task.desc ? `<p class="text-xs text-slate-300 ${task.completed ? 'line-through' : ''}">${task.desc}</p>` : ''}
+                            <h4 class="text-base font-bold text-slate-100 ${task.completed ? 'line-through' : ''}">${esc(task.title)}</h4>
+                            ${task.desc ? `<p class="text-xs text-slate-300 ${task.completed ? 'line-through' : ''}">${esc(task.desc)}</p>` : ''}
                         </div>
                     </div>
 
@@ -693,20 +695,20 @@
                     <div class="space-y-2">
                         <div class="flex items-center justify-between">
                             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                                ${note.tag}
+                                ${esc(note.tag)}
                             </span>
                             <button onclick="togglePinNote('${note.id}')" class="text-xs ${note.pinned ? 'text-amber-400' : 'text-slate-500 hover:text-slate-300'}">
                                 <i class="fa-solid fa-thumbtack"></i>
                             </button>
                         </div>
-                        <h4 class="text-base font-bold text-slate-100">${note.title}</h4>
-                        <p class="text-xs text-slate-300 whitespace-pre-wrap leading-relaxed">${note.content}</p>
+                        <h4 class="text-base font-bold text-slate-100">${esc(note.title)}</h4>
+                        <p class="text-xs text-slate-300 whitespace-pre-wrap leading-relaxed">${esc(note.content)}</p>
                     </div>
 
                     <div class="pt-3 border-t border-slate-700/50 flex items-center justify-between text-[11px] text-slate-400">
                         <span><i class="fa-regular fa-clock"></i> ${note.date || 'Hari ini'}</span>
                         <div class="flex items-center gap-1">
-                            <button onclick="copyNoteText(\`${escapeQuotes(note.content)}\`)" class="p-1.5 hover:text-slate-100 rounded bg-slate-800" title="Salin Catatan">
+                            <button onclick="copyNoteById('${note.id}')" class="p-1.5 hover:text-slate-100 rounded bg-slate-800" title="Salin Catatan">
                                 <i class="fa-regular fa-copy"></i>
                             </button>
                             <button onclick="editNote('${note.id}')" class="p-1.5 hover:text-slate-100 rounded bg-slate-800" title="Edit">
@@ -726,6 +728,7 @@
             return str.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n');
         }
 
+        function copyNoteById(id){const n=state.notes.find(x=>x.id===id);if(n)tfCopy(n.title+'\n'+n.content,'Catatan disalin ke clipboard.')}
         function copyNoteText(text) {
             const tempInput = document.createElement("textarea");
             tempInput.value = text;
@@ -1119,7 +1122,7 @@ function renderWeekTable(days,today){
     return `<tr><td class="p-2 whitespace-nowrap"><b class="text-xs text-slate-100">Jam ke-${r.n}</b><span class="block text-[10px] text-slate-400 tabular-nums">${r.s}–${r.e}</span></td>`+cols.map(x=>{
       const a=has(x,r.n);if(!a)return `<td class="p-1"><div class="rounded-lg border border-dashed border-slate-700/60 h-12"></div></td>`;
       const c=TYPEC[a.type]||TYPEC.Lainnya,first=r.n===a.jamFrom;
-      return `<td class="p-1"><button onclick="editAgenda('${a.id}')" aria-label="${esc(a.title)}" class="w-full h-12 text-left rounded-lg border px-2 py-1 text-[11px] leading-tight overflow-hidden ${BADGE[c[0]]} ${a.completed?'opacity-50':''}">${first?`<b class="block truncate">${esc(a.title)}</b><span class="block truncate opacity-80">${esc([a.target&&a.target!=='Anggota'?a.target:'',a.location].filter(Boolean).join(' · ')||a.startTime+'–'+a.endTime)}</span>`:'<span class="opacity-60">↳</span>'}</button></td>`}).join('')+`</tr>`}).join('');
+      return `<td class="p-1"><button onclick="editAgenda('${a.id}')" aria-label="${esc(a.title)}" class="w-full h-12 text-left rounded-lg border px-2 py-1 text-[11px] leading-tight overflow-hidden ${BADGE[c[0]]} ${a.completed?'opacity-50':''}${a.clash?' clash':''}">${first?`<b class="block truncate">${esc(a.title)}</b><span class="block truncate opacity-80">${esc([a.target&&a.target!=='Anggota'?a.target:'',a.location].filter(Boolean).join(' · ')||a.startTime+'–'+a.endTime)}</span>`:'<span class="opacity-60">↳</span>'}</button></td>`}).join('')+`</tr>`}).join('');
   const inBell=a=>a.jamFrom&&rows.some(r=>r.n===a.jamFrom);
   const outside=cols.some(x=>x.items.some(a=>!inBell(a)))?`<tr><td class="p-2 text-[11px] text-slate-400 align-top">Di luar jam pelajaran</td>`+cols.map(x=>`<td class="p-1 align-top">${x.items.filter(a=>!inBell(a)).map(weekChip).join('')}</td>`).join('')+`</tr>`:'';
   box.innerHTML=`<table class="w-full min-w-[760px]" style="border-collapse:separate;border-spacing:0;table-layout:fixed"><thead><tr><th class="p-2 text-left text-xs text-slate-400" style="width:92px">Jam</th>${th}</tr></thead><tbody>${body}${outside}</tbody></table>`;
@@ -1199,7 +1202,7 @@ function tfModal(title,body,onSave,label='Simpan',wide){
   w.innerHTML=`<div class="glass-panel w-full ${wide?'max-w-2xl':'max-w-lg'} rounded-2xl p-6 border border-white/10 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto"><div class="flex items-center justify-between border-b border-slate-700/60 pb-3"><h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">${title}</h3><button type="button" onclick="tfClose()" class="text-slate-400 hover:text-slate-100 p-1" aria-label="Tutup"><i class="fa-solid fa-xmark text-lg"></i></button></div><form class="space-y-4 text-xs">${body}${onSave?`<div class="flex justify-end gap-3 pt-3 border-t border-slate-700/60"><button type="button" onclick="tfClose()" class="px-4 py-2 rounded-xl text-slate-300 hover:bg-slate-700/60 font-medium">Batal</button><button type="submit" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold shadow-md">${label}</button></div>`:''}</form></div>`;
   document.body.appendChild(w);tfEnhance(w);const f=w.querySelector('form');f.onsubmit=e=>{e.preventDefault();if(onSave&&onSave(f)!==false)tfClose()};w.onclick=e=>{if(e.target===w)tfClose()};return f;
 }
-function tfCopy(text){(navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject()).catch(()=>{const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();try{document.execCommand('copy')}catch(e){}t.remove()}).finally(()=>showToast('Jadwal disalin ke clipboard.','success'))}
+function tfCopy(text,msg){(navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject()).catch(()=>{const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();try{document.execCommand('copy')}catch(e){}t.remove()}).finally(()=>showToast(msg||'Jadwal disalin ke clipboard.','success'))}
 
 /* ---------- Pengaturan, cadangan, install ---------- */
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;if(typeof tfNetUi==='function')tfNetUi()});
@@ -1210,11 +1213,11 @@ function openSettings(){setTimeout(fbUi,0);
   tfModal('<i class="fa-solid fa-gear text-blue-400"></i> Pengaturan',`<div class="space-y-3"><div><label class="${LB}">Tema tampilan</label><div id="theme-seg" role="radiogroup" aria-label="Tema tampilan" class="flex gap-1 glass-card rounded-xl p-1">${[['auto','Otomatis','fa-circle-half-stroke'],['light','Terang','fa-sun'],['dark','Gelap','fa-moon']].map(([v,t,i])=>`<button type="button" data-th="${v}" role="radio" aria-checked="${s.theme===v}" class="flex-1 px-2 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 ${s.theme===v?'bg-blue-600 text-white':'text-slate-300'}"><i class="fa-solid ${i}"></i>${t}</button>`).join('')}</div></div>
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="${LB}">Ingatkan sebelum mulai</label><select name="ld" class="${TI}">${[5,10,15,20,30].map(n=>`<option value="${n}" ${+s.lead===n?'selected':''}>${n} menit</option>`).join('')}</select></div>
   <div><label class="${LB}">Jam pelajaran</label><button type="button" id="st-bell" class="${TI} text-left flex items-center justify-between"><span>${bellSummary()}</span><i class="fa-solid fa-chevron-right text-slate-400"></i></button></div></div></div>
- ${s.sound?'checked':''}> Bunyi pengingat</label><label class="flex items-center gap-2 text-slate-200"><input type="checkbox" name="vb" ${s.vibrate?'checked':''}> Getar (Android)</label>
+<div class="flex flex-wrap gap-x-5 gap-y-2"><label class="flex items-center gap-2 text-slate-200"><input type="checkbox" name="sn" ${s.sound?'checked':''}> Bunyi pengingat</label><label class="flex items-center gap-2 text-slate-200"><input type="checkbox" name="vb" ${s.vibrate?'checked':''}> Getar (Android)</label><label class="flex items-center gap-2 text-slate-200"><input type="checkbox" name="mo" ${s.motivasi!==false?'checked':''}> Pesan motivasi</label></div>
   <div class="glass-card rounded-xl p-3 space-y-2"><p class="text-slate-300">Izin notifikasi: <b>${perm}</b></p><div class="flex gap-2 flex-wrap"><button type="button" id="st-perm" class="px-3 py-2 rounded-xl bg-blue-600 text-white font-semibold">Aktifkan notifikasi</button><button type="button" id="st-test" class="px-3 py-2 rounded-xl glass-card text-slate-200 font-semibold">Uji pengingat</button>${deferredInstall&&!isStandalone()?'<button type="button" id="st-inst" class="px-3 py-2 rounded-xl bg-emerald-600 text-white font-semibold">Pasang aplikasi</button>':''}</div><p class="text-[11px] text-slate-300"><i class="fa-solid fa-mobile-screen"></i> ${installHelp()}</p><p class="text-[11px] text-slate-400">Setelah dibuka sekali saat online, TeacherFlow berjalan penuh tanpa internet. Pengingat berbunyi selama aplikasi terbuka; browser dapat menunda aplikasi yang tertutup.</p></div>
   <div id="st-sync-box" class="glass-card rounded-xl p-3 space-y-2"></div>
   <div class="glass-card rounded-xl p-3 space-y-2"><p class="font-semibold text-slate-200">Cadangan data</p><div class="flex gap-2 flex-wrap"><button type="button" id="st-exp" class="px-3 py-2 rounded-xl bg-blue-600 text-white font-semibold">Ekspor JSON</button><label class="px-3 py-2 rounded-xl glass-card text-slate-200 font-semibold cursor-pointer">Impor JSON<input type="file" id="st-imp" accept=".json,application/json" hidden></label><button type="button" id="st-rst" class="px-3 py-2 rounded-xl bg-rose-600 text-white font-semibold">Hapus semua data</button></div></div>`,f=>{
-    Object.assign(state.settings,{lead:+f.ld.value,sound:f.sn.checked,vibrate:f.vb.checked});saveStateToStorage();tfApplyTheme();showToast('Pengaturan disimpan.','success')});
+    Object.assign(state.settings,{lead:+f.ld.value,sound:f.sn.checked,vibrate:f.vb.checked,motivasi:f.mo.checked});saveStateToStorage();tfApplyTheme();updateFocusCard();showToast('Pengaturan disimpan.','success')});
   tfThemeSeg();$('st-bell').onclick=openBellModal;
   $('st-perm').onclick=async()=>{if('Notification'in window){await Notification.requestPermission();openSettings()}};
   $('st-test').onclick=()=>tfAlert('Uji pengingat','Jika Anda mendengar bunyi atau melihat notifikasi ini, pengingat siap.');
@@ -1340,8 +1343,74 @@ const TF_SOCIALS=[
   { name: 'Website', url: 'https://kurniapedia.my.id', vb: '0 0 512 512', path: 'M352 256c0 22.2-1.2 43.6-3.3 64H163.3c-2.2-20.4-3.3-41.8-3.3-64s1.2-43.6 3.3-64H348.7c2.2 20.4 3.3 41.8 3.3 64zm28.8-64H503.9c5.3 20.5 8.1 41.9 8.1 64s-2.8 43.5-8.1 64H380.8c2.1-20.6 3.2-42 3.2-64s-1.1-43.4-3.2-64zm112.6-32H376.7c-10-63.9-29.8-117.4-55.3-151.6c78.3 20.7 142 77.5 171.9 151.6zm-149.1 0H167.7c6.1-36.4 15.5-68.6 27-94.7c10.5-23.6 22.2-40.7 33.5-51.5C239.4 3.2 248.7 0 256 0s16.6 3.2 27.8 13.8c11.3 10.8 23 27.9 33.5 51.5c11.6 26 20.9 58.2 27 94.7zm-209 0H18.6C48.6 85.9 112.2 29.1 190.6 8.4C165.1 42.6 145.3 96.1 135.3 160zM8.1 192H131.2c-2.1 20.6-3.2 42-3.2 64s1.1 43.4 3.2 64H8.1C2.8 299.5 0 278.1 0 256s2.8-43.5 8.1-64zM194.7 446.6c-11.6-26-20.9-58.2-27-94.6H344.3c-6.1 36.4-15.5 68.6-27 94.6c-10.5 23.6-22.2 40.7-33.5 51.5C272.6 508.8 263.3 512 256 512s-16.6-3.2-27.8-13.8c-11.3-10.8-23-27.9-33.5-51.5zM135.3 352c10 63.9 29.8 117.4 55.3 151.6C112.2 482.9 48.6 426.1 18.6 352H135.3zm358.1 0c-30 74.1-93.6 130.9-171.9 151.6c25.5-34.2 45.2-87.7 55.3-151.6H493.4z' }
 ];
 (function(){
-  const box=$('footer-social');if(box)box.innerHTML=TF_SOCIALS.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(s.name)}" title="${esc(s.name)}" class="w-11 h-11 rounded-xl glass-card text-slate-200 hover:text-slate-100 flex items-center justify-center transition-all hover:-translate-y-0.5"><svg viewBox="${esc(s.vb)}" class="w-5 h-5 fill-current text-blue-400" aria-hidden="true"><path d="${esc(s.path)}"/></svg></a>`).join('');
+  const box=$('footer-social');if(box)box.innerHTML=TF_SOCIALS.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(s.name)}" title="${esc(s.name)}" class="w-8 h-8 rounded-lg glass-card text-slate-200 flex items-center justify-center transition-all hover:-translate-y-0.5"><svg viewBox="${esc(s.vb)}" class="w-3.5 h-3.5 fill-current text-blue-400" aria-hidden="true"><path d="${esc(s.path)}"/></svg></a>`).join('');
 })();
+
+/* ---------- v3: bentrok jadwal, motivasi, tema cepat ---------- */
+function clashPairs(ds){const l=tfOcc(ds),o=[];for(let i=0;i<l.length;i++)for(let j=i+1;j<l.length;j++)if(tmin(l[i].startTime)<tmin(l[j].endTime)&&tmin(l[j].startTime)<tmin(l[i].endTime))o.push([l[i],l[j]]);return o}
+function clashIds(ds){const s=new Set();clashPairs(ds).forEach(p=>p.forEach(a=>s.add(a.id)));return s}
+const clashTag='<span class="clash-tag"><i class="fa-solid fa-triangle-exclamation"></i> Bentrok</span>';
+function clashBanner(){const b=$('clash-banner');if(!b)return;const ds=tfSel(),p=clashPairs(ds);
+  if(!p.length){b.classList.add('hidden');return}
+  b.innerHTML='<b><i class="fa-solid fa-triangle-exclamation"></i> Jadwal bentrok pada '+fmtD(new Date(ds+'T12:00:00'))+':</b><br>'+p.map(([a,c])=>esc(a.title)+' ('+a.startTime+'–'+a.endTime+') bertabrakan dengan '+esc(c.title)+' ('+c.startTime+'–'+c.endTime+')').join('<br>');b.classList.remove('hidden')}
+function modalClash(){const box=$('agenda-clash');if(!box)return;
+  const s=$('agenda-start-time').value,e=$('agenda-end-time').value;let msg='';
+  if(s&&e&&tmin(e)<=tmin(s))msg='Jam selesai harus setelah jam mulai.';
+  else if(s&&e){const o={id:$('agenda-id').value,startTime:s,endTime:e,date:$('agenda-date').value||null,days:[...document.querySelectorAll('[name=agenda-day]:checked')].map(c=>+c.value)};if(o.date)o.days=[];
+    const c=state.agendas.filter(b=>b.id!==o.id&&tmin(b.startTime)<tmin(e)&&tmin(b.endTime)>tmin(s)&&tfShare(b,o));
+    if(c.length)msg='<i class="fa-solid fa-triangle-exclamation"></i> Bentrok dengan: '+c.map(b=>'<b>'+esc(b.title)+'</b> ('+b.startTime+'–'+b.endTime+', '+esc(repeatText(b))+')').join('; ')}
+  box.innerHTML=msg;box.classList.toggle('hidden',!msg)}
+(function(){const f=$('form-agenda');['change','input','click'].forEach(ev=>f.addEventListener(ev,()=>setTimeout(modalClash,30)))})();
+const _oam=openAgendaModal;openAgendaModal=function(id){_oam(id);modalClash()};
+const _ojc=onJamChange;onJamChange=function(){_ojc();modalClash()};
+const _sd=setDur;setDur=function(n){_sd(n);modalClash()};
+const _rt=renderTimeline;renderTimeline=function(){_rt();const cl=clashIds(tfSel());
+  if(cl.size)[...$('timeline-list').children].forEach((el,i)=>{const it=tfOcc(tfSel()).filter(a=>$('timeline-filter').value==='ALL'||a.type===$('timeline-filter').value)[i];if(it&&cl.has(it.id)){el.classList.add('clash');const t=el.querySelector('.flex.items-center.gap-2.flex-wrap');if(t)t.insertAdjacentHTML('beforeend',clashTag)}});
+  clashBanner()};
+const _wd=weekData;weekData=function(){const r=_wd();r.days.forEach(x=>{const cl=clashIds(x.ds);x.items=x.items.map(a=>({...a,clash:cl.has(a.id)}))});return r};
+const _wc=weekChip;weekChip=function(a){return _wc(a).replace('class="w-full text-left','class="w-full text-left'+(a.clash?' clash':'')).replace('<b class="block tabular-nums text-[10px]">',(a.clash?clashTag+' ':'')+'<b class="block tabular-nums text-[10px]">')};
+/* tema cepat */
+function quickTheme(){state.settings.theme=document.documentElement.classList.contains('dark')?'light':'dark';saveStateToStorage();tfApplyTheme()}
+const _tat=tfApplyTheme;tfApplyTheme=function(){_tat();const d=document.documentElement.classList.contains('dark'),m=document.querySelector('meta[name=theme-color]');if(m)m.content=d?'#0d0a22':'#7c3aed'};
+function switchTab(t){['timeline','week','tasks','notes'].forEach(k=>{const on=k===t;$('tab-'+k+'-btn').className='tb'+(on?' on':'');$('tab-'+k+'-btn').setAttribute('aria-current',on?'page':'false');$('tab-'+k+'-content').classList.toggle('hidden',!on)});if(t==='week')renderWeek();scrollTo({top:0,behavior:'smooth'})}
+['modal-agenda','modal-task','modal-note'].forEach(id=>{const m=$(id);m.addEventListener('click',e=>{if(e.target===m)closeModal(id)})});
+/* motivasi sesuai waktu kegiatan */
+const MO={
+ prep:['Masih ada waktu untuk bersiap dengan tenang.','Tarik napas, minum air, rapikan bahan ajar.','Persiapan yang baik membuat kelas lebih hidup.','Cek perlengkapan, lalu mulai dengan niat yang lurus.'],
+ soon:['Sebentar lagi mulai. Bismillah, siapkan senyum terbaik!','Lima menit terakhir: rapikan diri, tegakkan niat.','Hampir waktunya. Kamu sudah siap!','Langkah kecil menuju kelas, dampaknya besar bagi mereka.'],
+ start:['Bismillah, saatnya dimulai!','Mulai dengan salam hangat, kelas akan mengikuti energimu.','Ini waktunya. Hadirkan versi terbaikmu.','Niat baik, langkah mantap, mulai sekarang!'],
+ mid:['Kamu sudah di tengah jalan, pertahankan ritmenya.','Sabar dan konsisten, murid belajar dari teladanmu.','Terus semangat, setiap penjelasanmu berarti.','Jaga fokus dan senyum, kelas sedang berjalan baik.'],
+ end:['Tinggal sedikit lagi, tutup dengan penuh makna!','Akhiri dengan ringkasan singkat dan doa penutup.','Hampir selesai. Terima kasih sudah bersungguh-sungguh.','Penutup yang baik meninggalkan kesan yang kuat.'],
+ jeda:['Manfaatkan jeda untuk istirahat sejenak.','Waktu luang: isi energi, besok masih banyak kebaikan.','Sambil menunggu, selesaikan satu tugas kecil.','Jeda itu penting. Rehat, lalu lanjut lebih segar.']};
+const MT={Mengajar:['Setiap murid punya cara belajarnya sendiri, sabarlah.','Ilmu yang kamu bagi akan terus mengalir.','Ajak murid bertanya, itu tanda kelas hidup.','Pujian tulus bisa membangkitkan semangat belajar.'],
+ Halaqah:['Bimbing dengan lembut, satu ayat demi satu ayat.','Keistiqamahan kecil lebih berharga dari semangat sesaat.','Doakan setiap anggota halaqah yang hadir.','Kesabaran dalam membimbing adalah ladang pahala.'],
+ Ekstrakurikuler:['Di sini bakat murid tumbuh, beri ruang mereka bersinar.','Bersenang-senang sambil belajar, itu kuncinya.','Dukunganmu membuat mereka berani mencoba.','Semangatmu menular ke seluruh tim.'],
+ Piket:['Tugas kecil yang dikerjakan tulus bernilai besar.','Kehadiranmu membuat sekolah tertib dan aman.','Tetap ramah dan sigap, ya!','Teliti hari ini, tenang sampai pulang.'],
+ Lainnya:['Kerjakan dengan sepenuh hati.','Satu per satu, pasti selesai.','Fokus pada yang ada di depan mata.','Kamu sudah melakukan yang terbaik.']};
+const MI={prep:'🧘',soon:'⏰',start:'🚀',mid:'💪',end:'🏁',jeda:'☕',pagi:'🌅',siang:'☀️',sore:'🌇',malam:'🌙',done:'🎉'};
+const MTOD={pagi:['Selamat pagi! Mulai hari dengan niat baik dan senyum.','Pagi yang cerah untuk berbagi ilmu.'],siang:['Selamat siang! Tetap semangat, setengah hari sudah terlewati.','Jangan lupa makan dan istirahat sejenak.'],sore:['Selamat sore! Terima kasih untuk hari yang penuh arti.','Sore tenang, saatnya merapikan catatan.'],malam:['Selamat malam. Istirahat yang cukup, besok kita mulai lagi.','Hari ini sudah cukup baik. Beristirahatlah.']};
+let motiOff=0;function motiNext(){motiOff++;updateFocusCard()}
+const hs=s=>{let h=7;for(const c of String(s))h=(h*31+c.charCodeAt(0))>>>0;return h};
+const pk=(a,s)=>a[hs(s)%a.length];
+function tod(h){return h<11?'pagi':h<15?'siang':h<18?'sore':'malam'}
+function tfMoti(){
+  const n=new Date(),ds=dstr(n),cur=n.getHours()*60+n.getMinutes()+n.getSeconds()/60,list=tfOcc(ds),a=currentFocusAgenda,td=tod(n.getHours());
+  const sd=ds+motiOff;
+  if(!a){if(list.length)return{i:MI.done,t:'Alhamdulillah, semua agenda hari ini tuntas!',s:pk(MTOD[td],sd)};return{i:MI[td],t:pk(MTOD[td],sd),s:'Belum ada agenda hari ini. Tambahkan bila perlu.'}}
+  const s=tmin(a.startTime),e=tmin(a.endTime),type=MT[a.type]?a.type:'Lainnya';let ph;
+  if(cur<s){const d=s-cur;ph=d<=5?'soon':d<=60?'prep':'jeda'}else{const r=(cur-s)/(e-s);ph=r<.12?'start':r<.7?'mid':'end'}
+  const seed=sd+a.id+ph;
+  return{i:MI[ph],t:pk(MO[ph],seed),s:pk(MT[type],seed+'t')}
+}
+const _ufc=updateFocusCard;
+updateFocusCard=function(){_ufc();
+  const g=$('greet');if(g)g.textContent='Selamat '+tod(new Date().getHours())+', Bapak/Ibu Guru';
+  const a=currentFocusAgenda,n=new Date(),cur=n.getHours()*60+n.getMinutes()+n.getSeconds()/60;
+  const bar=$('focus-bar');if(bar){let r=0;if(a){const s=tmin(a.startTime),e=tmin(a.endTime);if(cur>=s)r=Math.min(1,(cur-s)/(e-s))}bar.firstChild.style.width=(r*100)+'%'}
+  const mo=$('moti');if(!mo)return;if(state.settings.motivasi===false){mo.style.display='none';return}mo.style.display='';
+  const m=tfMoti();$('moti-ic').textContent=m.i;$('moti-t').textContent=m.t;$('moti-s').textContent=m.s};
+const _ta=tfAlert;tfAlert=function(t,b){if(state.settings.motivasi!==false&&!/^(Deadline|Uji)/.test(t))b+=' · '+tfMoti().t;_ta(t,b)};
+const _cfa=completeFocusAgenda;completeFocusAgenda=function(){const had=!!currentFocusAgenda;_cfa();if(had&&state.settings.motivasi!==false)setTimeout(()=>showToast('Alhamdulillah, satu agenda tuntas. Terus semangat!','success'),600)};
 
 /* ---------- Init ---------- */
 tfEnhance(document);
