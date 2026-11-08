@@ -1,14 +1,14 @@
 {
   "name": "TeacherFlow - Agenda & Pengingat Guru",
   "short_name": "TeacherFlow",
-  "description": "Agenda mengajar, dinas luar, halaqah, ekstrakurikuler, tugas, absensi, dan nilai guru.",
+  "description": "Agenda mengajar, jadwal pekan, halaqah, ekstrakurikuler, tugas, dan catatan guru.",
   "id": "./",
   "start_url": "./index.html",
   "categories": ["education", "productivity"],
   "shortcuts": [
     {"name": "Agenda Hari Ini", "url": "index.html?tab=timeline", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]},
     {"name": "Tugas & Deadline", "url": "index.html?tab=tasks", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]},
-    {"name": "Kelas & Absensi", "url": "index.html?tab=class", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]}
+    {"name": "Jadwal Pekan", "url": "index.html?tab=week", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]}
   ],
   "scope": "./",
   "display": "standalone",
