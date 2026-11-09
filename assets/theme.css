@@ -50,3 +50,54 @@ html.dark .warnbox{color:#fda4af}
 .fixed.inset-0.z-50 .glass-panel{max-height:92vh}
 @media(max-width:640px){.fixed.inset-0.z-50{align-items:flex-end;padding:0}.fixed.inset-0.z-50>.glass-panel{border-radius:24px 24px 0 0;max-width:100%}}
 @media(min-width:1024px){body>div.max-w-6xl{max-width:72rem}}
+
+/* ===== Pemilih tema ===== */
+.thm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media(min-width:640px){.thm-grid{grid-template-columns:repeat(5,1fr)}}
+.thm{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px 8px;border-radius:16px;background:var(--card);border:2px solid var(--panelb);font-size:11px;font-weight:600;color:rgb(var(--s300))}
+.thm-sw{position:relative;width:38px;height:38px;border-radius:50%;border:2px solid var(--panel);box-shadow:0 0 0 1px var(--panelb),0 4px 10px var(--shadow)}
+.thm.on{border-color:var(--g1);color:rgb(var(--s100))}
+.thm.on .thm-sw::after{content:"\2713";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:16px;font-weight:800;text-shadow:0 1px 3px #0008}
+
+/* ===== Popup konfirmasi (ikut tema) ===== */
+.tfc{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(15,10,40,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:tfcFade .18s ease-out}
+.tfc-box{width:100%;max-width:380px;background:var(--panel);color:var(--ink);border:1px solid var(--panelb);border-radius:24px;padding:24px 22px 20px;text-align:center;box-shadow:0 24px 60px var(--shadow);animation:tfcPop .22s cubic-bezier(.2,1.3,.4,1)}
+.tfc-ic{width:56px;height:56px;margin:0 auto 14px;border-radius:18px;display:grid;place-items:center;font-size:22px;background:#f43f5e1f;color:#e11d48;border:1px solid #f43f5e55}
+html.dark .tfc-ic{color:#fb7185}
+.tfc-ic.ok{background:var(--card);color:var(--g1);border-color:var(--panelb)}
+.tfc-box h3{font-size:17px;font-weight:700;margin:0 0 6px;color:var(--ink)}
+.tfc-box p{font-size:13px;line-height:1.55;color:rgb(var(--s300));word-break:break-word}
+.tfc-act{display:flex;gap:10px;margin-top:20px}
+.tfc-act button{flex:1;padding:11px 14px;border-radius:14px;font-size:13px;font-weight:600}
+.tfc-no{background:var(--card);border:1px solid var(--panelb);color:rgb(var(--s200))}
+.tfc-yes{background:linear-gradient(120deg,#be123c,#e11d48);color:#fff;box-shadow:0 8px 20px #e11d4855}
+.tfc-yes.ok{background:var(--grad);box-shadow:0 8px 20px var(--shadow)}
+@keyframes tfcFade{from{opacity:0}to{opacity:1}}
+@keyframes tfcPop{from{opacity:0;transform:scale(.9) translateY(8px)}to{opacity:1;transform:none}}
+
+/* ===== Tema 4: ZAMRUD (terang, hijau) ===== */
+html[data-theme="mint"]{--s50:16 42 33;--s100:16 42 33;--s200:24 66 50;--s300:61 99 84;--s400:82 118 103;--s500:110 145 131;--s600:190 226 211;--s700:213 238 226;--s800:255 255 255;--s900:238 249 243;--s950:245 251 248;--b300:4 120 87;--b400:5 150 105;--toast:255 255 255;
+--bgpage:radial-gradient(900px 500px at 8% -5%,#fde68a55,transparent),radial-gradient(900px 600px at 100% 0,#34d39955,transparent),linear-gradient(160deg,#e6fbf1,#f0fdf9 60%,#fff8e7);--shell:rgba(255,255,255,.72);--panel:#fff;--panelb:#cdeee0;--card:#eefaf4;--inp:#fff;--inpb:#bfe6d4;--ink:#12352a;--focus:linear-gradient(120deg,#bdecd6,#d4f3e4);--shadow:rgba(5,120,87,.16);--g1:#047857;--g2:#059669;--g3:#0f766e;--st1:#dcf5e9;--st2:#fde2e4;--st3:#fff1cf;--st4:#d9ecfb}
+html[data-theme="mint"] .border-white\/10,html[data-theme="mint"] .border-white\/5{border-color:#d7f0e4}
+html[data-theme="mint"] #focus-card-section{box-shadow:0 14px 40px rgba(5,120,87,.35)}
+html[data-theme="mint"] #focus-action-btn{color:#047857!important}
+html[data-theme="mint"] .stat:nth-child(1) .ic{background:linear-gradient(135deg,#059669,#34d399)!important}
+html[data-theme="mint"] .glass-input:focus{border-color:#059669;box-shadow:0 0 0 3px rgba(5,150,105,.25)}
+html[data-theme="mint"] :focus-visible{outline-color:#34d399}
+html[data-theme="mint"] .border-blue-500,html[data-theme="mint"] .border-blue-500\/30{border-color:rgba(5,150,105,.35)}
+html[data-theme="mint"] .bg-blue-500\/10{background-color:rgba(5,150,105,.1)}
+html[data-theme="mint"] .bg-blue-500\/20{background-color:rgba(5,150,105,.2)}
+html[data-theme="mint"] #splash{background:linear-gradient(160deg,#047857,#10b981 55%,#2dd4bf)}
+
+/* ===== Tema 5: SAMUDRA (gelap, biru laut) ===== */
+html[data-theme="ocean"]{--s50:234 244 255;--s100:234 244 255;--s200:203 225 248;--s300:160 190 226;--s400:128 160 200;--s500:98 130 172;--s600:46 76 118;--s700:33 58 96;--s800:22 43 77;--s900:14 30 56;--s950:8 20 40;--b300:147 197 253;--b400:96 165 250;--toast:22 43 77;
+--bgpage:radial-gradient(800px 500px at 5% -5%,#0ea5e944,transparent),radial-gradient(800px 600px at 100% 0,#6366f133,transparent),linear-gradient(160deg,#050f24,#0a1b3d 60%,#0b1030);--shell:rgba(9,22,48,.8);--panel:#0f2347;--panelb:#1f3e72;--card:#132b55;--inp:#0b1c3b;--inpb:#2a4c87;--ink:#eaf4ff;--focus:linear-gradient(120deg,#12407a,#0c2a5a);--shadow:rgba(0,0,0,.55);--g1:#0284c7;--g2:#2563eb;--g3:#6366f1;--st1:#12305f;--st2:#4a2340;--st3:#4a3a1a;--st4:#0f3a5c}
+html[data-theme="ocean"] #focus-card-section{box-shadow:0 14px 40px rgba(2,132,199,.4)}
+html[data-theme="ocean"] #focus-action-btn{color:#1d4ed8!important}
+html[data-theme="ocean"] .stat:nth-child(1) .ic{background:linear-gradient(135deg,#0284c7,#60a5fa)!important}
+html[data-theme="ocean"] .glass-input:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.25)}
+html[data-theme="ocean"] :focus-visible{outline-color:#7dd3fc}
+html[data-theme="ocean"] .border-blue-500,html[data-theme="ocean"] .border-blue-500\/30{border-color:rgba(96,165,250,.4)}
+html[data-theme="ocean"] .bg-blue-500\/10{background-color:rgba(96,165,250,.12)}
+html[data-theme="ocean"] .bg-blue-500\/20{background-color:rgba(96,165,250,.22)}
+html[data-theme="ocean"] #splash{background:linear-gradient(160deg,#0f2347,#050f24)}

@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="icons/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="icons/icon-180.png">
-    <script>try{var s=JSON.parse(localStorage.getItem('tf_settings')||'{}'),t=s.theme||'auto';if(t==='dark'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark')}catch(e){}</script>
+    <script>try{var s=JSON.parse(localStorage.getItem('tf_settings')||'{}'),t=s.theme||'auto',d=document.documentElement;if(t==='mint'||t==='ocean')d.setAttribute('data-theme',t);if(t==='dark'||t==='ocean'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches))d.classList.add('dark')}catch(e){}</script>
     <!-- Tailwind CSS CDN -->
     
     
@@ -84,7 +84,7 @@
                 <div class="flex items-center gap-2">
                     <span id="net-badge" class="hidden px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30"><i class="fa-solid fa-wifi"></i> Offline</span>
                     <button id="install-btn" onclick="installApp()" class="hidden px-3 h-10 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold" aria-label="Pasang aplikasi"><i class="fa-solid fa-download"></i> Pasang</button>
-                    <button onclick="quickTheme()" class="hbtn" aria-label="Ganti tema" title="Ganti tema terang/gelap"><i id="theme-icon" class="fa-solid fa-moon"></i></button><button onclick="openSettings()" class="hbtn" aria-label="Pengaturan" title="Pengaturan"><i class="fa-solid fa-gear"></i></button>
+                    <button onclick="quickTheme()" class="hbtn" aria-label="Ganti tema" title="Ganti tema"><i id="theme-icon" class="fa-solid fa-moon"></i></button><button onclick="openSettings()" class="hbtn" aria-label="Pengaturan" title="Pengaturan"><i class="fa-solid fa-gear"></i></button>
                 </div>
                 
             </div>
@@ -591,12 +591,13 @@
         }
 
         function deleteTask(id) {
-            if (confirm("Hapus tugas ini?")) {
+            const _t = state.tasks.find(t => t.id === id);
+            tfConfirm({title: 'Hapus tugas?', message: (_t && _t.title ? '“' + _t.title + '” ' : 'Tugas ini ') + 'akan dihapus dan tidak bisa dikembalikan.', yes: 'Hapus', onYes: () => {
                 state.tasks = state.tasks.filter(t => t.id !== id);
                 saveStateToStorage();
                 renderTasks();
                 showToast("Tugas dihapus", "info");
-            }
+            }});
         }
 
         function openTaskModal(editId = null) {
@@ -749,12 +750,13 @@
         }
 
         function deleteNote(id) {
-            if (confirm("Hapus catatan ini?")) {
+            const _n = state.notes.find(n => n.id === id);
+            tfConfirm({title: 'Hapus catatan?', message: (_n && _n.title ? '“' + _n.title + '” ' : 'Catatan ini ') + 'akan dihapus dan tidak bisa dikembalikan.', yes: 'Hapus', onYes: () => {
                 state.notes = state.notes.filter(n => n.id !== id);
                 saveStateToStorage();
                 renderNotes();
                 showToast("Catatan dihapus", "info");
-            }
+            }});
         }
 
         function openNoteModal(editId = null) {
@@ -892,13 +894,24 @@ function saveStateToStorage(silent){
 triggerVibration=function(p=50){if('vibrate'in navigator&&(!navigator.userActivation||navigator.userActivation.hasBeenActive))try{navigator.vibrate(p)}catch(e){}};
 
 /* ---------- Tema terang / gelap ---------- */
+const TF_THEMES={
+  auto:{n:'Otomatis',sw:'linear-gradient(90deg,#f6f1ff 50%,#1f1847 50%)'},
+  light:{n:'Terang',dark:false,meta:'#7c3aed',sw:'linear-gradient(135deg,#7c3aed,#d946ef)'},
+  dark:{n:'Gelap',dark:true,meta:'#0d0a22',sw:'linear-gradient(135deg,#1f1847,#7c3aed)'},
+  mint:{n:'Zamrud',dark:false,meta:'#047857',sw:'linear-gradient(135deg,#047857,#2dd4bf)'},
+  ocean:{n:'Samudra',dark:true,meta:'#06142b',sw:'linear-gradient(135deg,#0f2347,#0284c7)'}
+};
+const tfThemeKey=()=>{const t=(state.settings||{}).theme;return TF_THEMES[t]?t:'auto'};
 function tfApplyTheme(){
-  const t=(state.settings||{}).theme||'auto';
-  const dark=t==='dark'||(t==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);
-  document.documentElement.classList.toggle('dark',dark);
-  const m=document.querySelector('meta[name=theme-color]');if(m)m.content=dark?'#1A1636':'#6F5BD0';
-  const i=$('theme-icon');if(i)i.className='fa-solid '+(dark?'fa-sun':'fa-moon');
+  let k=tfThemeKey();
+  if(k==='auto')k=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';
+  const th=TF_THEMES[k],h=document.documentElement;
+  h.classList.toggle('dark',!!th.dark);
+  if(k==='mint'||k==='ocean')h.setAttribute('data-theme',k);else h.removeAttribute('data-theme');
+  const m=document.querySelector('meta[name=theme-color]');if(m)m.content=th.meta;
+  const i=$('theme-icon');if(i)i.className='fa-solid '+(th.dark?'fa-sun':'fa-moon');
 }
+const tfThemeBtn=(v,on)=>`<button type="button" data-th="${v}" role="radio" aria-checked="${on}" class="thm${on?' on':''}"><span class="thm-sw" style="background:${TF_THEMES[v].sw}"></span><span>${TF_THEMES[v].n}</span></button>`;
 
 /* ---------- Komponen waktu & tanggal (24 jam, dd/mm/yyyy) dan jam pelajaran ---------- */
 const p2=n=>String(n).padStart(2,'0');
@@ -951,7 +964,7 @@ function bellSummary(){const L=bellLessons();return L.length?`${L.length} jam ·
 function tfThemeSeg(){
   const all=()=>document.querySelectorAll('#theme-seg [data-th]');
   all().forEach(b=>b.onclick=()=>{state.settings.theme=b.dataset.th;saveStateToStorage();tfApplyTheme();
-    all().forEach(x=>{const on=x===b;x.setAttribute('aria-checked',on);x.className='flex-1 px-2 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 '+(on?'bg-blue-600 text-white':'text-slate-300')})});
+    all().forEach(x=>{const on=x===b;x.setAttribute('aria-checked',on);x.classList.toggle('on',on)})});
 }
 function fillJam(){
   const L=bellLessons(),nums=L.length?L.map(r=>r.n):Array.from({length:12},(_,i)=>i+1);
@@ -1136,9 +1149,10 @@ function copyWeek(){
   tfCopy(['Jadwal '+$('week-range').textContent].concat(days.map(x=>TF_DAYS[x.d.getDay()]+' '+fmtD(x.d)+':\n'+(x.items.map(a=>`- ${jamText(a)?jamText(a)+' ':''}${a.startTime}-${a.endTime} ${a.title}${a.location?' ('+a.location+')':''}`).join('\n')||'- Kosong'))).join('\n\n'));
 }
 function deleteAgenda(id){
-  const _a=state.agendas.find(a=>a.id===id);if(!confirm(_a&&!_a.date?'Hapus jadwal tetap ini dari SEMUA pekan? Jadwal tidak akan muncul lagi.':'Hapus agenda ini?'))return;
-  state.agendas=state.agendas.filter(a=>a.id!==id);saveStateToStorage();
-  renderTimeline();renderWeek();updateFocusCard();updateStats();showToast('Agenda dihapus.','info');
+  const _a=state.agendas.find(a=>a.id===id),_rep=_a&&!_a.date,_nm=_a&&_a.title?'“'+_a.title+'” ':'';
+  tfConfirm({title:_rep?'Hapus jadwal tetap?':'Hapus agenda?',message:_rep?_nm+'akan dihapus dari SEMUA pekan dan tidak akan muncul lagi.':(_nm||'Agenda ini ')+'akan dihapus dan tidak bisa dikembalikan.',yes:'Hapus',onYes:()=>{
+    state.agendas=state.agendas.filter(a=>a.id!==id);saveStateToStorage();
+    renderTimeline();renderWeek();updateFocusCard();updateStats();showToast('Agenda dihapus.','info');}});
 }
 
 /* ---------- Tab ---------- */
@@ -1196,6 +1210,27 @@ function updateStats(){
 
 /* ---------- Modal dinamis ---------- */
 function tfClose(){const m=$('tf-modal');if(m)m.remove()}
+/* ---------- Popup konfirmasi (mengikuti tema) ---------- */
+function tfConfirm(o){
+  const old=$('tf-confirm');if(old)old.remove();
+  const prev=document.activeElement;
+  const w=document.createElement('div');w.id='tf-confirm';w.className='tfc';
+  w.innerHTML='<div class="tfc-box" role="alertdialog" aria-modal="true" aria-labelledby="tfc-t" aria-describedby="tfc-m"><div class="tfc-ic"><i class="fa-solid"></i></div><h3 id="tfc-t"></h3><p id="tfc-m"></p><div class="tfc-act"><button type="button" class="tfc-no"></button><button type="button" class="tfc-yes"></button></div></div>';
+  const q=x=>w.querySelector(x),no=q('.tfc-no'),yes=q('.tfc-yes');
+  q('.tfc-ic i').classList.add(o.icon||'fa-trash-can');
+  q('#tfc-t').textContent=o.title||'Konfirmasi';q('#tfc-m').textContent=o.message||'';
+  no.textContent=o.no||'Batal';yes.textContent=o.yes||'Hapus';
+  if(o.danger===false){yes.classList.add('ok');q('.tfc-ic').classList.add('ok')}
+  const done=ok=>{w.remove();document.removeEventListener('keydown',kd,true);try{prev&&prev.focus&&prev.focus()}catch(e){}if(ok&&o.onYes)o.onYes()};
+  const kd=e=>{
+    if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();done(false)}
+    else if(e.key==='Tab'){e.preventDefault();const b=[no,yes],i=b.indexOf(document.activeElement);b[i<0?(e.shiftKey?1:0):(i+1)%2].focus()}
+  };
+  document.addEventListener('keydown',kd,true);
+  no.onclick=()=>done(false);yes.onclick=()=>done(true);
+  w.onclick=e=>{if(e.target===w)done(false)};
+  document.body.appendChild(w);no.focus();
+}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){tfClose();['modal-agenda','modal-task','modal-note'].forEach(closeModal)}});
 function tfModal(title,body,onSave,label='Simpan',wide){
   tfClose();const w=document.createElement('div');w.id='tf-modal';w.className='fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm';
@@ -1210,7 +1245,7 @@ const TF_LOCAL=['tf_fired','tf_fbconfig','tf_device','tf_updatedAt','tf_dinasDat
 const tfKeys=()=>Object.keys(localStorage).filter(k=>/^(gf_|tf_)/.test(k)&&!TF_LOCAL.includes(k));
 function openSettings(){setTimeout(fbUi,0);
   const s=state.settings,perm='Notification'in window?Notification.permission:'tidak didukung';
-  tfModal('<i class="fa-solid fa-gear text-blue-400"></i> Pengaturan',`<div class="space-y-3"><div><label class="${LB}">Tema tampilan</label><div id="theme-seg" role="radiogroup" aria-label="Tema tampilan" class="flex gap-1 glass-card rounded-xl p-1">${[['auto','Otomatis','fa-circle-half-stroke'],['light','Terang','fa-sun'],['dark','Gelap','fa-moon']].map(([v,t,i])=>`<button type="button" data-th="${v}" role="radio" aria-checked="${s.theme===v}" class="flex-1 px-2 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 ${s.theme===v?'bg-blue-600 text-white':'text-slate-300'}"><i class="fa-solid ${i}"></i>${t}</button>`).join('')}</div></div>
+  tfModal('<i class="fa-solid fa-gear text-blue-400"></i> Pengaturan',`<div class="space-y-3"><div><label class="${LB}">Tema tampilan</label><div id="theme-seg" role="radiogroup" aria-label="Tema tampilan" class="thm-grid">${Object.keys(TF_THEMES).map(v=>tfThemeBtn(v,tfThemeKey()===v)).join('')}</div></div>
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="${LB}">Ingatkan sebelum mulai</label><select name="ld" class="${TI}">${[5,10,15,20,30].map(n=>`<option value="${n}" ${+s.lead===n?'selected':''}>${n} menit</option>`).join('')}</select></div>
   <div><label class="${LB}">Jam pelajaran</label><button type="button" id="st-bell" class="${TI} text-left flex items-center justify-between"><span>${bellSummary()}</span><i class="fa-solid fa-chevron-right text-slate-400"></i></button></div></div></div>
 <div class="flex flex-wrap gap-x-5 gap-y-2"><label class="flex items-center gap-2 text-slate-200"><input type="checkbox" name="sn" ${s.sound?'checked':''}> Bunyi pengingat</label><label class="flex items-center gap-2 text-slate-200"><input type="checkbox" name="vb" ${s.vibrate?'checked':''}> Getar (Android)</label><label class="flex items-center gap-2 text-slate-200"><input type="checkbox" name="mo" ${s.motivasi!==false?'checked':''}> Pesan motivasi</label></div>
@@ -1224,7 +1259,7 @@ function openSettings(){setTimeout(fbUi,0);
   if($('st-inst'))$('st-inst').onclick=installApp;
   $('st-exp').onclick=()=>{const o={};tfKeys().forEach(k=>o[k]=localStorage.getItem(k));const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:'application/json'}));a.download='teacherflow-cadangan-'+dstr()+'.json';a.click()};
   $('st-imp').onchange=e=>{const fl=e.target.files[0];if(!fl)return;fl.text().then(t=>{try{const o=JSON.parse(t);const ks=Object.keys(o).filter(k=>/^(gf_|tf_)/.test(k)&&!TF_LOCAL.includes(k));if(!ks.length)throw 0;ks.forEach(k=>{JSON.parse(o[k]);localStorage.setItem(k,String(o[k]).replace(/</g,'&lt;'))});location.reload()}catch(x){showToast('Berkas bukan cadangan TeacherFlow yang valid.','error')}})};
-  $('st-rst').onclick=()=>{if(confirm('Hapus SEMUA data TeacherFlow di perangkat ini'+(fbUser?' dan di cloud':'')+'? Tindakan ini tidak bisa dibatalkan.')){fbWipe().finally(()=>{tfKeys().concat(['tf_fired','tf_updatedAt']).forEach(k=>localStorage.removeItem(k));location.reload()})}};
+  $('st-rst').onclick=()=>tfConfirm({title:'Hapus semua data?',message:'Semua data TeacherFlow di perangkat ini'+(fbUser?' dan di cloud':'')+' akan dihapus. Tindakan ini tidak bisa dibatalkan.',yes:'Hapus semua',icon:'fa-triangle-exclamation',onYes:()=>{fbWipe().finally(()=>{tfKeys().concat(['tf_fired','tf_updatedAt']).forEach(k=>localStorage.removeItem(k));location.reload()})}});
 }
 
 
@@ -1370,8 +1405,7 @@ const _rt=renderTimeline;renderTimeline=function(){_rt();const cl=clashIds(tfSel
 const _wd=weekData;weekData=function(){const r=_wd();r.days.forEach(x=>{const cl=clashIds(x.ds);x.items=x.items.map(a=>({...a,clash:cl.has(a.id)}))});return r};
 const _wc=weekChip;weekChip=function(a){return _wc(a).replace('class="w-full text-left','class="w-full text-left'+(a.clash?' clash':'')).replace('<b class="block tabular-nums text-[10px]">',(a.clash?clashTag+' ':'')+'<b class="block tabular-nums text-[10px]">')};
 /* tema cepat */
-function quickTheme(){state.settings.theme=document.documentElement.classList.contains('dark')?'light':'dark';saveStateToStorage();tfApplyTheme()}
-const _tat=tfApplyTheme;tfApplyTheme=function(){_tat();const d=document.documentElement.classList.contains('dark'),m=document.querySelector('meta[name=theme-color]');if(m)m.content=d?'#0d0a22':'#7c3aed'};
+function quickTheme(){const order=['light','mint','dark','ocean'];let c=tfThemeKey();if(c==='auto')c=document.documentElement.classList.contains('dark')?'dark':'light';state.settings.theme=order[(order.indexOf(c)+1)%order.length];saveStateToStorage();tfApplyTheme();showToast('Tema: '+TF_THEMES[state.settings.theme].n,'info',1800)}
 function switchTab(t){['timeline','week','tasks','notes'].forEach(k=>{const on=k===t;$('tab-'+k+'-btn').className='tb'+(on?' on':'');$('tab-'+k+'-btn').setAttribute('aria-current',on?'page':'false');$('tab-'+k+'-content').classList.toggle('hidden',!on)});if(t==='week')renderWeek();scrollTo({top:0,behavior:'smooth'})}
 ['modal-agenda','modal-task','modal-note'].forEach(id=>{const m=$(id);m.addEventListener('click',e=>{if(e.target===m)closeModal(id)})});
 /* motivasi sesuai waktu kegiatan */
@@ -1422,7 +1456,7 @@ window.addEventListener('load',()=>{
   if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
   loadStateFromStorage();startLiveClock();renderTimeline();renderWeek();renderTasks();renderNotes();updateFocusCard();setInterval(updateFocusCard,1000);
   updateStats();tfCheck();fbUi();tfNetUi();
-  const qt=new URLSearchParams(location.search).get('tab');if(['timeline','week','tasks','notes'].includes(qt))switchTab(qt);
+  const qt=new URLSearchParams(location.search).get('tab');switchTab(['timeline','week','tasks','notes'].includes(qt)?qt:'timeline');
   if(fbCfg()&&localStorage.getItem('tf_fbon')==='1')fbInit().catch(()=>{});
   setInterval(updateStats,1000);setInterval(tfCheck,15000);
   document.addEventListener('visibilitychange',()=>{if(!document.hidden){tfCheck();renderTimeline()}});
