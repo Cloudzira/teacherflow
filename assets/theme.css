@@ -121,3 +121,37 @@ body.not-agenda .agenda-only{display:none!important}
 .cal-cell.sel .cal-dots i{box-shadow:0 0 0 1.5px #fffc}
 .cal-lg{display:inline-block;width:8px;height:8px;border-radius:50%}.cal-lg.sq{border-radius:2px}.cal-lg.ring{background:transparent;border:2px solid var(--g1)}
 .cal-item{display:block;padding:10px 12px;border-radius:14px;background:var(--card);border:1px solid var(--panelb);border-left:5px solid #9ca3af}
+
+/* ===== Kartu agenda di kalender: tombol aksi ===== */
+.cal-item{display:flex;align-items:center;gap:10px}
+.cal-act{display:flex;gap:6px;flex-shrink:0}
+.cal-ab{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;font-size:13px;background:var(--panel);border:1px solid var(--panelb);color:rgb(var(--s200))}
+.cal-ab.del{color:#e5566b;border-color:#f43f5e55;background:#f43f5e14}
+/* ===== Jadwal pekan (kartu) ===== */
+.wk-day{border-radius:20px;background:var(--panel);border:1px solid var(--panelb);box-shadow:0 6px 18px var(--shadow);padding:10px;min-height:150px}
+.wk-day.today{border-color:var(--g1);box-shadow:0 0 0 2px color-mix(in srgb,var(--g1) 35%,transparent),0 10px 26px var(--shadow)}
+.wk-dh{display:flex;align-items:center;gap:8px;padding:8px 10px;margin-bottom:8px;border-radius:14px;background:var(--card)}
+.wk-day.today .wk-dh{background:var(--grad);color:#fff}
+.wk-dh>div{flex:1;min-width:0}
+.wk-dh b{display:block;font-size:14px;font-weight:700;color:rgb(var(--s100))}
+.wk-dh span{display:block;font-size:10.5px;color:rgb(var(--s400))}
+.wk-day.today .wk-dh b,.wk-day.today .wk-dh span{color:#fff}
+.wk-count{display:grid!important;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:99px;background:var(--panel);font-size:11px!important;font-weight:700;color:rgb(var(--s200))!important}
+.wk-day.today .wk-count{background:#ffffff33;color:#fff!important}
+.wk-add{width:28px;height:28px;border-radius:10px;background:var(--panel);border:1px solid var(--panelb);color:rgb(var(--s200));font-size:11px}
+.wk-day.today .wk-add{background:#ffffff33;border-color:#ffffff55;color:#fff}
+.wk-list{display:flex;flex-direction:column;gap:8px}
+.wk-card{position:relative;display:flex;flex-direction:column;gap:5px;width:100%;text-align:left;padding:10px 11px 10px 14px;border-radius:14px;overflow:hidden;background:color-mix(in srgb,var(--wc) 11%,var(--panel));border:1px solid color-mix(in srgb,var(--wc) 28%,transparent);color:rgb(var(--s100))}
+.wk-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--wc)}
+.wk-card:hover{box-shadow:0 8px 20px color-mix(in srgb,var(--wc) 25%,transparent)}
+.wk-top{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.wk-time{white-space:nowrap;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;padding:2px 8px;border-radius:99px;background:var(--wc);color:#fff}
+.wk-ic{font-size:13px;color:var(--wc)}
+.wk-title{font-size:13px;font-weight:700;line-height:1.25;color:rgb(var(--s100))}
+.wk-tags{display:flex;flex-wrap:wrap;gap:4px}
+.wk-tag{font-size:10px;font-weight:600;padding:1px 7px;border-radius:99px;background:color-mix(in srgb,var(--wc) 16%,transparent);color:rgb(var(--s200))}
+.wk-meta{font-size:11px;color:rgb(var(--s300))}.wk-meta i{color:var(--wc);margin-right:2px}
+.wk-card.done{opacity:.6}.wk-card.done .wk-title{text-decoration:line-through}
+.wk-card .clash-tag{align-self:flex-start}
+.wk-empty{display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 0;border-radius:14px;border:1.5px dashed var(--panelb);font-size:11px;color:rgb(var(--s400))}
+.wk-empty i{font-size:16px;opacity:.7}

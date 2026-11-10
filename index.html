@@ -208,7 +208,7 @@
             <p id="week-summary" class="text-xs text-slate-400"></p>
             <p class="text-[11px] text-slate-400 -mt-2"><i class="fa-solid fa-lock"></i> Jadwal tetap tersimpan di perangkat ini dan berulang tiap pekan sampai Anda menghapusnya.</p>
             <div id="week-table" class="glass-panel rounded-2xl p-2 overflow-x-auto hidden"></div>
-            <div id="week-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3"></div>
+            <div id="week-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-start"></div>
         </main>
 
         <main id="tab-tasks-content" class="space-y-4 hidden">
@@ -1125,7 +1125,10 @@ function weekData(){
   return{days,mon};
 }
 function setWeekView(v){state.settings.weekView=v;saveStateToStorage();renderWeek()}
-function weekChip(a){const c=TYPEC[a.type]||TYPEC.Lainnya;return `<button onclick="editAgenda('${a.id}')" class="w-full text-left rounded-lg border p-2 mb-1 text-[11px] leading-snug ${BADGE[c[0]]} ${a.completed?'opacity-50 line-through':''}"><b class="block tabular-nums text-[10px]">${esc(a.startTime)}–${esc(a.endTime)}${jamText(a)?' · '+jamText(a):''}</b><span class="font-semibold">${esc(a.title)}</span>${a.location?`<span class="block opacity-80"><i class="fa-solid fa-location-dot"></i> ${esc(a.location)}</span>`:''}</button>`}
+const WK_COL={blue:'#3b82f6',sky:'#0ea5e9',emerald:'#10b981',fuchsia:'#d946ef',orange:'#f97316',gray:'#8b8fa3',amber:'#f59e0b'};
+function weekChip(a){
+  const c=TYPEC[a.type]||TYPEC.Lainnya,col=WK_COL[c[0]]||'#8b8fa3',jam=jamText(a),who=a.target&&a.target!=='Anggota'?a.target:'';
+  return `<button type="button" onclick="editAgenda('${a.id}')" class="wk-card${a.completed?' done':''}${a.clash?' clash':''}" style="--wc:${col}" aria-label="${esc(a.title)}, ${esc(a.startTime)} sampai ${esc(a.endTime)}">${a.clash?clashTag:''}<span class="wk-top"><span class="wk-time">${esc(a.startTime)}&ndash;${esc(a.endTime)}</span><i class="fa-solid ${a.completed?'fa-circle-check':c[1]} wk-ic"></i></span><span class="wk-title">${esc(a.title)}</span>${jam||who?`<span class="wk-tags">${jam?`<span class="wk-tag">${esc(jam)}</span>`:''}${who?`<span class="wk-tag">${esc(who)}</span>`:''}</span>`:''}${a.location?`<span class="wk-meta"><i class="fa-solid fa-location-dot"></i> ${esc(a.location)}</span>`:''}</button>`}
 function renderWeek(){
   const box=$('week-grid');if(!box)return;
   const{days,mon}=weekData(),sun=days[6].d,today=dstr(),view=state.settings.weekView||(bellLessons().length?'table':'card');
@@ -1137,7 +1140,7 @@ function renderWeek(){
   if(view==='table')return renderWeekTable(days,today);
   box.innerHTML=days.map(x=>{
     const t=x.ds===today,nm=TF_DAYS[x.d.getDay()];
-    return `<div class="glass-panel p-3 rounded-xl border ${t?'border-blue-500':'border-white/10'} space-y-2 min-h-[120px]"><div class="flex items-center justify-between gap-1"><div><b class="text-sm ${t?'text-blue-400':'text-slate-100'}">${nm}</b><span class="block text-[10px] text-slate-400">${fmtD(x.d)}</span></div><button onclick="addAgendaOn('${x.ds}')" class="w-7 h-7 rounded-lg glass-card text-slate-300 text-xs" aria-label="Tambah agenda hari ${nm}"><i class="fa-solid fa-plus"></i></button></div>`+(x.items.map(weekChip).join('')||'<p class="text-[11px] text-slate-500">Kosong</p>')+`</div>`}).join('');
+    return `<div class="wk-day${t?' today':''}"><div class="wk-dh"><div><b>${nm}</b><span>${fmtD(x.d)}${t?' · Hari ini':''}</span></div><span class="wk-count" title="${x.items.length} kegiatan">${x.items.length}</span><button type="button" onclick="addAgendaOn('${x.ds}')" class="wk-add" aria-label="Tambah agenda hari ${nm}"><i class="fa-solid fa-plus"></i></button></div><div class="wk-list">`+(x.items.map(weekChip).join('')||'<p class="wk-empty"><i class="fa-regular fa-calendar"></i>Kosong</p>')+`</div></div>`}).join('');
 }
 function renderWeekTable(days,today){
   const box=$('week-table'),rows=bellRows();
@@ -1417,7 +1420,6 @@ const _rt=renderTimeline;renderTimeline=function(){_rt();const cl=clashIds(tfSel
   if(cl.size)[...$('timeline-list').children].forEach((el,i)=>{const it=tfOcc(tfSel()).filter(a=>$('timeline-filter').value==='ALL'||a.type===$('timeline-filter').value)[i];if(it&&cl.has(it.id)){el.classList.add('clash');const t=el.querySelector('.flex.items-center.gap-2.flex-wrap');if(t)t.insertAdjacentHTML('beforeend',clashTag)}});
   clashBanner()};
 const _wd=weekData;weekData=function(){const r=_wd();r.days.forEach(x=>{const cl=clashIds(x.ds);x.items=x.items.map(a=>({...a,clash:cl.has(a.id)}))});return r};
-const _wc=weekChip;weekChip=function(a){return _wc(a).replace('class="w-full text-left','class="w-full text-left'+(a.clash?' clash':'')).replace('<b class="block tabular-nums text-[10px]">',(a.clash?clashTag+' ':'')+'<b class="block tabular-nums text-[10px]">')};
 /* tema cepat */
 function quickTheme(){const order=['light','mint','dark','ocean'];let c=tfThemeKey();if(c==='auto')c=document.documentElement.classList.contains('dark')?'dark':'light';state.settings.theme=order[(order.indexOf(c)+1)%order.length];saveStateToStorage();tfApplyTheme();showToast('Tema: '+TF_THEMES[state.settings.theme].n,'info',1800)}
 function switchTab(t){['timeline','week','tasks','calendar'].forEach(k=>{const on=k===t;$('tab-'+k+'-btn').className='tb'+(on?' on':'');$('tab-'+k+'-btn').setAttribute('aria-current',on?'page':'false');$('tab-'+k+'-content').classList.toggle('hidden',!on)});document.body.classList.toggle('not-agenda',t!=='timeline');if(t==='week')renderWeek();if(t==='calendar'){renderCalendar();renderNotes()}scrollTo({top:0,behavior:'smooth'})}
@@ -1501,7 +1503,7 @@ function renderCalDay(){
   const box=$('cal-day');if(!box)return;const list=tfOcc(calSel);
   let h=`<div class="flex flex-wrap items-center justify-between gap-2"><div><h3 class="text-sm font-bold text-slate-100">${esc(calLabel(calSel))}${calSel===dstr()?' <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 align-middle">Hari ini</span>':''}</h3><p class="text-[11px] text-slate-400">${list.length?list.length+' agenda / jadwal':'Belum ada agenda'}</p></div><div class="flex gap-2 flex-wrap"><button type="button" onclick="calOpenAgenda()" class="px-3 py-2 rounded-xl glass-card text-xs font-semibold text-slate-200"><i class="fa-regular fa-eye"></i> Lihat di Agenda</button><button type="button" onclick="calAddAgenda()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md"><i class="fa-solid fa-plus"></i> Tambah Agenda / Jadwal</button></div></div>`;
   if(list.length)h+='<div class="space-y-2">'+list.map(a=>{const c=CAL_COL[(TYPEC[a.type]||TYPEC.Lainnya)[0]]||'#9ca3af';
-    return `<button type="button" onclick="editAgenda('${a.id}')" class="cal-item w-full text-left" style="border-left-color:${c}"><span class="block text-xs font-bold text-slate-100 tabular-nums">${esc(a.startTime)} - ${esc(a.endTime)}${jamText(a)?' · '+esc(jamText(a)):''}</span><span class="block text-sm font-semibold text-slate-100">${esc(a.title)}</span><span class="block text-[11px] text-slate-400">${esc(a.type)}${a.location?' · '+esc(a.location):''} · ${esc(repeatText(a))}</span></button>`}).join('')+'</div>';
+    return `<div class="cal-item" style="border-left-color:${c}"><div class="min-w-0 flex-1"><span class="block text-xs font-bold text-slate-100 tabular-nums">${esc(a.startTime)} - ${esc(a.endTime)}${jamText(a)?' · '+esc(jamText(a)):''}</span><span class="block text-sm font-semibold text-slate-100">${esc(a.title)}</span><span class="block text-[11px] text-slate-400">${esc(a.type)}${a.location?' · '+esc(a.location):''} · ${esc(repeatText(a))}</span></div><div class="cal-act"><button type="button" onclick="editAgenda('${a.id}')" class="cal-ab" aria-label="Edit agenda ${esc(a.title)}" title="Edit"><i class="fa-solid fa-pen"></i></button><button type="button" onclick="deleteAgenda('${a.id}')" class="cal-ab del" aria-label="Hapus agenda ${esc(a.title)}" title="Hapus"><i class="fa-solid fa-trash"></i></button></div></div>`}).join('')+'</div>';
   else h+='<p class="text-xs text-slate-400 text-center py-3">Klik <b>Tambah Agenda / Jadwal</b> untuk membuat agenda pada tanggal ini. Agenda akan muncul di tab Agenda pada hari tersebut.</p>';
   box.innerHTML=h;
 }
