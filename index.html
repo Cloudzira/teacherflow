@@ -1072,18 +1072,26 @@ function renderTimeline(){
   const box=$('timeline-list'),ds=tfSel(),filter=$('timeline-filter').value,all=tfOcc(ds);
   const dl=$('timeline-daylabel');if(dl)dl.innerText=new Date(ds+'T00:00:00').toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+(ds===dstr()?' (hari ini)':'');
   const list=all.filter(a=>filter==='ALL'||a.type===filter);
-  if(!list.length){box.innerHTML=`<div class="glass-panel p-8 text-center rounded-2xl text-slate-400"><i class="fa-regular fa-calendar-xmark text-3xl mb-2 text-slate-500"></i><p class="text-sm font-medium">Belum ada agenda pada tanggal ini.</p></div>`;return}
-  box.innerHTML='';
+  if(!list.length){box.innerHTML=`<div class="ag-empty"><i class="fa-regular fa-calendar-xmark"></i><b>Belum ada agenda pada tanggal ini</b><span>Tekan "Tambah Agenda Harian" untuk membuat agenda baru.</span></div>`;return}
+  const cl=clashIds(ds),now=new Date(),isToday=ds===dstr(),nm=now.getHours()*60+now.getMinutes();
+  const done=list.filter(a=>a.completed).length,mins=list.reduce((t,a)=>t+tmin(a.endTime)-tmin(a.startTime),0);
+  const dur=m=>m>=60?Math.floor(m/60)+' j'+(m%60?' '+m%60+' m':''):m+' m';
+  let h=`<div class="ag-sum"><span><i class="fa-solid fa-list-check"></i> ${list.length} agenda</span><span><i class="fa-solid fa-circle-check"></i> ${done} selesai</span><span><i class="fa-regular fa-hourglass-half"></i> ${dur(mins)}</span></div>`;
   list.forEach(it=>{
-    const c=(TYPEC[it.type]||TYPEC.Lainnya),el=document.createElement('div');
-    el.className='glass-panel p-4 rounded-xl border border-white/10 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 '+(it.completed?'opacity-60':'');
-    el.innerHTML=`<div class="flex items-start gap-3.5 w-full sm:w-auto min-w-0"><button onclick="toggleAgendaComplete('${it.id}')" class="mt-1 text-xl" aria-label="Tandai selesai"><i class="${it.completed?'fa-solid fa-circle-check text-emerald-400':'fa-regular fa-circle text-slate-500'}"></i></button>
-    <div class="space-y-1.5 min-w-0"><div class="flex items-center gap-2 flex-wrap"><span class="text-xs tabular-nums font-bold text-slate-200"><i class="fa-regular fa-clock ${ICOL[c[0]]}"></i> ${esc(it.startTime)} - ${esc(it.endTime)}</span><span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${BADGE[c[0]]}"><i class="fa-solid ${c[1]}"></i> ${esc(it.type)}</span>${jamText(it)?`<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border border-slate-700/60 text-slate-300">${jamText(it)}</span>`:''}<span class="text-[10px] text-slate-400"><i class="fa-solid fa-repeat"></i> ${esc(repeatText(it))}</span></div>
-    <h4 class="text-base font-bold text-slate-100 ${it.completed?'line-through':''}">${esc(it.title)}</h4>
-    <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-400"><span><i class="fa-solid fa-location-dot"></i> ${esc(it.location||'-')}</span><span><i class="fa-solid fa-users"></i> ${esc(it.target||'Anggota')}</span>${it.notes?`<span><i class="fa-regular fa-note-sticky"></i> ${esc(it.notes)}</span>`:''}</div></div></div>
-    <div class="flex gap-2 self-end sm:self-center"><button onclick="editAgenda('${it.id}')" class="p-2 text-xs rounded-lg glass-card text-slate-300 hover:text-slate-100" aria-label="Ubah"><i class="fa-solid fa-pen"></i></button><button onclick="deleteAgenda('${it.id}')" class="p-2 text-xs rounded-lg glass-card text-rose-400" aria-label="Hapus"><i class="fa-solid fa-trash"></i></button></div>`;
-    box.appendChild(el);
+    const c=TYPEC[it.type]||TYPEC.Lainnya,col=WK_COL[c[0]]||'#8b8fa3',s0=tmin(it.startTime),e0=tmin(it.endTime);
+    const live=isToday&&!it.completed&&nm>=s0&&nm<e0;
+    h+=`<div class="ag-card${it.completed?' done':''}${live?' live':''}${cl.has(it.id)?' clash':''}" style="--wc:${col}">
+      <button type="button" onclick="toggleAgendaComplete('${it.id}')" class="ag-check" aria-label="${it.completed?'Batalkan selesai':'Tandai selesai'}: ${esc(it.title)}" aria-pressed="${!!it.completed}"><i class="fa-solid fa-check"></i></button>
+      <div class="ag-time"><b>${esc(it.startTime)}</b><span>${esc(it.endTime)}</span><small>${dur(e0-s0)}</small></div>
+      <div class="ag-main">
+        <div class="ag-chips"><span class="ag-type"><i class="fa-solid ${c[1]}"></i> ${esc(it.type)}</span>${jamText(it)?`<span class="ag-chip">${esc(jamText(it))}</span>`:''}<span class="ag-chip"><i class="fa-solid fa-repeat"></i> ${esc(repeatText(it))}</span>${live?'<span class="ag-live"><i></i> Berlangsung</span>':''}${it.completed?'<span class="ag-chip ok"><i class="fa-solid fa-check"></i> Selesai</span>':''}${cl.has(it.id)?clashTag:''}</div>
+        <h4 class="ag-title">${esc(it.title)}</h4>
+        <div class="ag-meta"><span><i class="fa-solid fa-location-dot"></i> ${esc(it.location||'-')}</span><span><i class="fa-solid fa-users"></i> ${esc(it.target||'Anggota')}</span>${it.notes?`<span><i class="fa-regular fa-note-sticky"></i> ${esc(it.notes)}</span>`:''}</div>
+      </div>
+      <div class="ag-act"><button type="button" onclick="editAgenda('${it.id}')" class="wk-ab" aria-label="Edit ${esc(it.title)}"><i class="fa-solid fa-pen"></i> Edit</button><button type="button" onclick="deleteAgenda('${it.id}')" class="wk-ab del" aria-label="Hapus ${esc(it.title)}"><i class="fa-solid fa-trash"></i> Hapus</button></div>
+    </div>`;
   });
+  box.innerHTML=h;
 }
 function openAgendaModal(editId=null){
   $('form-agenda').reset();$('agenda-id').value='';fillJam();
@@ -1126,9 +1134,11 @@ function weekData(){
 }
 function setWeekView(v){state.settings.weekView=v;saveStateToStorage();renderWeek()}
 const WK_COL={blue:'#3b82f6',sky:'#0ea5e9',emerald:'#10b981',fuchsia:'#d946ef',orange:'#f97316',gray:'#8b8fa3',amber:'#f59e0b'};
-function weekChip(a){
+function weekChip(a,compact){
   const c=TYPEC[a.type]||TYPEC.Lainnya,col=WK_COL[c[0]]||'#8b8fa3',jam=jamText(a),who=a.target&&a.target!=='Anggota'?a.target:'';
-  return `<button type="button" onclick="editAgenda('${a.id}')" class="wk-card${a.completed?' done':''}${a.clash?' clash':''}" style="--wc:${col}" aria-label="${esc(a.title)}, ${esc(a.startTime)} sampai ${esc(a.endTime)}">${a.clash?clashTag:''}<span class="wk-top"><span class="wk-time">${esc(a.startTime)}&ndash;${esc(a.endTime)}</span><i class="fa-solid ${a.completed?'fa-circle-check':c[1]} wk-ic"></i></span><span class="wk-title">${esc(a.title)}</span>${jam||who?`<span class="wk-tags">${jam?`<span class="wk-tag">${esc(jam)}</span>`:''}${who?`<span class="wk-tag">${esc(who)}</span>`:''}</span>`:''}${a.location?`<span class="wk-meta"><i class="fa-solid fa-location-dot"></i> ${esc(a.location)}</span>`:''}</button>`}
+  const body=`<button type="button" onclick="editAgenda('${a.id}')" class="wk-body" aria-label="${esc(a.title)}, ${esc(a.startTime)} sampai ${esc(a.endTime)}">${a.clash?clashTag:''}<span class="wk-top"><span class="wk-time">${esc(a.startTime)}&ndash;${esc(a.endTime)}</span><i class="fa-solid ${a.completed?'fa-circle-check':c[1]} wk-ic"></i></span><span class="wk-title">${esc(a.title)}</span>${jam||who?`<span class="wk-tags">${jam?`<span class="wk-tag">${esc(jam)}</span>`:''}${who?`<span class="wk-tag">${esc(who)}</span>`:''}</span>`:''}${a.location?`<span class="wk-meta"><i class="fa-solid fa-location-dot"></i> ${esc(a.location)}</span>`:''}</button>`;
+  const act=compact?'':`<div class="wk-act"><button type="button" onclick="editAgenda('${a.id}')" class="wk-ab" aria-label="Edit ${esc(a.title)}"><i class="fa-solid fa-pen"></i> Edit</button><button type="button" onclick="deleteAgenda('${a.id}')" class="wk-ab del" aria-label="Hapus ${esc(a.title)}"><i class="fa-solid fa-trash"></i> Hapus</button></div>`;
+  return `<div class="wk-card${a.completed?' done':''}${a.clash?' clash':''}" style="--wc:${col}">${body}${act}</div>`}
 function renderWeek(){
   const box=$('week-grid');if(!box)return;
   const{days,mon}=weekData(),sun=days[6].d,today=dstr(),view=state.settings.weekView||(bellLessons().length?'table':'card');
@@ -1140,7 +1150,7 @@ function renderWeek(){
   if(view==='table')return renderWeekTable(days,today);
   box.innerHTML=days.map(x=>{
     const t=x.ds===today,nm=TF_DAYS[x.d.getDay()];
-    return `<div class="wk-day${t?' today':''}"><div class="wk-dh"><div><b>${nm}</b><span>${fmtD(x.d)}${t?' · Hari ini':''}</span></div><span class="wk-count" title="${x.items.length} kegiatan">${x.items.length}</span><button type="button" onclick="addAgendaOn('${x.ds}')" class="wk-add" aria-label="Tambah agenda hari ${nm}"><i class="fa-solid fa-plus"></i></button></div><div class="wk-list">`+(x.items.map(weekChip).join('')||'<p class="wk-empty"><i class="fa-regular fa-calendar"></i>Kosong</p>')+`</div></div>`}).join('');
+    return `<div class="wk-day${t?' today':''}"><div class="wk-dh"><div><b>${nm}</b><span>${fmtD(x.d)}${t?' · Hari ini':''}</span></div><span class="wk-count" title="${x.items.length} kegiatan">${x.items.length}</span><button type="button" onclick="addAgendaOn('${x.ds}')" class="wk-add" aria-label="Tambah agenda hari ${nm}"><i class="fa-solid fa-plus"></i></button></div><div class="wk-list">`+(x.items.map(a=>weekChip(a)).join('')||'<p class="wk-empty"><i class="fa-regular fa-calendar"></i>Kosong</p>')+`</div></div>`}).join('');
 }
 function renderWeekTable(days,today){
   const box=$('week-table'),rows=bellRows();
@@ -1154,7 +1164,7 @@ function renderWeekTable(days,today){
       const c=TYPEC[a.type]||TYPEC.Lainnya,first=r.n===a.jamFrom;
       return `<td class="p-1"><button onclick="editAgenda('${a.id}')" aria-label="${esc(a.title)}" class="w-full h-12 text-left rounded-lg border px-2 py-1 text-[11px] leading-tight overflow-hidden ${BADGE[c[0]]} ${a.completed?'opacity-50':''}${a.clash?' clash':''}">${first?`<b class="block truncate">${esc(a.title)}</b><span class="block truncate opacity-80">${esc([a.target&&a.target!=='Anggota'?a.target:'',a.location].filter(Boolean).join(' · ')||a.startTime+'–'+a.endTime)}</span>`:'<span class="opacity-60">↳</span>'}</button></td>`}).join('')+`</tr>`}).join('');
   const inBell=a=>a.jamFrom&&rows.some(r=>r.n===a.jamFrom);
-  const outside=cols.some(x=>x.items.some(a=>!inBell(a)))?`<tr><td class="p-2 text-[11px] text-slate-400 align-top">Di luar jam pelajaran</td>`+cols.map(x=>`<td class="p-1 align-top">${x.items.filter(a=>!inBell(a)).map(weekChip).join('')}</td>`).join('')+`</tr>`:'';
+  const outside=cols.some(x=>x.items.some(a=>!inBell(a)))?`<tr><td class="p-2 text-[11px] text-slate-400 align-top">Di luar jam pelajaran</td>`+cols.map(x=>`<td class="p-1 align-top">${x.items.filter(a=>!inBell(a)).map(a=>weekChip(a,true)).join('')}</td>`).join('')+`</tr>`:'';
   box.innerHTML=`<table class="w-full min-w-[760px]" style="border-collapse:separate;border-spacing:0;table-layout:fixed"><thead><tr><th class="p-2 text-left text-xs text-slate-400" style="width:92px">Jam</th>${th}</tr></thead><tbody>${body}${outside}</tbody></table>`;
 }
 function addAgendaOn(ds){
@@ -1416,9 +1426,7 @@ function modalClash(){const box=$('agenda-clash');if(!box)return;
 const _oam=openAgendaModal;openAgendaModal=function(id){_oam(id);modalClash()};
 const _ojc=onJamChange;onJamChange=function(){_ojc();modalClash()};
 const _sd=setDur;setDur=function(n){_sd(n);modalClash()};
-const _rt=renderTimeline;renderTimeline=function(){_rt();const cl=clashIds(tfSel());
-  if(cl.size)[...$('timeline-list').children].forEach((el,i)=>{const it=tfOcc(tfSel()).filter(a=>$('timeline-filter').value==='ALL'||a.type===$('timeline-filter').value)[i];if(it&&cl.has(it.id)){el.classList.add('clash');const t=el.querySelector('.flex.items-center.gap-2.flex-wrap');if(t)t.insertAdjacentHTML('beforeend',clashTag)}});
-  clashBanner()};
+const _rt=renderTimeline;renderTimeline=function(){_rt();clashBanner()};
 const _wd=weekData;weekData=function(){const r=_wd();r.days.forEach(x=>{const cl=clashIds(x.ds);x.items=x.items.map(a=>({...a,clash:cl.has(a.id)}))});return r};
 /* tema cepat */
 function quickTheme(){const order=['light','mint','dark','ocean'];let c=tfThemeKey();if(c==='auto')c=document.documentElement.classList.contains('dark')?'dark':'light';state.settings.theme=order[(order.indexOf(c)+1)%order.length];saveStateToStorage();tfApplyTheme();showToast('Tema: '+TF_THEMES[state.settings.theme].n,'info',1800)}
@@ -1516,7 +1524,7 @@ window.addEventListener('load',()=>{
   updateStats();tfCheck();fbUi();tfNetUi();
   const qt=new URLSearchParams(location.search).get('tab');switchTab(qt==='notes'?'calendar':(['timeline','week','tasks','calendar'].includes(qt)?qt:'timeline'));
   if(fbCfg()&&localStorage.getItem('tf_fbon')==='1')fbInit().catch(()=>{});
-  setInterval(updateStats,1000);setInterval(tfCheck,15000);
+  setInterval(updateStats,1000);setInterval(()=>{if(!document.body.classList.contains('not-agenda'))renderTimeline()},60000);setInterval(tfCheck,15000);
   document.addEventListener('visibilitychange',()=>{if(!document.hidden){tfCheck();renderTimeline()}});
   const sp=$('splash');if(sp){setTimeout(()=>{sp.classList.add('hide');setTimeout(()=>sp.remove(),500)},window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches?300:1700)}
   if('serviceWorker'in navigator&&/^https?:$/.test(location.protocol)){const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.register('sw.js').catch(()=>{});navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had)showToast('Pembaruan TeacherFlow terpasang. Muat ulang untuk memakainya.','info',8000)})}
