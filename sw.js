@@ -1,5 +1,5 @@
 /* TeacherFlow service worker: precache penuh agar bisa dipakai offline sejak kunjungan pertama */
-const VERSION='v3a6',CACHE='teacherflow-'+VERSION;
+const VERSION='v3a8',CACHE='teacherflow-'+VERSION;
 const ASSETS=["./", "index.html", "manifest.webmanifest", "assets/app.css", "assets/theme.css", "assets/fa/fa-brands-400.woff2", "assets/fa/fa-regular-400.woff2", "assets/fa/fa-solid-900.woff2", "assets/fa/fa-v4compatibility.woff2", "assets/fonts/poppins-latin-400-normal.woff2", "assets/fonts/poppins-latin-500-normal.woff2", "assets/fonts/poppins-latin-600-normal.woff2", "assets/fonts/poppins-latin-700-normal.woff2", "assets/fonts/poppins-latin-800-normal.woff2", "icons/icon-180.png", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/icon.svg"];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS.map(u=>new Request(u,{cache:'reload'})))).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x.startsWith('teacherflow-')&&x!==CACHE).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});

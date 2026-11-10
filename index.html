@@ -83,7 +83,7 @@
         </header>
 
         <!-- ================= FOCUS CARD (UPCOMING EVENT / COUNTDOWN) ================= -->
-        <section id="focus-card-section" class="glass-panel rounded-2xl p-5 sm:p-6 shadow-2xl relative overflow-hidden glow-active border border-blue-500/30">
+        <section id="focus-card-section" class="agenda-only glass-panel rounded-2xl p-5 sm:p-6 shadow-2xl relative overflow-hidden glow-active border border-blue-500/30">
             <!-- Background Glow Decor -->
             <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -128,10 +128,10 @@
             <div id="focus-bar"><i></i></div>
             <div id="moti"><span class="mi" id="moti-ic">✨</span><div><b id="moti-t"></b><small id="moti-s"></small></div><button type="button" onclick="motiNext()" aria-label="Pesan lain" title="Pesan lain"><i class="fa-solid fa-shuffle"></i></button></div>
         </section>
-        <div id="clash-banner" class="warnbox hidden" role="alert"></div>
+        <div id="clash-banner" class="agenda-only warnbox hidden" role="alert"></div>
 
         <!-- ================= RINGKASAN HARI INI ================= -->
-        <section class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <section class="agenda-only grid grid-cols-2 lg:grid-cols-4 gap-3">
             <div class="stat" style="background:var(--st1)"><div class="ic" style="background:#6F5BD0"><i class="fa-regular fa-calendar-check"></i></div>Agenda selesai<b id="st-agenda">0/0</b><i class="s">hari ini</i></div>
             <div class="stat" style="background:var(--st2)"><div class="ic" style="background:#E5566B"><i class="fa-solid fa-fire"></i></div>Tugas urgent<b id="st-urgent">0</b><i class="s">prioritas tinggi</i></div>
             <div class="stat" style="background:var(--st3)"><div class="ic" style="background:#C77D07"><i class="fa-solid fa-list-check"></i></div>Tugas aktif<b id="st-tasks">0</b><i class="s">belum selesai</i></div>
@@ -148,9 +148,8 @@
                 <i class="fa-solid fa-list-check"></i><span>Tugas</span> 
                 <span id="task-badge-count" class="bd">0</span>
             </button>
-            <button id="tab-notes-btn" onclick="switchTab('notes')" class="tb">
-                <i class="fa-solid fa-note-sticky"></i><span>Catatan</span>
-                <span id="note-badge-count" class="bd">0</span>
+            <button id="tab-calendar-btn" onclick="switchTab('calendar')" class="tb">
+                <i class="fa-solid fa-calendar-days"></i><span>Kalender</span>
             </button>
         </nav>
 
@@ -240,32 +239,53 @@
             </div>
         </main>
 
-        <!-- ================= TAB CONTENT 3: CATATAN CEPAT (QUICK NOTES) ================= -->
-        <main id="tab-notes-content" class="space-y-4 hidden">
-            <!-- Search & Control Bar -->
-            <div class="glass-panel p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div class="relative w-full sm:w-72">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                    <input type="text" id="note-search" oninput="renderNotes()" placeholder="Cari catatan / observasi..." class="glass-input text-xs rounded-xl pl-9 pr-3 py-2 w-full">
+        <!-- ================= TAB CONTENT 4: KALENDER (+ CATATAN) ================= -->
+        <main id="tab-calendar-content" class="space-y-4 hidden">
+            <section class="glass-panel p-4 rounded-2xl space-y-3">
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="calShift(-1)" class="cal-nav" aria-label="Bulan sebelumnya" title="Bulan sebelumnya"><i class="fa-solid fa-chevron-left"></i></button>
+                    <select id="cal-month" onchange="calJump()" class="glass-input rounded-xl px-3 py-2 text-sm font-semibold flex-1 min-w-0" aria-label="Bulan"></select>
+                    <select id="cal-year" onchange="calJump()" class="glass-input rounded-xl px-3 py-2 text-sm font-semibold" aria-label="Tahun"></select>
+                    <button type="button" onclick="calShift(1)" class="cal-nav" aria-label="Bulan berikutnya" title="Bulan berikutnya"><i class="fa-solid fa-chevron-right"></i></button>
                 </div>
-                <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <select id="note-filter-tag" onchange="renderNotes()" class="glass-input text-xs rounded-xl px-3 py-2 flex-1 sm:flex-none">
+                <div class="cal-head" aria-hidden="true"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div>
+                <div id="cal-grid" class="cal-grid" role="grid" aria-label="Kalender"></div>
+                <div class="flex items-center gap-4 flex-wrap text-[11px] text-slate-400 px-1">
+                    <span class="flex items-center gap-1.5"><span class="cal-lg" style="background:#0ea5e9"></span> Agenda / jadwal</span>
+                    <span class="flex items-center gap-1.5"><span class="cal-lg sq" style="background:#a855f7"></span> Ada catatan</span>
+                    <span class="flex items-center gap-1.5"><span class="cal-lg ring"></span> Hari ini</span>
+                    <button type="button" onclick="calToday()" class="ml-auto px-3 py-1.5 rounded-xl glass-card text-xs font-semibold text-slate-200">Ke hari ini</button>
+                </div>
+            </section>
+
+            <section id="cal-day" class="glass-panel p-4 rounded-2xl space-y-3" aria-live="polite"></section>
+
+            <section class="glass-panel p-4 rounded-2xl space-y-3">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <h3 class="text-sm font-bold text-slate-100 flex items-center gap-2"><i class="fa-solid fa-note-sticky text-purple-400"></i> Catatan</h3>
+                    <button type="button" onclick="openNoteModal()" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold shadow-md shadow-purple-600/20 active:scale-95 transition-all flex items-center gap-2"><i class="fa-solid fa-pen-to-square"></i> Catatan Baru</button>
+                </div>
+                <p class="text-[11px] text-slate-400"><i class="fa-solid fa-lock"></i> Catatan baru tersimpan pada tanggal yang sedang dipilih di kalender.</p>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                        <input type="text" id="note-search" oninput="renderNotes()" placeholder="Cari catatan..." class="glass-input text-xs rounded-xl pl-9 pr-3 py-2 w-full">
+                    </div>
+                    <select id="note-scope" onchange="renderNotes()" class="glass-input text-xs rounded-xl px-3 py-2" aria-label="Tampilkan catatan">
+                        <option value="day">Tanggal terpilih</option>
+                        <option value="ALL">Semua tanggal</option>
+                    </select>
+                    <select id="note-filter-tag" onchange="renderNotes()" class="glass-input text-xs rounded-xl px-3 py-2">
                         <option value="ALL">Semua Tag Catatan</option>
                         <option value="Mengajar">Mengajar</option>
                         <option value="Halaqah">Halaqah</option>
                         <option value="Ekstrakurikuler">Ekstrakurikuler</option>
                         <option value="Umum">Umum</option>
-                    <option value="Jurnal">Jurnal Mengajar</option></select>
-                    <button onclick="openNoteModal()" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold shadow-md shadow-purple-600/20 active:scale-95 transition-all flex items-center justify-center gap-2 whitespace-nowrap">
-                        <i class="fa-solid fa-pen-to-square"></i> Catatan Baru
-                    </button>
+                        <option value="Jurnal">Jurnal Mengajar</option>
+                    </select>
                 </div>
-            </div>
-
-            <!-- Notes Grid Container -->
-            <div id="notes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Rendered dynamically by JS -->
-            </div>
+                <div id="notes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </section>
         </main>
 
     <footer id="app-footer" class="mt-6 pt-4 border-t border-slate-700/40 text-center space-y-2">
@@ -653,25 +673,27 @@
         function renderNotes() {
             const container = document.getElementById('notes-grid');
             const searchQuery = document.getElementById('note-search').value.toLowerCase();
+            const scope = (document.getElementById('note-scope') || {}).value || 'ALL';
             const tagFilter = document.getElementById('note-filter-tag').value;
             container.innerHTML = '';
 
             let filteredNotes = state.notes.filter(n => {
                 const matchTag = tagFilter === 'ALL' || n.tag === tagFilter;
                 const matchSearch = n.title.toLowerCase().includes(searchQuery) || n.content.toLowerCase().includes(searchQuery);
-                return matchTag && matchSearch;
+                const matchDay = scope !== 'day' || noteDs(n) === calSel;
+                return matchTag && matchSearch && matchDay;
             });
 
             // Sort pinned first
             filteredNotes.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
 
-            document.getElementById('note-badge-count').innerText = state.notes.length;
+            const nb = document.getElementById('note-badge-count'); if (nb) nb.innerText = state.notes.length;
 
             if (filteredNotes.length === 0) {
                 container.innerHTML = `
                     <div class="col-span-full glass-panel p-8 text-center rounded-2xl text-slate-400">
                         <i class="fa-solid fa-note-sticky text-3xl mb-2 text-slate-500"></i>
-                        <p class="text-sm font-medium">Belum ada catatan atau observasi tersimpan.</p>
+                        <p class="text-sm font-medium">${scope === 'day' ? 'Belum ada catatan pada tanggal ini.' : 'Belum ada catatan atau observasi tersimpan.'}</p>
                     </div>
                 `;
                 return;
@@ -767,7 +789,7 @@
                     document.getElementById('modal-note-title-text').innerHTML = `<i class="fa-solid fa-pen-to-square text-purple-400"></i> Edit Catatan`;
                 }
             } else {
-                document.getElementById('modal-note-title-text').innerHTML = `<i class="fa-solid fa-note-sticky text-purple-400"></i> Catatan Cepat / Observasi`;
+                document.getElementById('modal-note-title-text').innerHTML = `<i class="fa-solid fa-note-sticky text-purple-400"></i> Catatan &middot; ${esc(calLabel(calSel))}`;
             }
             modal.classList.remove('hidden');
         }
@@ -779,7 +801,7 @@
             const tag = document.getElementById('note-tag').value;
             const content = document.getElementById('note-content').value;
             const pinned = document.getElementById('note-pinned').checked;
-            const date = tfDMY(new Date());
+            const date = tfDMY(calDate(calSel));
 
             if (id) {
                 const idx = state.notes.findIndex(n => n.id === id);
@@ -789,7 +811,7 @@
             } else {
                 const newNote = {
                     id: Date.now().toString(),
-                    title, tag, content, pinned, date
+                    title, tag, content, pinned, date, ds: calSel
                 };
                 state.notes.push(newNote);
             }
@@ -797,7 +819,8 @@
             saveStateToStorage();
             renderNotes();
             closeModal('modal-note');
-            showToast("Catatan tersimpan!", "success");
+            showToast(id ? "Catatan tersimpan!" : "Catatan tersimpan pada tanggal " + date + ".", "success");
+            renderCalendar(); renderNotes();
         }
 
         function editNote(id) {
@@ -1148,7 +1171,7 @@ function deleteAgenda(id){
 
 /* ---------- Tab ---------- */
 function switchTab(t){
-  const cfg={timeline:'blue',week:'blue',tasks:'blue',notes:'purple'};
+  const cfg={timeline:'blue',week:'blue',tasks:'blue',calendar:'purple'};
   for(const k in cfg){const on=k===t,col=cfg[k];
     $('tab-'+k+'-btn').className='px-4 py-2.5 rounded-t-xl text-sm font-semibold flex items-center gap-2 border-b-2 whitespace-nowrap transition-all '+(on?(col==='blue'?'border-blue-500 text-blue-400 bg-slate-800/60':'border-purple-500 text-purple-400 bg-slate-800/60'):'border-transparent text-slate-400 hover:text-slate-200');
     $('tab-'+k+'-content').classList.toggle('hidden',!on)}
@@ -1335,7 +1358,7 @@ function fbApply(r){
     tfKeys().forEach(k=>{if(!(k in p))localStorage.removeItem(k)});
     for(const k in p){if(/^(gf_|tf_)/.test(k)&&!TF_LOCAL.includes(k))localStorage.setItem(k,String(p[k]))}
     localStorage.setItem('tf_updatedAt',String(r.updatedAt||Date.now()));
-    loadStateFromStorage();renderTimeline();renderWeek();renderTasks();renderNotes();updateFocusCard();updateStats();tfApplyTheme();
+    loadStateFromStorage();renderTimeline();renderWeek();renderTasks();renderNotes();renderCalendar();updateFocusCard();updateStats();tfApplyTheme();
     showToast('Data disinkronkan dari cloud.','success');
   }catch(e){showToast('Data cloud tidak dapat dibaca.','error')}
 }
@@ -1397,7 +1420,7 @@ const _wd=weekData;weekData=function(){const r=_wd();r.days.forEach(x=>{const cl
 const _wc=weekChip;weekChip=function(a){return _wc(a).replace('class="w-full text-left','class="w-full text-left'+(a.clash?' clash':'')).replace('<b class="block tabular-nums text-[10px]">',(a.clash?clashTag+' ':'')+'<b class="block tabular-nums text-[10px]">')};
 /* tema cepat */
 function quickTheme(){const order=['light','mint','dark','ocean'];let c=tfThemeKey();if(c==='auto')c=document.documentElement.classList.contains('dark')?'dark':'light';state.settings.theme=order[(order.indexOf(c)+1)%order.length];saveStateToStorage();tfApplyTheme();showToast('Tema: '+TF_THEMES[state.settings.theme].n,'info',1800)}
-function switchTab(t){['timeline','week','tasks','notes'].forEach(k=>{const on=k===t;$('tab-'+k+'-btn').className='tb'+(on?' on':'');$('tab-'+k+'-btn').setAttribute('aria-current',on?'page':'false');$('tab-'+k+'-content').classList.toggle('hidden',!on)});if(t==='week')renderWeek();scrollTo({top:0,behavior:'smooth'})}
+function switchTab(t){['timeline','week','tasks','calendar'].forEach(k=>{const on=k===t;$('tab-'+k+'-btn').className='tb'+(on?' on':'');$('tab-'+k+'-btn').setAttribute('aria-current',on?'page':'false');$('tab-'+k+'-content').classList.toggle('hidden',!on)});document.body.classList.toggle('not-agenda',t!=='timeline');if(t==='week')renderWeek();if(t==='calendar'){renderCalendar();renderNotes()}scrollTo({top:0,behavior:'smooth'})}
 ['modal-agenda','modal-task','modal-note'].forEach(id=>{const m=$(id);m.addEventListener('click',e=>{if(e.target===m)closeModal(id)})});
 /* motivasi sesuai waktu kegiatan */
 const MO={
@@ -1443,11 +1466,53 @@ $('timeline-date').value=dstr();
 tfApplyTheme();
 if(window.matchMedia)matchMedia('(prefers-color-scheme: dark)').addEventListener&&matchMedia('(prefers-color-scheme: dark)').addEventListener('change',tfApplyTheme);
 document.querySelectorAll('[data-logo]').forEach(e=>e.innerHTML=TF_LOGO);
+
+/* ---------- Kalender ---------- */
+const CAL_MON=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const CAL_COL={blue:'#3b82f6',sky:'#0ea5e9',emerald:'#10b981',fuchsia:'#d946ef',orange:'#f97316',gray:'#9ca3af',amber:'#f59e0b'};
+let calY=new Date().getFullYear(),calM=new Date().getMonth(),calSel=dstr();
+const noteDs=n=>n.ds||(/^\d{2}\/\d{2}\/\d{4}$/.test(n.date||'')?n.date.split('/').reverse().join('-'):'');
+const calDate=ds=>new Date(ds+'T12:00:00');
+const calLabel=ds=>{const d=calDate(ds);return TF_DAYS[d.getDay()]+', '+d.getDate()+' '+CAL_MON[d.getMonth()]+' '+d.getFullYear()};
+function calFillSelects(){
+  const m=$('cal-month'),y=$('cal-year');if(!m||m.options.length)return;
+  m.innerHTML=CAL_MON.map((n,i)=>`<option value="${i}">${n}</option>`).join('');
+  let o='';for(let i=1950;i<=2100;i++)o+=`<option value="${i}">${i}</option>`;y.innerHTML=o;
+}
+function calShift(n){const d=new Date(calY,calM+n,1);calY=d.getFullYear();calM=d.getMonth();renderCalendar()}
+function calJump(){calY=+$('cal-year').value;calM=+$('cal-month').value;renderCalendar()}
+function calToday(){calSel=dstr();calY=new Date().getFullYear();calM=new Date().getMonth();renderCalendar();renderNotes()}
+function calPick(ds){calSel=ds;const d=calDate(ds);calY=d.getFullYear();calM=d.getMonth();renderCalendar();renderNotes()}
+function renderCalendar(){
+  const g=$('cal-grid');if(!g)return;calFillSelects();
+  $('cal-month').value=calM;$('cal-year').value=calY;
+  const off=(new Date(calY,calM,1).getDay()+6)%7,len=new Date(calY,calM+1,0).getDate(),total=Math.ceil((off+len)/7)*7,today=dstr();
+  const nmap={};state.notes.forEach(n=>{const k=noteDs(n);if(k)nmap[k]=1});
+  let h='';
+  for(let i=0;i<total;i++){
+    const d=new Date(calY,calM,1-off+i),ds=dstr(d),inM=d.getMonth()===calM;
+    const types=[...new Set(tfOcc(ds).map(a=>a.type))].slice(0,3);
+    const dots=types.map(t=>`<i style="background:${CAL_COL[(TYPEC[t]||TYPEC.Lainnya)[0]]||'#9ca3af'}"></i>`).join('')+(nmap[ds]?'<i class="n" style="background:#a855f7"></i>':'');
+    h+=`<button type="button" role="gridcell" class="cal-cell${inM?'':' out'}${d.getDay()===0?' sun':''}${ds===today?' today':''}${ds===calSel?' sel':''}" onclick="calPick('${ds}')" aria-label="${esc(calLabel(ds))}" aria-pressed="${ds===calSel}"><span>${d.getDate()}</span><span class="cal-dots">${dots}</span></button>`;
+  }
+  g.innerHTML=h;renderCalDay();
+}
+function renderCalDay(){
+  const box=$('cal-day');if(!box)return;const list=tfOcc(calSel);
+  let h=`<div class="flex flex-wrap items-center justify-between gap-2"><div><h3 class="text-sm font-bold text-slate-100">${esc(calLabel(calSel))}${calSel===dstr()?' <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 align-middle">Hari ini</span>':''}</h3><p class="text-[11px] text-slate-400">${list.length?list.length+' agenda / jadwal':'Belum ada agenda'}</p></div><div class="flex gap-2 flex-wrap"><button type="button" onclick="calOpenAgenda()" class="px-3 py-2 rounded-xl glass-card text-xs font-semibold text-slate-200"><i class="fa-regular fa-eye"></i> Lihat di Agenda</button><button type="button" onclick="calAddAgenda()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md"><i class="fa-solid fa-plus"></i> Tambah Agenda / Jadwal</button></div></div>`;
+  if(list.length)h+='<div class="space-y-2">'+list.map(a=>{const c=CAL_COL[(TYPEC[a.type]||TYPEC.Lainnya)[0]]||'#9ca3af';
+    return `<button type="button" onclick="editAgenda('${a.id}')" class="cal-item w-full text-left" style="border-left-color:${c}"><span class="block text-xs font-bold text-slate-100 tabular-nums">${esc(a.startTime)} - ${esc(a.endTime)}${jamText(a)?' · '+esc(jamText(a)):''}</span><span class="block text-sm font-semibold text-slate-100">${esc(a.title)}</span><span class="block text-[11px] text-slate-400">${esc(a.type)}${a.location?' · '+esc(a.location):''} · ${esc(repeatText(a))}</span></button>`}).join('')+'</div>';
+  else h+='<p class="text-xs text-slate-400 text-center py-3">Klik <b>Tambah Agenda / Jadwal</b> untuk membuat agenda pada tanggal ini. Agenda akan muncul di tab Agenda pada hari tersebut.</p>';
+  box.innerHTML=h;
+}
+function calAddAgenda(){openAgendaModal();$('agenda-date').value=calSel;if(typeof modalClash==='function')modalClash()}
+function calOpenAgenda(){$('timeline-date').value=calSel;renderTimeline();switchTab('timeline')}
+const _ssc=saveStateToStorage;saveStateToStorage=function(s){_ssc(s);try{renderCalendar();renderNotes()}catch(e){}};
 window.addEventListener('load',()=>{
   if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
-  loadStateFromStorage();startLiveClock();renderTimeline();renderWeek();renderTasks();renderNotes();updateFocusCard();setInterval(updateFocusCard,1000);
+  loadStateFromStorage();startLiveClock();renderTimeline();renderWeek();renderTasks();renderNotes();renderCalendar();updateFocusCard();setInterval(updateFocusCard,1000);
   updateStats();tfCheck();fbUi();tfNetUi();
-  const qt=new URLSearchParams(location.search).get('tab');switchTab(['timeline','week','tasks','notes'].includes(qt)?qt:'timeline');
+  const qt=new URLSearchParams(location.search).get('tab');switchTab(qt==='notes'?'calendar':(['timeline','week','tasks','calendar'].includes(qt)?qt:'timeline'));
   if(fbCfg()&&localStorage.getItem('tf_fbon')==='1')fbInit().catch(()=>{});
   setInterval(updateStats,1000);setInterval(tfCheck,15000);
   document.addEventListener('visibilitychange',()=>{if(!document.hidden){tfCheck();renderTimeline()}});
