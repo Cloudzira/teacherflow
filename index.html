@@ -118,12 +118,6 @@
 
                 <!-- Countdown & Action Button -->
                 <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full lg:w-auto border-t lg:border-t-0 border-slate-700/60 pt-4 lg:pt-0">
-                    <!-- Countdown Display -->
-                    <div class="glass-card px-5 py-3 rounded-xl border border-white/10 text-center flex-1 sm:flex-none">
-                        <span class="text-xs text-slate-400 block font-medium">Sisa Waktu</span>
-                        <span id="focus-countdown" class="text-2xl sm:text-3xl font-mono font-bold text-amber-400 tracking-wider">--:--:--</span>
-                    </div>
-
                     <!-- Action Button -->
                     <button id="focus-action-btn" onclick="completeFocusAgenda()" class="px-6 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-sm shadow-lg shadow-blue-600/30 active:scale-95 transition-all flex items-center justify-center gap-2">
                         <i class="fa-solid fa-circle-check text-lg"></i>
@@ -913,7 +907,7 @@ const tfThemeBtn=(v,on)=>`<button type="button" data-th="${v}" role="radio" aria
 /* ---------- Komponen waktu & tanggal (24 jam, dd/mm/yyyy) dan jam pelajaran ---------- */
 const p2=n=>String(n).padStart(2,'0');
 const tfDMY=d=>`${p2(d.getDate())}/${p2(d.getMonth()+1)}/${d.getFullYear()}`;
-const jamText=a=>a&&a.jamFrom?(a.jamTo&&a.jamTo!==a.jamFrom?`Jam ke-${a.jamFrom}–${a.jamTo}`:`Jam ke-${a.jamFrom}`):'';
+const jamText=a=>a&&a.jamFrom?(a.jamTo&&a.jamTo!==a.jamFrom?`Jam ke: ${a.jamFrom}–${a.jamTo}`:`Jam ke: ${a.jamFrom}`):'';
 const minToT=m=>p2(Math.floor(m/60)%24)+':'+p2(m%60);
 function startLiveClock(){
   const tick=()=>{const n=new Date();
@@ -965,7 +959,7 @@ function tfThemeSeg(){
 }
 function fillJam(){
   const L=bellLessons(),nums=L.length?L.map(r=>r.n):Array.from({length:12},(_,i)=>i+1);
-  const opt=n=>{const r=L.find(x=>x.n===n);return `<option value="${n}">Jam ke-${n}${r?` (${r.s}–${r.e})`:''}</option>`};
+  const opt=n=>{const r=L.find(x=>x.n===n);return `<option value="${n}">Jam ke: ${n}${r?` (${r.s}–${r.e})`:''}</option>`};
   $('agenda-jam-from').innerHTML='<option value="">Tanpa jam ke</option>'+nums.map(opt).join('');
   $('agenda-jam-to').innerHTML='<option value="">Sampai jam ke…</option>'+nums.map(opt).join('');
   $('jam-hint').innerHTML=L.length?'Pilih jam ke: waktu mulai dan selesai terisi otomatis dari pengaturan jam pelajaran.':'Jam pelajaran belum diatur. <button type="button" class="text-blue-400 font-semibold underline" onclick="closeModal(\'modal-agenda\');openBellModal()">Atur sekarang</button> agar waktu terisi otomatis.';
@@ -998,7 +992,7 @@ function openBellModal(){
   },'Simpan');
   const box=$('bell-rows');
   const draw=()=>{renum();
-    box.innerHTML=rows.map((r,i)=>`<div class="glass-card rounded-xl p-2.5 space-y-2"><div class="flex items-center justify-between"><b class="text-xs ${r.n?'text-slate-100':'text-slate-400'}">${r.n?'Jam ke-'+r.n:esc(r.label||'Istirahat')}</b><button type="button" data-del="${i}" class="w-7 h-7 rounded-lg text-rose-400" aria-label="Hapus baris"><i class="fa-solid fa-trash"></i></button></div><div class="flex items-center gap-2"><div class="flex-1 min-w-0"><input type="time" data-i="${i}" data-k="s" value="${r.s}" class="${TI}"></div><span class="text-slate-400">–</span><div class="flex-1 min-w-0"><input type="time" data-i="${i}" data-k="e" value="${r.e}" class="${TI}"></div></div></div>`).join('')||'<p class="text-slate-400">Belum ada jam. Gunakan "Buat otomatis" atau tambah manual.</p>';
+    box.innerHTML=rows.map((r,i)=>`<div class="glass-card rounded-xl p-2.5 space-y-2"><div class="flex items-center justify-between"><b class="text-xs ${r.n?'text-slate-100':'text-slate-400'}">${r.n?'Jam ke: '+r.n:esc(r.label||'Istirahat')}</b><button type="button" data-del="${i}" class="w-7 h-7 rounded-lg text-rose-400" aria-label="Hapus baris"><i class="fa-solid fa-trash"></i></button></div><div class="flex items-center gap-2"><div class="flex-1 min-w-0"><input type="time" data-i="${i}" data-k="s" value="${r.s}" class="${TI}"></div><span class="text-slate-400">–</span><div class="flex-1 min-w-0"><input type="time" data-i="${i}" data-k="e" value="${r.e}" class="${TI}"></div></div></div>`).join('')||'<p class="text-slate-400">Belum ada jam. Gunakan "Buat otomatis" atau tambah manual.</p>';
     tfEnhance(box)};
   box.addEventListener('change',e=>{const t=e.target;if(t.dataset&&t.dataset.k)rows[+t.dataset.i][t.dataset.k]=t.value});
   box.onclick=e=>{const d=e.target.closest('[data-del]');if(d){rows.splice(+d.dataset.del,1);draw()}};
@@ -1025,7 +1019,7 @@ const repeatText=a=>a.date?'Sekali: '+a.date.split('-').reverse().join('/'):(a.d
 function updateFocusCard(){
   const now=new Date(),ds=dstr(now),nm=now.getHours()*60+now.getMinutes()+now.getSeconds()/60;
   const list=tfOcc(ds),next=list.filter(a=>!a.completed&&tmin(a.endTime)>nm)[0];
-  const set=(id,v)=>{$(id).innerText=v};
+  const set=(id,v)=>{const el=$(id);if(el)el.innerText=v};
   if(!next){
     set('focus-title',list.length?'Semua Agenda Hari Ini Selesai!':'Belum Ada Agenda Hari Ini');
     set('focus-subtitle',list.length?'Istirahat yang cukup atau siapkan administrasi esok hari.':'Tambah agenda di tab Agenda atau Jadwal.');
@@ -1040,8 +1034,8 @@ function updateFocusCard(){
   set('focus-location',next.location||'Ruang Kelas');set('focus-time-range',`${next.startTime} - ${next.endTime}`);set('focus-target',next.target||'Anggota');
   $('focus-type-badge').className='px-3 py-1 rounded-full text-xs font-semibold border '+BADGE[c];$('focus-type-badge').innerText=next.type;
   const s=tmin(next.startTime)*60,e=tmin(next.endTime)*60,cur=nm*60,cd=$('focus-countdown'),f=x=>{x=Math.max(0,Math.floor(x));return [Math.floor(x/3600),Math.floor(x%3600/60),x%60].map(v=>String(v).padStart(2,'0')).join(':')};
-  if(cur<s){cd.innerText=f(s-cur);cd.className='text-2xl sm:text-3xl tabular-nums font-bold text-amber-400 tracking-wider'}
-  else{cd.innerText='Berlangsung '+f(e-cur);cd.className='text-xl sm:text-2xl tabular-nums font-bold text-emerald-400 tracking-wider'}
+  if(cd){if(cur<s){cd.innerText=f(s-cur);cd.className='text-2xl sm:text-3xl tabular-nums font-bold text-amber-400 tracking-wider'}
+  else{cd.innerText='Berlangsung '+f(e-cur);cd.className='text-xl sm:text-2xl tabular-nums font-bold text-emerald-400 tracking-wider'}}
 }
 function completeFocusAgenda(){
   if(!currentFocusAgenda)return;state.doneOn[dstr()+'|'+currentFocusAgenda.id]=1;saveStateToStorage();
@@ -1129,7 +1123,7 @@ function renderWeekTable(days,today){
   const th=cols.map(x=>`<th class="p-2 text-xs ${x.ds===today?'text-blue-400':'text-slate-100'}">${TF_DAYS[x.d.getDay()]}<span class="block text-[10px] font-normal text-slate-400">${fmtD(x.d)}</span></th>`).join('');
   const body=rows.map(r=>{
     if(!r.n)return `<tr><td class="p-2 text-[11px] text-slate-400 whitespace-nowrap tabular-nums">${r.s}–${r.e}</td><td colspan="${cols.length}" class="p-1"><div class="rounded-lg bg-slate-700/30 text-center text-[11px] text-slate-400 py-1">${esc(r.label||'Istirahat')}</div></td></tr>`;
-    return `<tr><td class="p-2 whitespace-nowrap"><b class="text-xs text-slate-100">Jam ke-${r.n}</b><span class="block text-[10px] text-slate-400 tabular-nums">${r.s}–${r.e}</span></td>`+cols.map(x=>{
+    return `<tr><td class="p-2 whitespace-nowrap"><b class="text-xs text-slate-100">Jam ke: ${r.n}</b><span class="block text-[10px] text-slate-400 tabular-nums">${r.s}–${r.e}</span></td>`+cols.map(x=>{
       const a=has(x,r.n);if(!a)return `<td class="p-1"><div class="rounded-lg border border-dashed border-slate-700/60 h-12"></div></td>`;
       const c=TYPEC[a.type]||TYPEC.Lainnya,first=r.n===a.jamFrom;
       return `<td class="p-1"><button onclick="editAgenda('${a.id}')" aria-label="${esc(a.title)}" class="w-full h-12 text-left rounded-lg border px-2 py-1 text-[11px] leading-tight overflow-hidden ${BADGE[c[0]]} ${a.completed?'opacity-50':''}${a.clash?' clash':''}">${first?`<b class="block truncate">${esc(a.title)}</b><span class="block truncate opacity-80">${esc([a.target&&a.target!=='Anggota'?a.target:'',a.location].filter(Boolean).join(' · ')||a.startTime+'–'+a.endTime)}</span>`:'<span class="opacity-60">↳</span>'}</button></td>`}).join('')+`</tr>`}).join('');
