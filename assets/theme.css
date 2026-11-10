@@ -35,7 +35,7 @@ button{cursor:pointer;transition:transform .15s,filter .15s}button:active{transf
 #main-nav .tb.on .bd{background:#ffffff40}
 @media(max-height:480px) and (orientation:landscape){#main-nav .tb{flex-direction:row;font-size:11px;padding:5px}#main-nav .tb .bd{display:none}body>div.max-w-6xl{padding-bottom:64px}}
 /* header */
-#greet{font-size:12px;color:rgb(var(--s400));font-weight:500}
+#greet{font-size:12px;color:rgb(var(--s300));font-weight:600}#tagline{font-weight:500}
 .hbtn{width:40px;height:40px;border-radius:14px;background:var(--card);border:1px solid var(--panelb);color:rgb(var(--s200))}
 /* bentrok */
 .clash{border-color:#f43f5e!important;box-shadow:0 0 0 2px #f43f5e55,0 8px 24px var(--shadow)!important}

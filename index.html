@@ -64,11 +64,8 @@
                 <div class="flex items-center gap-3">
                     <div class="w-12 h-12 rounded-xl shadow-lg overflow-hidden shrink-0" data-logo></div>
                     <div>
-                        <p id="greet">Assalamu'alaikum</p><h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-100">TeacherFlow</h1>
-                        <p class="text-xs text-slate-400 flex items-center gap-1.5">
-                            <i class="fa-regular fa-calendar-check text-blue-400"></i>
-                            <span id="live-date">Sabtu, 7 November 2026</span>
-                        </p>
+                        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-100">TeacherFlow</h1>
+                        <p id="tagline" class="text-xs text-slate-400">Agenda &amp; pengingat guru terpadu</p>
                     </div>
                 </div>
                 
@@ -94,6 +91,12 @@
         <section id="focus-card-section" class="glass-panel rounded-2xl p-5 sm:p-6 shadow-2xl relative overflow-hidden glow-active border border-blue-500/30">
             <!-- Background Glow Decor -->
             <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div id="hello-row" class="relative z-10 flex flex-wrap items-center gap-x-4 gap-y-1 mb-4 pb-3 border-b border-slate-700/40 text-xs text-slate-300">
+                <span id="greet" class="font-semibold"><i class="fa-solid fa-hand-sparkles text-amber-400"></i> Assalamu'alaikum</span>
+                <span class="flex items-center gap-1.5"><i class="fa-regular fa-calendar-check text-blue-400"></i><span id="live-date">Sabtu, 7 November 2026</span></span>
+                <span class="flex items-center gap-1.5"><i class="fa-regular fa-clock text-blue-400"></i><span id="card-time" class="tabular-nums font-semibold">00:00:00</span></span>
+            </div>
 
             <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
                 <div class="space-y-3 w-full lg:w-auto">
@@ -150,9 +153,9 @@
         <!-- ================= MAIN NAVIGATION TABS ================= -->
         <nav id="main-nav" aria-label="Menu utama">
             <button id="tab-timeline-btn" onclick="switchTab('timeline')" class="tb">
-                <i class="fa-solid fa-timeline"></i><span>Harian</span>
+                <i class="fa-solid fa-timeline"></i><span>Agenda</span>
             </button>
-            <button id="tab-week-btn" onclick="switchTab('week')" class="tb"><i class="fa-solid fa-calendar-week"></i><span>Pekan</span></button>
+            <button id="tab-week-btn" onclick="switchTab('week')" class="tb"><i class="fa-solid fa-calendar-week"></i><span>Jadwal</span></button>
             <button id="tab-tasks-btn" onclick="switchTab('tasks')" class="tb">
                 <i class="fa-solid fa-list-check"></i><span>Tugas</span> 
                 <span id="task-badge-count" class="bd">0</span>
@@ -921,6 +924,7 @@ const minToT=m=>p2(Math.floor(m/60)%24)+':'+p2(m%60);
 function startLiveClock(){
   const tick=()=>{const n=new Date();
     $('live-hm').textContent=p2(n.getHours())+':'+p2(n.getMinutes());$('live-sec').textContent=':'+p2(n.getSeconds());
+    const ct=$('card-time');if(ct)ct.textContent=p2(n.getHours())+':'+p2(n.getMinutes())+':'+p2(n.getSeconds());
     $('live-date').textContent=n.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});};
   tick();setInterval(tick,1000);
 }
@@ -1031,7 +1035,7 @@ function updateFocusCard(){
   const set=(id,v)=>{$(id).innerText=v};
   if(!next){
     set('focus-title',list.length?'Semua Agenda Hari Ini Selesai!':'Belum Ada Agenda Hari Ini');
-    set('focus-subtitle',list.length?'Istirahat yang cukup atau siapkan administrasi esok hari.':'Tambah agenda di tab Timeline Harian atau Jadwal Pekan.');
+    set('focus-subtitle',list.length?'Istirahat yang cukup atau siapkan administrasi esok hari.':'Tambah agenda di tab Agenda atau Jadwal.');
     set('focus-location','-');set('focus-time-range','--:--');set('focus-target','-');set('focus-countdown','00:00:00');
     $('focus-type-badge').className='px-3 py-1 rounded-full text-xs font-semibold border '+BADGE.emerald;$('focus-type-badge').innerText=list.length?'Tuntas':'Kosong';
     $('focus-action-btn').style.display='none';currentFocusAgenda=null;return;
@@ -1438,7 +1442,7 @@ function tfMoti(){
 }
 const _ufc=updateFocusCard;
 updateFocusCard=function(){_ufc();
-  const g=$('greet');if(g)g.textContent='Selamat '+tod(new Date().getHours())+', Bapak/Ibu Guru';
+  const g=$('greet');if(g)g.innerHTML='<i class="fa-solid fa-hand-sparkles text-amber-400"></i> Selamat '+tod(new Date().getHours())+', Bapak/Ibu Guru';
   const a=currentFocusAgenda,n=new Date(),cur=n.getHours()*60+n.getMinutes()+n.getSeconds()/60;
   const bar=$('focus-bar');if(bar){let r=0;if(a){const s=tmin(a.startTime),e=tmin(a.endTime);if(cur>=s)r=Math.min(1,(cur-s)/(e-s))}bar.firstChild.style.width=(r*100)+'%'}
   const mo=$('moti');if(!mo)return;if(state.settings.motivasi===false){mo.style.display='none';return}mo.style.display='';
