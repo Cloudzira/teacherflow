@@ -141,7 +141,7 @@
         <!-- ================= MAIN NAVIGATION TABS ================= -->
         <nav id="main-nav" aria-label="Menu utama">
             <button id="tab-timeline-btn" onclick="switchTab('timeline')" class="tb">
-                <i class="fa-solid fa-timeline"></i><span>Agenda</span>
+                <i class="fa-solid fa-house"></i><span>Beranda</span>
             </button>
             <button id="tab-week-btn" onclick="switchTab('week')" class="tb"><i class="fa-solid fa-calendar-week"></i><span>Jadwal</span></button>
             <button id="tab-tasks-btn" onclick="switchTab('tasks')" class="tb">
@@ -1045,7 +1045,7 @@ function updateFocusCard(){
   const set=(id,v)=>{const el=$(id);if(el)el.innerText=v};
   if(!next){
     set('focus-title',list.length?'Semua Agenda Hari Ini Selesai!':'Belum Ada Agenda Hari Ini');
-    set('focus-subtitle',list.length?'Istirahat yang cukup atau siapkan administrasi esok hari.':'Tambah agenda di tab Agenda atau Jadwal.');
+    set('focus-subtitle',list.length?'Istirahat yang cukup atau siapkan administrasi esok hari.':'Tambah agenda lewat tombol Tambah di Beranda atau tab Jadwal.');
     set('focus-location','-');set('focus-time-range','--:--');set('focus-target','-');set('focus-countdown','00:00:00');
     $('focus-type-badge').className='px-3 py-1 rounded-full text-xs font-semibold border '+BADGE.emerald;$('focus-type-badge').innerText=list.length?'Tuntas':'Kosong';
     $('focus-action-btn').style.display='none';currentFocusAgenda=null;return;
@@ -1088,7 +1088,6 @@ function renderTimeline(){
         <h4 class="ag-title">${esc(it.title)}</h4>
         <div class="ag-meta"><span><i class="fa-solid fa-location-dot"></i> ${esc(it.location||'-')}</span><span><i class="fa-solid fa-users"></i> ${esc(it.target||'Anggota')}</span>${it.notes?`<span><i class="fa-regular fa-note-sticky"></i> ${esc(it.notes)}</span>`:''}</div>
       </div>
-      <div class="ag-act"><button type="button" onclick="editAgenda('${it.id}')" class="wk-ab" aria-label="Edit ${esc(it.title)}"><i class="fa-solid fa-pen"></i> Edit</button><button type="button" onclick="deleteAgenda('${it.id}')" class="wk-ab del" aria-label="Hapus ${esc(it.title)}"><i class="fa-solid fa-trash"></i> Hapus</button></div>
     </div>`;
   });
   box.innerHTML=h;
@@ -1512,7 +1511,7 @@ function renderCalDay(){
   let h=`<div class="flex flex-wrap items-center justify-between gap-2"><div><h3 class="text-sm font-bold text-slate-100">${esc(calLabel(calSel))}${calSel===dstr()?' <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 align-middle">Hari ini</span>':''}</h3><p class="text-[11px] text-slate-400">${list.length?list.length+' agenda / jadwal':'Belum ada agenda'}</p></div><div class="flex gap-2 flex-wrap"><button type="button" onclick="calOpenAgenda()" class="px-3 py-2 rounded-xl glass-card text-xs font-semibold text-slate-200"><i class="fa-regular fa-eye"></i> Lihat di Agenda</button><button type="button" onclick="calAddAgenda()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md"><i class="fa-solid fa-plus"></i> Tambah Agenda / Jadwal</button></div></div>`;
   if(list.length)h+='<div class="space-y-2">'+list.map(a=>{const c=CAL_COL[(TYPEC[a.type]||TYPEC.Lainnya)[0]]||'#9ca3af';
     return `<div class="cal-item" style="border-left-color:${c}"><div class="min-w-0 flex-1"><span class="block text-xs font-bold text-slate-100 tabular-nums">${esc(a.startTime)} - ${esc(a.endTime)}${jamText(a)?' · '+esc(jamText(a)):''}</span><span class="block text-sm font-semibold text-slate-100">${esc(a.title)}</span><span class="block text-[11px] text-slate-400">${esc(a.type)}${a.location?' · '+esc(a.location):''} · ${esc(repeatText(a))}</span></div><div class="cal-act"><button type="button" onclick="editAgenda('${a.id}')" class="cal-ab" aria-label="Edit agenda ${esc(a.title)}" title="Edit"><i class="fa-solid fa-pen"></i></button><button type="button" onclick="deleteAgenda('${a.id}')" class="cal-ab del" aria-label="Hapus agenda ${esc(a.title)}" title="Hapus"><i class="fa-solid fa-trash"></i></button></div></div>`}).join('')+'</div>';
-  else h+='<p class="text-xs text-slate-400 text-center py-3">Klik <b>Tambah Agenda / Jadwal</b> untuk membuat agenda pada tanggal ini. Agenda akan muncul di tab Agenda pada hari tersebut.</p>';
+  else h+='<p class="text-xs text-slate-400 text-center py-3">Klik <b>Tambah Agenda / Jadwal</b> untuk membuat agenda pada tanggal ini. Agenda akan muncul di tab Beranda pada hari tersebut.</p>';
   box.innerHTML=h;
 }
 function calAddAgenda(){openAgendaModal();$('agenda-date').value=calSel;if(typeof modalClash==='function')modalClash()}
