@@ -191,6 +191,9 @@
             <div id="timeline-list" class="space-y-3">
                 <!-- Rendered dynamically by JS -->
             </div>
+
+            <!-- Tugas & Deadline (tampil sampai batas waktu) -->
+            <div id="home-tasks" class="space-y-3"></div>
         </main>
 
         <!-- ================= TAB CONTENT 2: TUGAS & DEADLINE ================= -->
@@ -515,6 +518,7 @@
 
         /* ================= RENDER TUGAS & DEADLINE ================= */
         function renderTasks() {
+            if (typeof renderHomeTasks === 'function') renderHomeTasks();
             const container = document.getElementById('tasks-list');
             const prioFilter = document.getElementById('task-filter-priority').value;
             const statusFilter = document.getElementById('task-filter-status').value;
@@ -1067,8 +1071,35 @@ function completeFocusAgenda(){
 }
 function toggleAgendaComplete(id){const k=tfSel()+'|'+id;state.doneOn[k]?delete state.doneOn[k]:state.doneOn[k]=1;saveStateToStorage();triggerVibration(50);renderTimeline();renderWeek();updateFocusCard();updateStats()}
 
+/* ---------- Beranda: tugas sampai batas waktu deadline ---------- */
+function renderHomeTasks(){
+  const box=$('home-tasks');if(!box)return;
+  const flt=$('timeline-filter');
+  if(flt&&flt.value!=='ALL'){box.innerHTML='';return}
+  const now=Date.now(),pr={Tinggi:0,Sedang:1,Rendah:2};
+  const list=(state.tasks||[]).map(t=>({t,ts:new Date(t.deadline).getTime()})).filter(x=>!isNaN(x.ts)&&x.ts>=now)
+    .sort((a,b)=>a.ts-b.ts||(pr[a.t.priority]??3)-(pr[b.t.priority]??3));
+  if(!list.length){box.innerHTML='';return}
+  const PC={Tinggi:'#ef4444',Sedang:'#f59e0b',Rendah:'#10b981'},p2=n=>String(n).padStart(2,'0');
+  const left=ms=>{const m=Math.max(0,Math.floor(ms/60000));if(m<60)return m+' menit lagi';const h=Math.floor(m/60);if(h<24)return h+' j'+(m%60?' '+m%60+' m':'')+' lagi';const d=Math.floor(h/24);return d+' hari'+(h%24?' '+h%24+' j':'')+' lagi'};
+  let h=`<div class="ag-sum"><span><i class="fa-solid fa-list-check"></i> ${list.length} tugas &amp; deadline</span><span><i class="fa-regular fa-clock"></i> sampai batas waktu</span></div>`;
+  list.forEach(({t,ts})=>{
+    const d=new Date(ts),col=PC[t.priority]||'#8b8fa3',done=!!t.completed,soon=!done&&ts-now<3600000*3;
+    h+=`<div class="ag-card${done?' done':''}" style="--wc:${col}">
+      <button type="button" onclick="toggleTaskComplete('${t.id}')" class="ag-check" aria-label="${done?'Batalkan selesai':'Tandai selesai'}: ${esc(t.title)}" aria-pressed="${done}"><i class="fa-solid fa-check"></i></button>
+      <div class="ag-time"><b>${p2(d.getHours())}:${p2(d.getMinutes())}</b><span>${esc(tfDMY(d))}</span><small>batas</small></div>
+      <div class="ag-main">
+        <div class="ag-chips"><span class="ag-type"><i class="fa-solid fa-list-check"></i> Tugas</span><span class="ag-chip">Prioritas ${esc(t.priority||'-')}</span><span class="ag-chip">${esc(t.category||'Administrasi')}</span><span class="ag-chip"><i class="fa-regular fa-hourglass-half"></i> ${left(ts-now)}</span>${done?'<span class="ag-chip ok"><i class="fa-solid fa-check"></i> Selesai</span>':''}${soon?'<span class="ag-live" style="background:#ef4444"><i></i> Segera</span>':''}</div>
+        <h4 class="ag-title">${esc(t.title)}</h4>
+        ${t.desc?`<div class="ag-meta"><span><i class="fa-regular fa-note-sticky"></i> ${esc(t.desc)}</span></div>`:''}
+      </div>
+    </div>`;
+  });
+  box.innerHTML=h;
+}
 /* ---------- Timeline ---------- */
 function renderTimeline(){
+  renderHomeTasks();
   const box=$('timeline-list'),ds=tfSel(),filter=$('timeline-filter').value,all=tfOcc(ds);
   const dl=$('timeline-daylabel');if(dl)dl.innerText=new Date(ds+'T00:00:00').toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+(ds===dstr()?' (hari ini)':'');
   const list=all.filter(a=>filter==='ALL'||a.type===filter);
