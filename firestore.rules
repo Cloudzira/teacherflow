@@ -1,9 +1,26 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Setiap pengguna hanya boleh membaca/menulis datanya sendiri
+
+    // Lisensi Premium: pengguna hanya boleh MEMBACA lisensi milik emailnya sendiri.
+    // Tidak ada yang boleh menulis dari aplikasi; admin mengisi lewat Firebase Console.
+    // ID dokumen = email Google pembeli, HURUF KECIL semua. Field: aktifSampai (tipe timestamp).
+    match /licenses/{email} {
+      allow read: if request.auth != null
+                  && request.auth.token.email_verified == true
+                  && email == request.auth.token.email.lower();
+      allow write: if false;
+    }
+
+    // Data pengguna: pemilik boleh membaca dan menghapus datanya kapan saja
+    // (agar data tetap bisa diambil/dihapus walau Premium berakhir),
+    // tetapi menulis/memperbarui hanya jika lisensi masih aktif.
     match /users/{uid}/{document=**} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+      allow read, delete: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null
+        && request.auth.uid == uid
+        && request.auth.token.email_verified == true
+        && get(/databases/$(database)/documents/licenses/$(request.auth.token.email.lower())).data.aktifSampai > request.time;
     }
   }
 }
