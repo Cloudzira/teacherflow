@@ -76,7 +76,7 @@
                 <div class="flex items-center gap-2">
                     <span id="net-badge" class="hidden px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30"><i class="fa-solid fa-wifi"></i> Offline</span>
                     <button id="install-btn" onclick="installApp()" class="hidden px-3 h-10 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold" aria-label="Pasang aplikasi"><i class="fa-solid fa-download"></i> Pasang</button>
-                    <button id="sync-btn" onclick="openPremium()" class="hbtn" aria-label="Akun dan Premium" title="Akun & Premium"><i id="sync-icon" class="fa-solid fa-crown text-amber-400"></i></button><button onclick="quickTheme()" class="hbtn" aria-label="Ganti tema" title="Ganti tema"><i id="theme-icon" class="fa-solid fa-moon"></i></button><button onclick="openSettings()" class="hbtn" aria-label="Pengaturan" title="Pengaturan"><i class="fa-solid fa-gear"></i></button>
+                    <button onclick="quickTheme()" class="hbtn" aria-label="Ganti tema" title="Ganti tema"><i id="theme-icon" class="fa-solid fa-moon"></i></button><button onclick="openSettings()" class="hbtn" aria-label="Pengaturan" title="Pengaturan"><i class="fa-solid fa-gear"></i></button>
                 </div>
                 
             </div>
@@ -1244,7 +1244,7 @@ async function tfNotify(t,b){
 }
 function tfCheck(){
   const now=new Date(),ds=dstr(now),n=now.getHours()*60+now.getMinutes(),lead=+state.settings.lead||10;let ch=false;
-  const fire=(k,t,b)=>{if(!isPremium()||state.fired[k])return;state.fired[k]=1;ch=true;tfAlert(t,b)};
+  const fire=(k,t,b)=>{if(state.fired[k])return;state.fired[k]=1;ch=true;tfAlert(t,b)};
   if(ds!==tfToday){if(tfSel()===tfToday)$('timeline-date').value=ds;tfToday=ds;renderTimeline();renderWeek();ch=true}
   const list=tfOcc(ds);
   list.forEach(a=>{if(a.completed)return;const s=tmin(a.startTime),e=tmin(a.endTime),k=ds+'|'+a.id,loc=a.location?' di '+a.location:'';
@@ -1298,7 +1298,7 @@ function tfCopy(text,msg){(navigator.clipboard?navigator.clipboard.writeText(tex
 
 /* ---------- Pengaturan, cadangan, install ---------- */
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;if(typeof tfNetUi==='function')tfNetUi()});
-const TF_LOCAL=['tf_lic','tf_fired','tf_fbconfig','tf_device','tf_updatedAt','tf_dinasDate','tf_fbon'];
+const TF_LOCAL=['tf_fired','tf_fbconfig','tf_device','tf_updatedAt','tf_dinasDate','tf_fbon'];
 const tfKeys=()=>Object.keys(localStorage).filter(k=>/^(gf_|tf_)/.test(k)&&!TF_LOCAL.includes(k));
 function openSettings(){setTimeout(fbUi,0);
   const s=state.settings,perm='Notification'in window?Notification.permission:'tidak didukung';
@@ -1345,7 +1345,7 @@ window.addEventListener('offline',()=>{tfNetUi();showToast('Anda offline. Teache
 window.addEventListener('online',()=>{
   tfNetUi();showToast('Kembali online.','success');
   if(fbCfg()&&localStorage.getItem('tf_fbon')==='1'&&!fb)fbInit().catch(()=>{});
-  else if(fbUser&&fb&&licOk()&&fbPending){fbPending=false;fbPush().then(()=>{fbState='in';fbUi()}).catch(()=>{fbState='err';fbUi()})}
+  else if(fbUser&&fb&&fbPending){fbPending=false;fbPush().then(()=>{fbState='in';fbUi()}).catch(()=>{fbState='err';fbUi()})}
 });
 
 /* ---------- Sinkronisasi Firebase (opsional: login Google + Firestore) ---------- */
@@ -1358,27 +1358,7 @@ const TF_FIREBASE={
   appId:"1:764903525171:web:f12cc63ba10adb47f34c46"
 }; /* konfigurasi web Firebase (bukan rahasia); keamanan data diatur oleh firestore.rules */
 const FBV='10.12.2';
-/* ---------- Lisensi Premium (sinkronisasi cloud berbayar) ---------- */
-const TF_BUY_URL='';   /* ISI: tautan produk Lynk.id, mis. 'https://lynk.id/username/teacherflow-premium' */
-const TF_WA='';        /* ISI: nomor WhatsApp admin format internasional tanpa +, mis. '6281234567890' */
-let fb=null,fbUser=null,fbUnsub=null,fbPushT=null,fbState='off',fbLic=null,fbAuthReady=false;
-const licOk=()=>!!(fbLic&&fbLic.ok);
-async function fbCheckLic(){
-  const em=String(fbUser&&fbUser.email||'').toLowerCase();
-  if(!em||!fbUser.emailVerified){fbLic={ok:false,until:0,why:'email'};return fbLic}
-  try{
-    const sn=await fb.Fs.getDoc(fb.Fs.doc(fb.db,'licenses',em));
-    let until=0;if(sn.exists()){const t=sn.data().aktifSampai;until=t&&t.toMillis?t.toMillis():(+t||0)}
-    fbLic={ok:until>Date.now(),until};
-    try{localStorage.setItem('tf_lic',JSON.stringify({email:em,until}))}catch(e){}
-  }catch(e){
-    if(e.code==='unavailable'||!navigator.onLine){
-      let c=null;try{c=JSON.parse(localStorage.getItem('tf_lic'))}catch(_){}
-      fbLic=c&&c.email===em?{ok:c.until>Date.now(),until:c.until,cached:true}:{ok:false,until:0,offline:true};
-    }else fbLic={ok:false,until:0,err:e.code||e.message};
-  }
-  return fbLic;
-}
+let fb=null,fbUser=null,fbUnsub=null,fbPushT=null,fbState='off';
 const tfDevice=(()=>{let d=localStorage.getItem('tf_device');if(!d){d=Math.random().toString(36).slice(2,10);try{localStorage.setItem('tf_device',d)}catch(e){}}return d})();
 const fbCfg=()=>{if(TF_FIREBASE)return TF_FIREBASE;try{return JSON.parse(localStorage.getItem('tf_fbconfig'))}catch(e){return null}};
 const lastUpd=()=>+localStorage.getItem('tf_updatedAt')||0;
@@ -1388,22 +1368,20 @@ saveStateToStorage=function(silent){
   _tfSave();
   if(silent===true)return;
   try{localStorage.setItem('tf_updatedAt',String(Date.now()))}catch(e){}
-  if(fbUser&&fb&&licOk()){clearTimeout(fbPushT);fbState='busy';fbUi();fbPushT=setTimeout(()=>{if(!navigator.onLine){fbPending=true;fbState='ready';fbUi();return}fbPush().then(()=>{fbState='in';fbUi()}).catch(e=>{fbPending=true;fbState='err';fbUi();showToast('Gagal mengunggah ke cloud ('+(e.code||e.message)+'). Data tetap aman di perangkat.','error',6000)})},1500)}
+  if(fbUser&&fb){clearTimeout(fbPushT);fbState='busy';fbUi();fbPushT=setTimeout(()=>{if(!navigator.onLine){fbPending=true;fbState='ready';fbUi();return}fbPush().then(()=>{fbState='in';fbUi()}).catch(e=>{fbPending=true;fbState='err';fbUi();showToast('Gagal mengunggah ke cloud ('+(e.code||e.message)+'). Data tetap aman di perangkat.','error',6000)})},1500)}
 };
 async function fbInit(){
   if(fb)return fb;const c=fbCfg();if(!c||!c.apiKey||!c.projectId)throw new Error('Konfigurasi Firebase belum diisi.');
   const mods=await Promise.all(['app','auth','firestore'].map(n=>import(`https://www.gstatic.com/firebasejs/${FBV}/firebase-${n}.js`)));
   const [A,Au,Fs]=mods,app=A.initializeApp(c);
   fb={A,Au,Fs,auth:Au.getAuth(app),db:Fs.getFirestore(app)};fbState='ready';
-  Au.onAuthStateChanged(fb.auth,u=>{fbUser=u;if(u){try{localStorage.setItem('tf_fbon','1')}catch(e){}fbStart()}else{fbStop();fbLic=null;fbState='ready'}fbAuthReady=true;fbUi()});
+  Au.onAuthStateChanged(fb.auth,u=>{fbUser=u;if(u){try{localStorage.setItem('tf_fbon','1')}catch(e){}fbStart()}else{fbStop();fbState='ready'}fbUi()});
   return fb;
 }
 function fbStop(){if(fbUnsub){fbUnsub();fbUnsub=null}}
 async function fbStart(){
   fbStop();fbState='busy';fbUi();
   try{
-    await fbCheckLic();
-    if(!licOk()){fbState='nolic';fbUi();return}
     const ref=fbRef(),snap=await fb.Fs.getDoc(ref),lu=lastUpd();
     if(snap.exists()){const r=snap.data();if((r.updatedAt||0)>lu)fbApply(r);else if(lu>(r.updatedAt||0))await fbPush()}
     else if(lu>0)await fbPush();
@@ -1413,7 +1391,7 @@ async function fbStart(){
   fbUi();
 }
 async function fbPush(){
-  if(!fbUser||!fb||!licOk())return;const p={};tfKeys().forEach(k=>p[k]=localStorage.getItem(k));
+  if(!fbUser||!fb)return;const p={};tfKeys().forEach(k=>p[k]=localStorage.getItem(k));
   const s=JSON.stringify(p);if(s.length>900000)throw new Error('Data melebihi batas 1 MB');
   const u=lastUpd()||Date.now();await fb.Fs.setDoc(fbRef(),{payload:s,updatedAt:u,device:tfDevice,v:2});
 }
@@ -1433,26 +1411,20 @@ function fbParseCfg(t){
   const o={};t.replace(/([A-Za-z]+)\s*:\s*["'`]([^"'`]+)["'`]/g,(_,k,v)=>{o[k]=v});return o.apiKey&&o.projectId?o:null;
 }
 function fbUi(){
-  try{tfGateUi()}catch(e){}
   const ic=$('sync-icon');
-  if(ic){const m={off:['fa-crown','text-amber-400'],ready:['fa-crown','text-amber-400'],busy:['fa-arrows-rotate fa-spin','text-blue-400'],in:['fa-cloud-arrow-up','text-emerald-400'],err:['fa-triangle-exclamation','text-amber-400'],nolic:['fa-lock','text-amber-400']}[fbState]||['fa-cloud',''];ic.className='fa-solid '+m[0]+' '+m[1];$('sync-btn').title=fbUser?(fbState==='nolic'?'Belum Premium':'Premium: '+fbUser.email):'Akun & Premium (belum masuk)'}
+  if(ic){const m={off:['fa-cloud','text-slate-400'],ready:['fa-cloud','text-slate-300'],busy:['fa-arrows-rotate fa-spin','text-blue-400'],in:['fa-cloud-arrow-up','text-emerald-400'],err:['fa-triangle-exclamation','text-amber-400']}[fbState]||['fa-cloud',''];ic.className='fa-solid '+m[0]+' '+m[1];$('sync-btn').title=fbUser?'Tersinkron: '+fbUser.email:'Sinkronisasi cloud (belum masuk)'}
   const box=$('st-sync-box');if(!box)return;
   const cfg=fbCfg();let h='<p class="font-semibold text-slate-200"><i class="fa-solid fa-cloud text-blue-400"></i> Sinkronisasi antar perangkat</p>';
   if(!cfg)h+=`<p class="text-[11px] text-slate-400">Tempel <b>firebaseConfig</b> dari Firebase Console (Project settings > Your apps > Web). Lihat SETUP-FIREBASE.md.</p><textarea id="fb-cfg" rows="4" class="${TI} tabular-nums text-[11px]" placeholder='{ apiKey: "...", authDomain: "...", projectId: "...", appId: "..." }'></textarea><button type="button" id="fb-save" class="px-3 py-2 rounded-xl bg-blue-600 text-white font-semibold">Simpan konfigurasi</button>`;
-  else if(fbUser&&fbState==='nolic'){
-    const wa=TF_WA?'https://wa.me/'+TF_WA+'?text='+encodeURIComponent('Halo, saya sudah membeli TeacherFlow Premium. Email Google saya: '+fbUser.email):'';
-    const exp=fbLic&&fbLic.until>0&&fbLic.until<=Date.now();
-    h+=`<p class="text-slate-300"><i class="fa-solid fa-lock text-amber-400"></i> ${exp?'Premium Anda sudah berakhir':'Akun ini belum <b>Premium</b>'}</p><p class="text-[11px] text-slate-400">Masuk sebagai <b>${esc(fbUser.email)}</b>. Versi gratis hanya membuka Beranda dan Jadwal. Saat membeli, gunakan <b>email Google yang sama</b> dengan di atas.${fbLic&&fbLic.offline?' Sedang offline, status lisensi belum bisa dicek.':''}${fbLic&&fbLic.err?' Gagal memeriksa lisensi ('+esc(fbLic.err)+').':''}</p><div class="flex gap-2 flex-wrap">${TF_BUY_URL?`<a href="${esc(TF_BUY_URL)}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded-xl bg-emerald-600 text-white font-semibold"><i class="fa-solid fa-crown"></i> Beli Premium</a>`:''}${wa?`<a href="${esc(wa)}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded-xl glass-card text-slate-200 font-semibold"><i class="fa-brands fa-whatsapp"></i> Hubungi admin</a>`:''}<button type="button" id="fb-lic" class="px-3 py-2 rounded-xl bg-blue-600 text-white font-semibold">Saya sudah bayar, cek status</button><button type="button" id="fb-out" class="px-3 py-2 rounded-xl glass-card text-slate-200 font-semibold">Keluar</button></div>`}
-  else if(fbUser)h+=`<p class="text-slate-300">Masuk sebagai <b>${esc(fbUser.email)}</b> · ${fbState==='busy'?'menyinkronkan...':fbState==='err'?'ada masalah sinkronisasi':'tersinkron'}</p>${fbLic&&fbLic.until?`<p class="text-[11px] text-emerald-400"><i class="fa-solid fa-crown"></i> Premium aktif sampai ${new Date(fbLic.until).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}</p>`:''}<div class="flex gap-2 flex-wrap"><button type="button" id="fb-now" class="px-3 py-2 rounded-xl bg-blue-600 text-white font-semibold">Sinkronkan sekarang</button><button type="button" id="fb-out" class="px-3 py-2 rounded-xl glass-card text-slate-200 font-semibold">Keluar</button></div>`;
-  else h+=`<p class="text-[11px] text-slate-400">Sudah beli Premium? Masuk dengan akun Google yang dipakai saat membeli untuk membuka semua fitur dan sinkronisasi antar perangkat.</p><div class="flex gap-2 flex-wrap"><button type="button" id="fb-in" class="px-3 py-2 rounded-xl bg-white text-slate-900 font-semibold border border-slate-300"><i class="fa-brands fa-google text-rose-500"></i> Masuk dengan Google</button>${TF_FIREBASE?'':'<button type="button" id="fb-reset" class="px-3 py-2 rounded-xl glass-card text-slate-300 font-semibold">Ganti konfigurasi</button>'}</div>`;
+  else if(fbUser)h+=`<p class="text-slate-300">Masuk sebagai <b>${esc(fbUser.email)}</b> · ${fbState==='busy'?'menyinkronkan...':fbState==='err'?'ada masalah sinkronisasi':'tersinkron'}</p><div class="flex gap-2 flex-wrap"><button type="button" id="fb-now" class="px-3 py-2 rounded-xl bg-blue-600 text-white font-semibold">Sinkronkan sekarang</button><button type="button" id="fb-out" class="px-3 py-2 rounded-xl glass-card text-slate-200 font-semibold">Keluar</button></div>`;
+  else h+=`<p class="text-[11px] text-slate-400">Masuk dengan Google agar agenda, jadwal pekan, tugas, dan catatan sama di HP dan laptop. Aplikasi tetap bisa dipakai tanpa masuk.</p><div class="flex gap-2 flex-wrap"><button type="button" id="fb-in" class="px-3 py-2 rounded-xl bg-white text-slate-900 font-semibold border border-slate-300"><i class="fa-brands fa-google text-rose-500"></i> Masuk dengan Google</button>${TF_FIREBASE?'':'<button type="button" id="fb-reset" class="px-3 py-2 rounded-xl glass-card text-slate-300 font-semibold">Ganti konfigurasi</button>'}</div>`;
   box.innerHTML=h;
   const on=(id,f)=>{const e=$(id);if(e)e.onclick=f};
   on('fb-save',()=>{const c=fbParseCfg($('fb-cfg').value);if(!c)return showToast('Konfigurasi tidak valid. Pastikan ada apiKey dan projectId.','error');localStorage.setItem('tf_fbconfig',JSON.stringify(c));fbInit().then(fbUi).catch(e=>showToast(e.message,'error'));fbUi()});
   on('fb-reset',()=>{localStorage.removeItem('tf_fbconfig');localStorage.removeItem('tf_fbon');fb=null;fbUi()});
   on('fb-in',async()=>{try{await fbInit();const P=new fb.Au.GoogleAuthProvider();try{await fb.Au.signInWithPopup(fb.auth,P)}catch(e){if(e.code==='auth/popup-blocked'||e.code==='auth/operation-not-supported-in-this-environment')await fb.Au.signInWithRedirect(fb.auth,P);else if(e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request')throw e}}catch(e){showToast('Gagal masuk ('+(e.code||e.message)+'). Pastikan domain sudah ditambahkan di Authentication > Authorized domains.','error',9000)}});
   on('fb-now',()=>{fbState='busy';fbUi();fbPush().then(()=>{fbState='in';fbUi();showToast('Terunggah ke cloud.','success')}).catch(e=>{fbState='err';fbUi();showToast('Gagal: '+(e.code||e.message),'error')})});
-  on('fb-lic',()=>{if(fbUser)fbStart()});
-  on('fb-out',async()=>{await fb.Au.signOut(fb.auth);try{localStorage.removeItem('tf_fbon');localStorage.removeItem('tf_lic')}catch(e){}showToast('Keluar. Data tetap ada di perangkat ini.','info')});
+  on('fb-out',async()=>{await fb.Au.signOut(fb.auth);try{localStorage.removeItem('tf_fbon')}catch(e){}showToast('Keluar. Data tetap ada di perangkat ini.','info')});
 }
 
 
@@ -1489,47 +1461,6 @@ const _wd=weekData;weekData=function(){const r=_wd();r.days.forEach(x=>{const cl
 /* tema cepat */
 function quickTheme(){const order=['light','mint','dark','ocean'];let c=tfThemeKey();if(c==='auto')c=document.documentElement.classList.contains('dark')?'dark':'light';state.settings.theme=order[(order.indexOf(c)+1)%order.length];saveStateToStorage();tfApplyTheme();showToast('Tema: '+TF_THEMES[state.settings.theme].n,'info',1800)}
 function switchTab(t){['timeline','week','tasks','calendar'].forEach(k=>{const on=k===t;$('tab-'+k+'-btn').className='tb'+(on?' on':'');$('tab-'+k+'-btn').setAttribute('aria-current',on?'page':'false');$('tab-'+k+'-content').classList.toggle('hidden',!on)});document.body.classList.toggle('not-agenda',t!=='timeline');if(t==='week')renderWeek();if(t==='calendar'){renderCalendar();renderNotes()}scrollTo({top:0,behavior:'smooth'})}
-
-/* ---------- Pembatas fitur: gratis = Beranda & Jadwal; Premium = semuanya ---------- */
-const TF_FREE_TABS=['timeline','week'];
-function isPremium(){
-  if(fbLic)return !!fbLic.ok&&fbLic.until>Date.now();
-  if(fbAuthReady&&!fbUser)return false;
-  try{const c=JSON.parse(localStorage.getItem('tf_lic'));if(!c||!(c.until>Date.now()))return false;
-    if(fbUser)return c.email===String(fbUser.email||'').toLowerCase();
-    return localStorage.getItem('tf_fbon')==='1'}catch(e){return false}
-}
-function premPerks(){return `<ul class="space-y-1 text-slate-300"><li><i class="fa-solid fa-circle-check text-emerald-400"></i> Tugas &amp; deadline</li><li><i class="fa-solid fa-circle-check text-emerald-400"></i> Kalender &amp; catatan</li><li><i class="fa-solid fa-circle-check text-emerald-400"></i> Pengingat / notifikasi</li><li><i class="fa-solid fa-circle-check text-emerald-400"></i> Pengaturan lengkap &amp; cadangan data</li><li><i class="fa-solid fa-circle-check text-emerald-400"></i> Sinkronisasi antar perangkat</li></ul><p class="text-[11px] text-slate-400">Versi gratis: Beranda dan Jadwal.</p>`}
-function premBuy(){
-  const wa=TF_WA?'https://wa.me/'+TF_WA+'?text='+encodeURIComponent('Halo, saya ingin TeacherFlow Premium.'+(fbUser?' Email Google saya: '+fbUser.email:'')):'';
-  return (TF_BUY_URL?`<a href="${esc(TF_BUY_URL)}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded-xl bg-emerald-600 text-white font-semibold"><i class="fa-solid fa-crown"></i> Beli Premium</a>`:'')+(wa?`<a href="${esc(wa)}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded-xl glass-card text-slate-200 font-semibold"><i class="fa-brands fa-whatsapp"></i> Hubungi admin</a>`:'');
-}
-function tfGate(name){
-  if(isPremium())return true;
-  const f=tfModal('<i class="fa-solid fa-lock text-amber-400"></i> Fitur Premium',`<p class="text-slate-200"><b>${esc(name)}</b> hanya tersedia untuk pengguna Premium.</p>${premPerks()}<div class="flex gap-2 flex-wrap">${premBuy()}<button type="button" id="pg-login" class="px-3 py-2 rounded-xl bg-blue-600 text-white font-semibold">Sudah Premium? Masuk</button></div>`,null);
-  const b=f&&f.querySelector('#pg-login');if(b)b.onclick=()=>openPremium();
-  return false;
-}
-function openPremium(){
-  tfModal('<i class="fa-solid fa-crown text-amber-400"></i> Akun &amp; Premium',`${isPremium()?'':premPerks()}<div id="st-sync-box" class="glass-card rounded-xl p-3 space-y-2"></div>`,null);
-  setTimeout(fbUi,0);
-  if(!fb&&fbCfg())fbInit().then(fbUi).catch(()=>{});
-}
-const _tfSw=switchTab;
-switchTab=function(t){if(!TF_FREE_TABS.includes(t)&&!tfGate(t==='tasks'?'Tugas & Deadline':'Kalender & Catatan'))return;_tfSw(t)};
-const _tfOs=openSettings;openSettings=function(){if(!tfGate('Pengaturan'))return;_tfOs()};
-const _tfOt=openTaskModal;openTaskModal=function(a){if(!tfGate('Tugas & Deadline'))return;_tfOt(a)};
-const _tfOn=openNoteModal;openNoteModal=function(a){if(!tfGate('Catatan'))return;_tfOn(a)};
-function tfGateUi(){
-  const p=isPremium();document.body.classList.toggle('tf-free',!p);
-  [['tasks','tab-tasks-btn'],['calendar','tab-calendar-btn']].forEach(([k,id])=>{
-    const b=$(id);if(!b)return;const sp=b.querySelector('span');if(!sp)return;let lk=b.querySelector('.tf-lk');
-    if(!p&&!lk){lk=document.createElement('i');lk.className='fa-solid fa-lock tf-lk';lk.style.cssText='font-size:9px;margin-left:4px;opacity:.8';sp.appendChild(lk)}
-    else if(p&&lk)lk.remove();
-  });
-  if(!p)['tasks','calendar'].forEach(k=>{const c=$('tab-'+k+'-content');if(c&&!c.classList.contains('hidden'))_tfSw('timeline')});
-}
-tfGateUi();
 ['modal-agenda','modal-task','modal-note'].forEach(id=>{const m=$(id);m.addEventListener('click',e=>{if(e.target===m)closeModal(id)})});
 /* motivasi sesuai waktu kegiatan */
 const MO={
