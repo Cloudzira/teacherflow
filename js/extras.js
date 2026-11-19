@@ -1,0 +1,119 @@
+/* Footer, bentrok jadwal, motivasi, inisialisasi, dan kalender. */
+/* ---------- Footer & media sosial (tambah/ubah daftar di sini) ---------- */
+const TF_SOCIALS=[
+  { name: 'Instagram', url: 'https://instagram.com/kurniapedia', vb: '0 0 448 512', path: 'M224.3 141a115 115 0 1 0-.6 230 115 115 0 1 0 .6-230m-.6 40.4a74.6 74.6 0 1 1 .6 149.2 74.6 74.6 0 1 1-.6-149.2m93.4-45.1a26.8 26.8 0 1 1 53.6 0 26.8 26.8 0 1 1-53.6 0m129.7 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8M399 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1' },
+  { name: 'TikTok', url: 'https://tiktok.com/@kurniapedia', vb: '0 0 448 512', path: 'M448.5 209.9c-44 .1-87-13.6-122.8-39.2v178.7c0 33.1-10.1 65.4-29 92.6s-45.6 48-76.6 59.6-64.8 13.5-96.9 5.3-60.9-25.9-82.7-50.8-35.3-56-39-88.9 2.9-66.1 18.6-95.2 40-52.7 69.6-67.7 62.9-20.5 95.7-16v89.9c-15-4.7-31.1-4.6-46 .4s-27.9 14.6-37 27.3-14 28.1-13.9 43.9 5.2 31 14.5 43.7 22.4 22.1 37.4 26.9 31.1 4.8 46-.1 28-14.4 37.2-27.1 14.2-28.1 14.2-43.8V0h88c-.1 7.4.6 14.9 1.9 22.2 3.1 16.3 9.4 31.9 18.7 45.7s21.3 25.6 35.2 34.6c19.9 13.1 43.2 20.1 67 20.1V210z' },
+  { name: 'Website', url: 'https://kurniapedia.my.id', vb: '0 0 512 512', path: 'M352 256c0 22.2-1.2 43.6-3.3 64H163.3c-2.2-20.4-3.3-41.8-3.3-64s1.2-43.6 3.3-64H348.7c2.2 20.4 3.3 41.8 3.3 64zm28.8-64H503.9c5.3 20.5 8.1 41.9 8.1 64s-2.8 43.5-8.1 64H380.8c2.1-20.6 3.2-42 3.2-64s-1.1-43.4-3.2-64zm112.6-32H376.7c-10-63.9-29.8-117.4-55.3-151.6c78.3 20.7 142 77.5 171.9 151.6zm-149.1 0H167.7c6.1-36.4 15.5-68.6 27-94.7c10.5-23.6 22.2-40.7 33.5-51.5C239.4 3.2 248.7 0 256 0s16.6 3.2 27.8 13.8c11.3 10.8 23 27.9 33.5 51.5c11.6 26 20.9 58.2 27 94.7zm-209 0H18.6C48.6 85.9 112.2 29.1 190.6 8.4C165.1 42.6 145.3 96.1 135.3 160zM8.1 192H131.2c-2.1 20.6-3.2 42-3.2 64s1.1 43.4 3.2 64H8.1C2.8 299.5 0 278.1 0 256s2.8-43.5 8.1-64zM194.7 446.6c-11.6-26-20.9-58.2-27-94.6H344.3c-6.1 36.4-15.5 68.6-27 94.6c-10.5 23.6-22.2 40.7-33.5 51.5C272.6 508.8 263.3 512 256 512s-16.6-3.2-27.8-13.8c-11.3-10.8-23-27.9-33.5-51.5zM135.3 352c10 63.9 29.8 117.4 55.3 151.6C112.2 482.9 48.6 426.1 18.6 352H135.3zm358.1 0c-30 74.1-93.6 130.9-171.9 151.6c25.5-34.2 45.2-87.7 55.3-151.6H493.4z' }
+];
+(function(){
+  const box=$('footer-social');if(box)box.innerHTML=TF_SOCIALS.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(s.name)}" title="${esc(s.name)}" class="w-8 h-8 rounded-lg glass-card text-slate-200 flex items-center justify-center transition-all hover:-translate-y-0.5"><svg viewBox="${esc(s.vb)}" class="w-3.5 h-3.5 fill-current text-blue-400" aria-hidden="true"><path d="${esc(s.path)}"/></svg></a>`).join('');
+})();
+
+/* ---------- v3: bentrok jadwal, motivasi, tema cepat ---------- */
+const clashTag='<span class="clash-tag"><i class="fa-solid fa-triangle-exclamation"></i> Bentrok</span>';
+function clashBanner(){const b=$('clash-banner');if(!b)return;const ds=tfSel(),p=clashPairs(ds);
+  if(!p.length){b.classList.add('hidden');return}
+  b.innerHTML='<b><i class="fa-solid fa-triangle-exclamation"></i> Jadwal bentrok pada '+fmtD(new Date(ds+'T12:00:00'))+':</b><br>'+p.map(([a,c])=>esc(a.title)+' ('+a.startTime+'–'+a.endTime+') bertabrakan dengan '+esc(c.title)+' ('+c.startTime+'–'+c.endTime+')').join('<br>');b.classList.remove('hidden')}
+function modalClash(){const box=$('agenda-clash');if(!box)return;
+  const s=$('agenda-start-time').value,e=$('agenda-end-time').value;let msg='';
+  if(s&&e&&tmin(e)<=tmin(s))msg='Jam selesai harus setelah jam mulai.';
+  else if(s&&e){const o={id:$('agenda-id').value,startTime:s,endTime:e,date:$('agenda-date').value||null,days:[...document.querySelectorAll('[name=agenda-day]:checked')].map(c=>+c.value)};if(o.date)o.days=[];
+    const c=state.agendas.filter(b=>b.id!==o.id&&tmin(b.startTime)<tmin(e)&&tmin(b.endTime)>tmin(s)&&tfShare(b,o));
+    if(c.length)msg='<i class="fa-solid fa-triangle-exclamation"></i> Bentrok dengan: '+c.map(b=>'<b>'+esc(b.title)+'</b> ('+b.startTime+'–'+b.endTime+', '+esc(repeatText(b))+')').join('; ')}
+  box.innerHTML=msg;box.classList.toggle('hidden',!msg)}
+(function(){const f=$('form-agenda');['change','input','click'].forEach(ev=>f.addEventListener(ev,()=>setTimeout(modalClash,30)))})();
+/* tema cepat */
+function quickTheme(){const order=['light','mint','dark','ocean'];let c=tfThemeKey();if(c==='auto')c=document.documentElement.classList.contains('dark')?'dark':'light';state.settings.theme=order[(order.indexOf(c)+1)%order.length];saveStateToStorage();tfApplyTheme();showToast('Tema: '+TF_THEMES[state.settings.theme].n,'info',1800)}
+function switchTab(t){['timeline','week','tasks','calendar'].forEach(k=>{const on=k===t;$('tab-'+k+'-btn').className='tb'+(on?' on':'');$('tab-'+k+'-btn').setAttribute('aria-current',on?'page':'false');$('tab-'+k+'-content').classList.toggle('hidden',!on)});document.body.classList.toggle('not-agenda',t!=='timeline');if(t==='week')renderWeek();if(t==='calendar'){renderCalendar();renderNotes()}scrollTo({top:0,behavior:'smooth'})}
+['modal-agenda','modal-task','modal-note'].forEach(id=>{const m=$(id);m.addEventListener('click',e=>{if(e.target===m)closeModal(id)})});
+/* motivasi sesuai waktu kegiatan */
+const MO={
+ prep:['Masih ada waktu untuk bersiap dengan tenang.','Tarik napas, minum air, rapikan bahan ajar.','Persiapan yang baik membuat kelas lebih hidup.','Cek perlengkapan, lalu mulai dengan niat yang lurus.'],
+ soon:['Sebentar lagi mulai. Bismillah, siapkan senyum terbaik!','Lima menit terakhir: rapikan diri, tegakkan niat.','Hampir waktunya. Kamu sudah siap!','Langkah kecil menuju kelas, dampaknya besar bagi mereka.'],
+ start:['Bismillah, saatnya dimulai!','Mulai dengan salam hangat, kelas akan mengikuti energimu.','Ini waktunya. Hadirkan versi terbaikmu.','Niat baik, langkah mantap, mulai sekarang!'],
+ mid:['Kamu sudah di tengah jalan, pertahankan ritmenya.','Sabar dan konsisten, murid belajar dari teladanmu.','Terus semangat, setiap penjelasanmu berarti.','Jaga fokus dan senyum, kelas sedang berjalan baik.'],
+ end:['Tinggal sedikit lagi, tutup dengan penuh makna!','Akhiri dengan ringkasan singkat dan doa penutup.','Hampir selesai. Terima kasih sudah bersungguh-sungguh.','Penutup yang baik meninggalkan kesan yang kuat.'],
+ jeda:['Manfaatkan jeda untuk istirahat sejenak.','Waktu luang: isi energi, besok masih banyak kebaikan.','Sambil menunggu, selesaikan satu tugas kecil.','Jeda itu penting. Rehat, lalu lanjut lebih segar.']};
+const MT={Mengajar:['Setiap murid punya cara belajarnya sendiri, sabarlah.','Ilmu yang kamu bagi akan terus mengalir.','Ajak murid bertanya, itu tanda kelas hidup.','Pujian tulus bisa membangkitkan semangat belajar.'],
+ Halaqah:['Bimbing dengan lembut, satu ayat demi satu ayat.','Keistiqamahan kecil lebih berharga dari semangat sesaat.','Doakan setiap anggota halaqah yang hadir.','Kesabaran dalam membimbing adalah ladang pahala.'],
+ Ekstrakurikuler:['Di sini bakat murid tumbuh, beri ruang mereka bersinar.','Bersenang-senang sambil belajar, itu kuncinya.','Dukunganmu membuat mereka berani mencoba.','Semangatmu menular ke seluruh tim.'],
+ Piket:['Tugas kecil yang dikerjakan tulus bernilai besar.','Kehadiranmu membuat sekolah tertib dan aman.','Tetap ramah dan sigap, ya!','Teliti hari ini, tenang sampai pulang.'],
+ Lainnya:['Kerjakan dengan sepenuh hati.','Satu per satu, pasti selesai.','Fokus pada yang ada di depan mata.','Kamu sudah melakukan yang terbaik.']};
+const MI={prep:'🧘',soon:'⏰',start:'🚀',mid:'💪',end:'🏁',jeda:'☕',pagi:'🌅',siang:'☀️',sore:'🌇',malam:'🌙',done:'🎉'};
+const MTOD={pagi:['Selamat pagi! Mulai hari dengan niat baik dan senyum.','Pagi yang cerah untuk berbagi ilmu.'],siang:['Selamat siang! Tetap semangat, setengah hari sudah terlewati.','Jangan lupa makan dan istirahat sejenak.'],sore:['Selamat sore! Terima kasih untuk hari yang penuh arti.','Sore tenang, saatnya merapikan catatan.'],malam:['Selamat malam. Istirahat yang cukup, besok kita mulai lagi.','Hari ini sudah cukup baik. Beristirahatlah.']};
+let motiOff=0;function motiNext(){motiOff++;updateFocusCard()}
+const hs=s=>{let h=7;for(const c of String(s))h=(h*31+c.charCodeAt(0))>>>0;return h};
+const pk=(a,s)=>a[hs(s)%a.length];
+function tod(h){return h<11?'pagi':h<15?'siang':h<18?'sore':'malam'}
+function tfMoti(){
+  const n=new Date(),ds=dstr(n),cur=n.getHours()*60+n.getMinutes()+n.getSeconds()/60,list=tfOcc(ds),a=currentFocusAgenda,td=tod(n.getHours());
+  const sd=ds+motiOff;
+  if(!a){if(list.length)return{i:MI.done,t:'Alhamdulillah, semua agenda hari ini tuntas!',s:pk(MTOD[td],sd)};return{i:MI[td],t:pk(MTOD[td],sd),s:'Belum ada agenda hari ini. Tambahkan bila perlu.'}}
+  const s=tmin(a.startTime),e=tmin(a.endTime),type=MT[a.type]?a.type:'Lainnya';let ph;
+  if(cur<s){const d=s-cur;ph=d<=5?'soon':d<=60?'prep':'jeda'}else{const r=(cur-s)/(e-s);ph=r<.12?'start':r<.7?'mid':'end'}
+  const seed=sd+a.id+ph;
+  return{i:MI[ph],t:pk(MO[ph],seed),s:pk(MT[type],seed+'t')}
+}
+
+/* ---------- Init ---------- */
+tfEnhance(document);
+$('timeline-date').value=dstr();
+tfApplyTheme();
+if(window.matchMedia)matchMedia('(prefers-color-scheme: dark)').addEventListener&&matchMedia('(prefers-color-scheme: dark)').addEventListener('change',tfApplyTheme);
+document.querySelectorAll('[data-logo]').forEach(e=>e.innerHTML=TF_LOGO);
+
+/* ---------- Kalender ---------- */
+const CAL_MON=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const CAL_COL={blue:'#3b82f6',sky:'#0ea5e9',emerald:'#10b981',fuchsia:'#d946ef',orange:'#f97316',gray:'#9ca3af',amber:'#f59e0b'};
+let calY=new Date().getFullYear(),calM=new Date().getMonth(),calSel=dstr();
+const noteDs=n=>n.ds||(/^\d{2}\/\d{2}\/\d{4}$/.test(n.date||'')?n.date.split('/').reverse().join('-'):'');
+const calDate=ds=>new Date(ds+'T12:00:00');
+const calLabel=ds=>{const d=calDate(ds);return TF_DAYS[d.getDay()]+', '+d.getDate()+' '+CAL_MON[d.getMonth()]+' '+d.getFullYear()};
+function calFillSelects(){
+  const m=$('cal-month'),y=$('cal-year');if(!m||m.options.length)return;
+  m.innerHTML=CAL_MON.map((n,i)=>`<option value="${i}">${n}</option>`).join('');
+  let o='';for(let i=1950;i<=2100;i++)o+=`<option value="${i}">${i}</option>`;y.innerHTML=o;
+}
+function calShift(n){const d=new Date(calY,calM+n,1);calY=d.getFullYear();calM=d.getMonth();renderCalendar()}
+function calJump(){calY=+$('cal-year').value;calM=+$('cal-month').value;renderCalendar()}
+function calToday(){calSel=dstr();calY=new Date().getFullYear();calM=new Date().getMonth();renderCalendar();renderNotes()}
+function calPick(ds){calSel=ds;const d=calDate(ds);calY=d.getFullYear();calM=d.getMonth();renderCalendar();renderNotes()}
+function renderCalendar(){
+  const g=$('cal-grid');if(!g)return;calFillSelects();
+  $('cal-month').value=calM;$('cal-year').value=calY;
+  const off=(new Date(calY,calM,1).getDay()+6)%7,len=new Date(calY,calM+1,0).getDate(),total=Math.ceil((off+len)/7)*7,today=dstr();
+  const nmap={};state.notes.forEach(n=>{const k=noteDs(n);if(k)nmap[k]=1});
+  let h='';
+  for(let i=0;i<total;i++){
+    const d=new Date(calY,calM,1-off+i),ds=dstr(d),inM=d.getMonth()===calM;
+    const types=[...new Set(tfOcc(ds).map(a=>a.type))].slice(0,3),dl=tfDayLabels(ds),hol=dl.some(x=>x.kind==='libur'||x.kind==='sekolah-libur'),cuti=!hol&&dl.some(x=>x.kind==='cuti'),evt=dl.some(x=>x.kind==='acara');
+    const dots=types.map(t=>`<i style="background:${CAL_COL[(TYPEC[t]||TYPEC.Lainnya)[0]]||'#9ca3af'}"></i>`).join('')+(nmap[ds]?'<i class="n" style="background:#a855f7"></i>':'')+(evt?'<i style="background:#14b8a6"></i>':'');
+    h+=`<button type="button" role="gridcell" class="cal-cell${inM?'':' out'}${d.getDay()===0?' sun':''}${hol?' hol':cuti?' cuti':''}${ds===today?' today':''}${ds===calSel?' sel':''}" onclick="calPick('${ds}')" aria-label="${esc(calLabel(ds)+(dl.length?'. '+dl.map(x=>x.full).join('; '):''))}" aria-pressed="${ds===calSel}"><span>${d.getDate()}</span><span class="cal-dots">${dots}</span></button>`;
+  }
+  g.innerHTML=h;renderCalDay();
+}
+function renderCalDay(){
+  const box=$('cal-day');if(!box)return;const list=tfOcc(calSel);
+  let h=`<div class="flex flex-wrap items-center justify-between gap-2"><div><h3 class="text-sm font-bold text-slate-100">${esc(calLabel(calSel))}${calSel===dstr()?' <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 align-middle">Hari ini</span>':''}</h3><p class="text-[11px] text-slate-400">${list.length?list.length+' agenda / jadwal':'Belum ada agenda'}</p></div><div class="flex gap-2 flex-wrap"><button type="button" onclick="calOpenAgenda()" class="px-3 py-2 rounded-xl glass-card text-xs font-semibold text-slate-200"><i class="fa-regular fa-eye"></i> Lihat di Agenda</button><button type="button" onclick="calAddAgenda()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md"><i class="fa-solid fa-plus"></i> Tambah Agenda / Jadwal</button></div></div>`;
+  {const bn=dayBannerHtml(calSel);if(bn)h+='<div class="dbn">'+bn+'</div>'}
+   if(list.length)h+='<div class="space-y-2">'+list.map(a=>{const c=CAL_COL[(TYPEC[a.type]||TYPEC.Lainnya)[0]]||'#9ca3af';
+    return `<div class="cal-item" style="border-left-color:${c}"><div class="min-w-0 flex-1"><span class="block text-xs font-bold text-slate-100 tabular-nums">${esc(a.startTime)} - ${esc(a.endTime)}${jamText(a)?' · '+esc(jamText(a)):''}</span><span class="block text-sm font-semibold text-slate-100">${esc(a.title)}</span><span class="block text-[11px] text-slate-400">${esc(a.type)}${a.location?' · '+esc(a.location):''} · ${esc(repeatText(a))}</span></div><div class="cal-act"><button type="button" onclick="editAgenda('${a.id}')" class="cal-ab" aria-label="Edit agenda ${esc(a.title)}" title="Edit"><i class="fa-solid fa-pen"></i></button><button type="button" onclick="deleteAgenda('${a.id}')" class="cal-ab del" aria-label="Hapus agenda ${esc(a.title)}" title="Hapus"><i class="fa-solid fa-trash"></i></button></div></div>`}).join('')+'</div>';
+  else h+='<p class="text-xs text-slate-400 text-center py-3">Klik <b>Tambah Agenda / Jadwal</b> untuk membuat agenda pada tanggal ini. Agenda akan muncul di tab Beranda pada hari tersebut.</p>';
+  box.innerHTML=h;
+}
+function calAddAgenda(){openAgendaModal();$('agenda-date').value=calSel;if(typeof modalClash==='function')modalClash()}
+function calOpenAgenda(){$('timeline-date').value=calSel;renderTimeline();switchTab('timeline')}
+window.addEventListener('load',()=>{
+  if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
+  loadStateFromStorage();startLiveClock();renderTimeline();renderWeek();renderTasks();renderNotes();renderCalendar();updateFocusCard();setInterval(updateFocusCard,30000);
+  updateStats();tfCheck();fbUi();tfNetUi();
+  const qt=new URLSearchParams(location.search).get('tab');switchTab(qt==='notes'?'calendar':(['timeline','week','tasks','calendar'].includes(qt)?qt:'timeline'));
+  if(fbCfg()&&localStorage.getItem('tf_fbon')==='1')fbInit().catch(()=>{});
+  setInterval(updateStats,30000);setInterval(()=>{if(!document.body.classList.contains('not-agenda'))renderTimeline()},60000);setInterval(tfCheck,15000);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden){tfCheck();renderTimeline()}});
+  const sp=$('splash');if(sp){setTimeout(()=>{sp.classList.add('hide');setTimeout(()=>sp.remove(),500)},window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches?300:1700)}
+  setTimeout(tfOnboard,window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches?700:2300);
+  if('serviceWorker'in navigator&&/^https?:$/.test(location.protocol)){const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.register('sw.js').catch(()=>{});navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had)showToast('Pembaruan TeacherFlow terpasang. Muat ulang untuk memakainya.','info',8000)})}
+});
+
+    

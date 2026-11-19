@@ -1,0 +1,12 @@
+{
+  "name": "teacherflow",
+  "version": "3.0.0",
+  "private": true,
+  "description": "Agenda & pengingat guru terpadu (PWA)",
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

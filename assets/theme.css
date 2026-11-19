@@ -191,3 +191,115 @@ body.not-agenda .agenda-only{display:none!important}
 @media(max-width:640px){.ag-act{width:100%;justify-content:flex-end;padding-top:10px;border-top:1px dashed var(--panelb)}}
 .ag-empty{display:flex;flex-direction:column;align-items:center;gap:6px;padding:34px 16px;border-radius:20px;border:1.5px dashed var(--panelb);text-align:center;color:rgb(var(--s400));font-size:12px}
 .ag-empty i{font-size:30px;opacity:.7}.ag-empty b{font-size:14px;color:rgb(var(--s200))}
+
+/* Info & panduan */
+.gd-wrap{display:flex;flex-direction:column;gap:12px;font-size:13px;line-height:1.55;color:rgb(var(--s300))}
+.gd-hero{display:flex;align-items:center;gap:12px}
+.gd-hero b{display:block;font-size:17px;color:rgb(var(--s100))}
+.gd-hero small{color:rgb(var(--s400));font-size:12px}
+.gd-logo{width:48px;height:48px;border-radius:14px;overflow:hidden;flex-shrink:0}
+.gd-p{margin:0}
+.gd-feat{display:flex;flex-wrap:wrap;gap:6px}
+.gd-feat span{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:var(--card);border:1px solid var(--panelb);font-size:11px;font-weight:600;color:rgb(var(--s200))}
+.gd-h{margin:4px 0 0;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:rgb(var(--s400))}
+.gd-sec{border-radius:14px;background:var(--card);border:1px solid var(--panelb);overflow:hidden}
+.gd-sec>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:11px 14px;font-weight:700;font-size:13px;color:rgb(var(--s100))}
+.gd-sec>summary::-webkit-details-marker{display:none}
+.gd-sec>summary span{flex:1}
+.gd-ic{width:18px;text-align:center;color:var(--g1,#6F5BD0)}
+.gd-ch{font-size:11px;color:rgb(var(--s400));transition:transform .2s}
+.gd-sec[open] .gd-ch{transform:rotate(180deg)}
+.gd-body{padding:0 14px 12px}
+.gd-body ul{margin:0;padding-left:18px;list-style:disc;display:flex;flex-direction:column;gap:6px}
+.gd-body b{color:rgb(var(--s100))}
+.gd-foot{margin:0;font-size:11px;color:rgb(var(--s400));text-align:center}
+
+/* Onboarding & aksi toast */
+.ob-hd{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.ob-hd h3{margin:0;font-size:18px;font-weight:800;color:rgb(var(--s100))}
+.ob-hd small{color:rgb(var(--s400));font-size:12px}
+.ob-ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:18px;color:#fff;background:linear-gradient(135deg,var(--g1,#6F5BD0),#d946ef);flex-shrink:0}
+.ob-body{display:flex;flex-direction:column;gap:12px;font-size:13px;color:rgb(var(--s300))}
+.ob-p{margin:0;line-height:1.55}.ob-s{font-size:11px;color:rgb(var(--s400))}
+.ob-chk{display:flex;flex-wrap:wrap;gap:8px 18px;color:rgb(var(--s200))}.ob-chk label{display:flex;align-items:center;gap:8px}
+.ob-act{display:grid;gap:8px}.ob-act button i{width:18px;margin-right:6px;color:var(--g1,#6F5BD0)}
+.ob-dots{display:flex;justify-content:center;gap:6px}
+.ob-dots i{width:8px;height:8px;border-radius:99px;background:var(--panelb);transition:all .2s}
+.ob-dots i.on{width:22px;background:var(--g1,#6F5BD0)}
+.ob-ft{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px}.ob-ft>span{display:flex;gap:8px}
+.gd-link{background:none;border:0;color:var(--g1,#6F5BD0);font-weight:700;font-size:12px;cursor:pointer;text-decoration:underline}
+
+/* Kalender akademik: banner, penanda, dialog */
+.dbn{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;border-radius:14px;padding:9px 12px;font-size:12px;background:var(--card);border:1px solid var(--panelb)}
+.dbn.hidden{display:none}
+.dbn-i{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:99px;font-weight:700;font-size:11px;border:1px solid transparent}
+.dbn-libur{background:#f43f5e1f;color:#be123c;border-color:#f43f5e66}
+.dbn-cuti{background:#f59e0b1f;color:#b45309;border-color:#f59e0b66}
+.dbn-sekolah-libur{background:#f43f5e1f;color:#be123c;border-color:#f43f5e66}
+.dbn-acara{background:#14b8a61f;color:#0f766e;border-color:#14b8a666}
+html.dark .dbn-libur,html.dark .dbn-sekolah-libur{color:#fda4af}
+html.dark .dbn-cuti{color:#fcd34d}
+html.dark .dbn-acara{color:#5eead4}
+.dbn-note{flex-basis:100%;font-size:11px;color:rgb(var(--s400))}
+.cal-cell.hol>span:first-child{color:#e11d48;font-weight:800}
+html.dark .cal-cell.hol>span:first-child{color:#fb7185}
+.wk-hol{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;font-weight:700;color:#e11d48}
+html.dark .wk-hol{color:#fb7185}
+.wk-day.today .wk-hol{color:#fff}
+.ac-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;background:var(--card);border:1px solid var(--panelb)}
+.ac-row>div{flex:1}.ac-row b{display:block;color:rgb(var(--s100));font-size:13px}.ac-row small{color:rgb(var(--s400));font-size:11px}
+.ac-del{width:32px;height:32px;border-radius:10px;border:0;background:transparent;color:rgb(var(--s400));cursor:pointer}
+.ac-del:hover{background:#f43f5e22;color:#f43f5e}
+.ac-empty{margin:0;padding:10px;text-align:center;color:rgb(var(--s400));font-size:12px}
+.ex-grid{display:grid;gap:10px}
+.ex-opt{display:flex;align-items:center;gap:14px;text-align:left;padding:14px;border-radius:14px;background:var(--card);border:1px solid var(--panelb);cursor:pointer;color:rgb(var(--s200))}
+.ex-opt:hover{border-color:var(--g1,#6F5BD0)}
+.ex-opt>i{font-size:26px;width:34px;text-align:center;color:var(--g1,#6F5BD0)}
+.ex-opt b{display:block;font-size:14px;color:rgb(var(--s100))}.ex-opt small{display:block;margin-top:2px;font-size:11px;color:rgb(var(--s400));line-height:1.45}
+
+/* Cetak / simpan PDF jadwal pekan */
+#print-root{display:none}
+@media print{
+  @page{size:A4 landscape;margin:12mm}
+  html.tf-printing,html.tf-printing body{background:#fff!important}
+  html.tf-printing body>*:not(#print-root){display:none!important}
+  html.tf-printing #print-root{display:block!important;color:#111;font:12px/1.4 "Poppins",system-ui,sans-serif}
+  .pr-head h1{margin:0 0 2px;font-size:18px}.pr-head p{margin:0 0 10px;font-size:11px;color:#555}
+  .pr-table{width:100%;border-collapse:collapse}
+  .pr-table th{background:#efeafd;color:#111;font-size:11px;text-align:left;padding:6px 8px;border:1px solid #9b93c9;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pr-table td{padding:6px 8px;border:1px solid #bbb;vertical-align:top;font-size:11px}
+  .pr-table tr{break-inside:avoid}
+  .pr-day{width:92px;background:#f7f5fd;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pr-hol{display:block;margin-top:3px;font-size:9px;font-weight:700;color:#be123c}
+  .pr-time{white-space:nowrap;font-variant-numeric:tabular-nums}
+  .pr-empty{color:#777;font-style:italic}
+}
+
+/* Toast (termasuk tombol Batalkan) harus selalu di atas dialog/onboarding (z-50) agar bisa diklik */
+#toast-container{z-index:80}
+
+/* Penanda tanggal: libur = merah, cuti bersama = amber; tanggal terpilih tetap putih agar terbaca di atas gradien */
+.cal-cell.cuti>span:first-child{color:#d97706;font-weight:700}
+html.dark .cal-cell.cuti>span:first-child{color:#fbbf24}
+.cal-cell.sel.hol>span:first-child,.cal-cell.sel.cuti>span:first-child,html.dark .cal-cell.sel.hol>span:first-child,html.dark .cal-cell.sel.cuti>span:first-child{color:#fff}
+.wk-dh .wk-hol{color:#e11d48;font-size:10px;font-weight:700;margin-top:1px}
+html.dark .wk-dh .wk-hol{color:#fb7185}
+.wk-day.today .wk-dh .wk-hol{color:#fff}
+th .wk-hol{color:#e11d48}
+
+/* Header di layar sempit: judul menyusut dengan elipsis, tombol tidak menimpa teks (kini ada 3 tombol) */
+header [data-logo]+div{min-width:0}
+header h1,header #tagline{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:420px){
+  header.glass-panel{padding:12px;gap:8px}
+  header .gap-3{gap:8px}
+  header .gap-2{gap:4px}
+  header .hbtn{width:36px;height:36px;border-radius:12px}
+  header [data-logo]{width:36px;height:36px}
+  header h1.font-bold{font-size:1rem}
+}
+@media (max-width:340px){
+  header .hbtn{width:32px;height:32px;border-radius:10px}
+  header [data-logo]{width:32px;height:32px}
+  header h1.font-bold{font-size:.9rem}
+}
