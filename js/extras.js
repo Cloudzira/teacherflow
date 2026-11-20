@@ -23,7 +23,6 @@ function modalClash(){const box=$('agenda-clash');if(!box)return;
   box.innerHTML=msg;box.classList.toggle('hidden',!msg)}
 (function(){const f=$('form-agenda');['change','input','click'].forEach(ev=>f.addEventListener(ev,()=>setTimeout(modalClash,30)))})();
 /* tema cepat */
-function quickTheme(){const order=['light','mint','dark','ocean'];let c=tfThemeKey();if(c==='auto')c=document.documentElement.classList.contains('dark')?'dark':'light';state.settings.theme=order[(order.indexOf(c)+1)%order.length];saveStateToStorage();tfApplyTheme();showToast('Tema: '+TF_THEMES[state.settings.theme].n,'info',1800)}
 function switchTab(t){['timeline','week','tasks','calendar'].forEach(k=>{const on=k===t;$('tab-'+k+'-btn').className='tb'+(on?' on':'');$('tab-'+k+'-btn').setAttribute('aria-current',on?'page':'false');$('tab-'+k+'-content').classList.toggle('hidden',!on)});document.body.classList.toggle('not-agenda',t!=='timeline');if(t==='week')renderWeek();if(t==='calendar'){renderCalendar();renderNotes()}scrollTo({top:0,behavior:'smooth'})}
 ['modal-agenda','modal-task','modal-note'].forEach(id=>{const m=$(id);m.addEventListener('click',e=>{if(e.target===m)closeModal(id)})});
 /* motivasi sesuai waktu kegiatan */

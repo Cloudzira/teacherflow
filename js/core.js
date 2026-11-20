@@ -52,7 +52,6 @@ function tfApplyTheme(){
   h.classList.toggle('dark',!!th.dark);
   if(k==='mint'||k==='ocean')h.setAttribute('data-theme',k);else h.removeAttribute('data-theme');
   const m=document.querySelector('meta[name=theme-color]');if(m)m.content=th.meta;
-  const i=$('theme-icon');if(i)i.className='fa-solid '+(th.dark?'fa-sun':'fa-moon');
 }
 const tfThemeBtn=(v,on)=>`<button type="button" data-th="${v}" role="radio" aria-checked="${on}" class="thm${on?' on':''}"><span class="thm-sw" style="background:${TF_THEMES[v].sw}"></span><span>${TF_THEMES[v].n}</span></button>`;
 
