@@ -1,80 +1,20 @@
-/* MutqinLab — service worker
-  • Cangkang aplikasi (HTML/CSS/JS): JARINGAN DULU, cache hanya sebagai cadangan luring.
-    Pembaruan kode langsung terpakai; saat luring aplikasi tetap terbuka dari cache.
-  • Data mushaf, font, terjemahan, ikon: cache-first (tidak berubah) → bisa dibaca luring.
-    Cache data TIDAK diberi nomor versi supaya hasil "Unduh seluruh mushaf" tidak hilang saat aplikasi diperbarui.
-  • Audio (everyayah.com) & Firebase: tidak disentuh. */
-const VERSION = "v20";
-const SHELL_CACHE = "mushaf-shell-" + VERSION;
-const DATA_CACHE = "mushaf-data";   // harus sama dengan DATA_CACHE di app.js
-const SHELL = [
-  "./", "index.html", "style.css", "app.js", "tahfidz.js", "panduan.js", "ai.js", "ai.css", "dialog.js", "dialog.css", "privasi.html", "tahfidz.css", "manifest.webmanifest",
-  "icon.svg", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png"
-];
-
-const DATA_HOSTS = [
-  "raw.githubusercontent.com",
-  "cdn.jsdelivr.net",
-  "api.quran.com",
-  "fonts.googleapis.com",
-  "fonts.gstatic.com",
-  "cdnjs.cloudflare.com"
-];
-
-self.addEventListener("install", e => {
-  // cache: "reload" → ambil dari jaringan, bukan dari cache HTTP browser
-  e.waitUntil(
-    caches.open(SHELL_CACHE)
-      .then(c => Promise.all(SHELL.map(u => fetch(new Request(u, { cache: "reload" })).then(r => { if (r.ok) return c.put(u, r); }).catch(() => {}))))
-      .then(() => self.skipWaiting())
-  );
-});
-
-self.addEventListener("activate", e => {
-  e.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k.startsWith("mushaf-") && k !== SHELL_CACHE && k !== DATA_CACHE).map(k => caches.delete(k))))
-      .then(() => self.clients.claim())
-  );
-});
-
-const cacheable = res => res && (res.status === 200 || res.type === "opaque");
-
-self.addEventListener("fetch", e => {
-  const req = e.request;
-  if (req.method !== "GET" || req.headers.has("range")) return;
-  const url = new URL(req.url);
-
-  // data eksternal: cache-first
-  if (DATA_HOSTS.includes(url.hostname)) {
-    e.respondWith(
-      caches.open(DATA_CACHE).then(async cache => {
-        const hit = await cache.match(req);
-        if (hit) return hit;
-        const res = await fetch(req);
-        if (cacheable(res)) cache.put(req, res.clone()).catch(() => {});
-        return res;
-      })
-    );
+/* TeacherFlow service worker: precache penuh agar bisa dipakai offline sejak kunjungan pertama */
+const VERSION='v3b6',CACHE='teacherflow-'+VERSION;
+const ASSETS=["./", "index.html", "manifest.webmanifest", "assets/app.css", "assets/theme.css", "js/holidays.js", "js/logic.js", "js/xlsx.js", "js/tasks-notes.js", "js/core.js", "js/schedule.js", "js/dialogs.js", "js/sync.js", "js/extras.js", "js/export.js", "assets/fa/fa-brands-400.woff2", "assets/fa/fa-regular-400.woff2", "assets/fa/fa-solid-900.woff2", "assets/fa/fa-v4compatibility.woff2", "assets/fonts/poppins-latin-400-normal.woff2", "assets/fonts/poppins-latin-500-normal.woff2", "assets/fonts/poppins-latin-600-normal.woff2", "assets/fonts/poppins-latin-700-normal.woff2", "assets/fonts/poppins-latin-800-normal.woff2", "icons/icon-180.png", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/icon.svg"];
+self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS.map(u=>new Request(u,{cache:'reload'})))).then(()=>self.skipWaiting()))});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x.startsWith('teacherflow-')&&x!==CACHE).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
+self.addEventListener('fetch',e=>{
+  const r=e.request;if(r.method!=='GET')return;
+  const u=new URL(r.url);
+  if(u.origin!==location.origin){
+    /* Firebase/Google API tidak di-cache; modul gstatic (SDK Firebase) di-cache setelah dipakai sekali */
+    if(u.host==='www.gstatic.com'&&u.pathname.includes('/firebasejs/'))e.respondWith(caches.open(CACHE+'-sdk').then(c=>c.match(r).then(m=>m||fetch(r).then(x=>{c.put(r,x.clone());return x}))));
     return;
   }
-
-  // cangkang aplikasi: jaringan dulu (selalu revalidasi), cache sebagai cadangan luring
-  if (url.origin === self.location.origin) {
-    e.respondWith(
-      caches.open(SHELL_CACHE).then(async cache => {
-        try {
-          const res = await fetch(req, { cache: "no-cache" });
-          if (res && res.status === 200) cache.put(req, res.clone()).catch(() => {});
-          return res;
-        } catch (err) {
-          const hit = await cache.match(req, { ignoreSearch: true });
-          if (hit) return hit;
-          if (req.mode === "navigate") { const home = await cache.match("index.html"); if (home) return home; }
-          throw err;
-        }
-      })
-    );
+  if(r.mode==='navigate'){
+    e.respondWith(fetch(r).then(x=>{const cp=x.clone();caches.open(CACHE).then(c=>c.put('index.html',cp));return x}).catch(()=>caches.match('index.html')));
+    return;
   }
-  // selain itu (audio, Firebase, dll.): langsung ke jaringan
+  e.respondWith(caches.match(r,{ignoreSearch:true}).then(m=>m||fetch(r).then(x=>{if(x.ok){const cp=x.clone();caches.open(CACHE).then(c=>c.put(r,cp))}return x})));
 });
+self.addEventListener('notificationclick',e=>{e.notification.close();e.waitUntil(clients.matchAll({type:'window'}).then(l=>l[0]?l[0].focus():clients.openWindow('./')))});
