@@ -78,7 +78,7 @@
                 const dFormatted = isNaN(dDate.getTime()) ? task.deadline : `${tfDMY(dDate)} - ${String(dDate.getHours()).padStart(2,'0')}:${String(dDate.getMinutes()).padStart(2,'0')}`;
 
                 const card = document.createElement('div');
-                card.className = `glass-panel p-4 rounded-xl border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
+                card.className = `tf-task glass-panel p-4 rounded-xl border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
                     task.completed ? 'opacity-50 line-through border-slate-800' : 'border-white/10 hover:border-slate-600'
                 }`;
 
