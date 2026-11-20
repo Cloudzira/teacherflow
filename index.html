@@ -1,491 +1,405 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TeacherFlow - Agenda & Pengingat Guru Terpadu</title>
-    <meta name="theme-color" content="#6F5BD0">
-    <meta name="description" content="TeacherFlow: agenda mengajar, jadwal pekan, halaqah, ekstrakurikuler, tugas, dan catatan dalam satu aplikasi.">
-    <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
-    <link rel="manifest" href="manifest.webmanifest">
-    <link rel="icon" href="icons/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="icons/icon-180.png">
-    <script>try{var s=JSON.parse(localStorage.getItem('tf_settings')||'{}'),t=s.theme||'auto',d=document.documentElement;if(t==='mint'||t==='ocean')d.setAttribute('data-theme',t);if(t==='dark'||t==='ocean'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches))d.classList.add('dark')}catch(e){}</script>
-    <!-- Tailwind CSS CDN -->
-    
-    
-    
-    
-
-    <style>
-        :root{--s50:42 33 80;--s100:42 33 80;--s200:58 48 104;--s300:91 83 128;--s400:107 100 144;--s500:138 132 173;--s600:201 192 234;--s700:221 214 245;--s800:255 255 255;--s900:243 239 252;--s950:251 246 243;--b300:90 68 184;--b400:123 101 217;--e300:21 128 61;--e400:21 128 61;--a300:146 64 14;--a400:180 83 9;--r300:190 18 60;--r400:225 29 72;--p300:109 40 217;--p400:124 58 237;--o300:194 65 12;--o500:234 88 12;--k300:3 105 161;--k400:2 132 199;--f300:162 28 175;--f400:192 38 211;--g300:55 65 81;--g400:75 85 99;--toast:255 255 255;--bgpage:linear-gradient(135deg,#CFC4F5,#E9E2FB 50%,#F6E4EF);--shell:#FBF6F3;--panel:#fff;--panelb:#EDE8FA;--card:#F5F1FB;--inp:#FBFAFF;--inpb:#DDD6F5;--ink:#2A2150;--focus:linear-gradient(120deg,#CBBFF3,#DDD5F7);--st1:#E8E2FA;--st2:#FADCDC;--st3:#FDEFC9;--st4:#DAE7FC;--shadow:rgba(111,91,208,.10)}
-        html.dark{--s50:243 240 255;--s100:243 240 255;--s200:218 212 245;--s300:185 177 220;--s400:152 144 192;--s500:122 114 163;--s600:74 67 117;--s700:58 52 99;--s800:42 37 80;--s900:30 26 60;--s950:20 17 43;--b300:196 184 250;--b400:165 150 242;--e300:110 231 183;--e400:52 211 153;--a300:252 211 77;--a400:251 191 36;--r300:253 164 175;--r400:251 113 133;--p300:216 180 254;--p400:192 132 252;--o300:253 186 116;--o500:251 146 60;--k300:125 211 252;--k400:56 189 248;--f300:240 171 252;--f400:232 121 249;--g300:209 213 219;--g400:156 163 175;--toast:42 37 80;color-scheme:dark;--bgpage:linear-gradient(135deg,#14112B,#1B1640 50%,#241B45);--shell:#1A1636;--panel:#241F4A;--panelb:#352F63;--card:#2A2550;--inp:#1E1A3C;--inpb:#3A3463;--ink:#F3F0FF;--focus:linear-gradient(120deg,#3B2F7A,#2C2561);--st1:#2E2763;--st2:#4A2A3F;--st3:#4A3A1E;--st4:#1F3560;--shadow:rgba(0,0,0,.35)}
-        body{font-family:'Poppins',sans-serif;color:var(--ink);background:var(--bgpage);background-attachment:fixed;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
-        body>div.max-w-6xl{background:var(--shell);border-radius:28px;margin-top:12px;margin-bottom:12px;box-shadow:0 20px 50px var(--shadow)}
-        @media(max-width:640px){body>div.max-w-6xl{border-radius:0;margin:0}}
-        ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgb(var(--s600));border-radius:9999px}
-        .glass-panel{background:var(--panel);border:1px solid var(--panelb)!important;box-shadow:0 6px 20px var(--shadow);border-radius:24px}
-        .glass-card{background:var(--card);border:1px solid var(--panelb)}
-        .glass-input{background:var(--inp);border:1.5px solid var(--inpb);color:var(--ink)}
-        .glass-input:focus{border-color:#7B65D9;outline:none;box-shadow:0 0 0 3px rgba(123,101,217,.25)}
-        :focus-visible{outline:3px solid #A99BEF;outline-offset:2px}
-        html:not(.dark) .border-white\/10,html:not(.dark) .border-white\/5{border-color:#EDE8FA}
-        .bg-slate-950\/80{background:rgba(20,17,43,.6)!important;backdrop-filter:blur(4px)}
-        @keyframes pulse-glow{0%,100%{box-shadow:0 8px 24px var(--shadow)}50%{box-shadow:0 12px 34px rgba(123,101,217,.35)}}
-        .glow-active{animation:pulse-glow 3s infinite ease-in-out}
-        #focus-card-section{background:var(--focus);border:0!important}
-        #focus-card-section .glass-card{background:var(--panel)}
-        .stat{border-radius:22px;padding:16px;font-size:12px;font-weight:600;color:var(--ink)}
-        .stat .ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:16px;color:#fff;margin-bottom:10px}
-        .stat b{display:block;font-size:28px;font-weight:800;line-height:1.1}.stat i.s{font-style:normal;font-size:11px;opacity:.7}
-        #splash{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:linear-gradient(160deg,#a855f7,#d946ef 55%,#fb7185);color:#fff;transition:opacity .5s,visibility .5s}
-        html.dark #splash{background:linear-gradient(160deg,#2C2561,#14112B)}
-        #splash.hide{opacity:0;visibility:hidden}
-        .sp-logo{width:112px;height:112px;border-radius:28px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.3);animation:pop .7s cubic-bezier(.2,1.4,.4,1)}
-        .sp-title{font-size:30px;font-weight:800;letter-spacing:-.02em}.sp-sub{font-size:13px;opacity:.85}
-        .sp-bar{width:140px;height:5px;border-radius:9px;background:rgba(255,255,255,.25);overflow:hidden;margin-top:10px}
-        .sp-bar span{display:block;height:100%;width:0;background:#fff;border-radius:9px;animation:load 1.5s ease-out forwards}
-        @keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}@keyframes load{to{width:100%}}
-        @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.sp-bar span{width:100%}}
-    </style>
-    <link rel="stylesheet" href="assets/app.css"><link rel="stylesheet" href="assets/theme.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>MutqinLab — Hafalan & Murojaah Al-Qur'an</title>
+  <meta name="description" content="Mushaf Madinah 604 halaman untuk menghafal Al-Qur'an: mode tutup ayat, audio per ayat dengan pengulangan, penanda, dan pelacak hafalan.">
+  <meta name="theme-color" content="#060d0b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="MutqinLab">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="color-scheme" content="dark light">
+  <meta property="og:title" content="MutqinLab — Hafalan & Murojaah Al-Qur'an">
+  <meta property="og:description" content="Mushaf Madinah 604 halaman, audio per ayat, dan program tahfidz terpandu dengan jadwal murojaah otomatis.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MutqinLab">
+  <meta property="og:locale" content="id_ID">
+  <meta property="og:url" content="https://mutqinlab.pages.dev/">
+  <meta property="og:image" content="https://mutqinlab.pages.dev/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MutqinLab — Hafalan &amp; Murojaah Al-Qur'an">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MutqinLab — Hafalan &amp; Murojaah Al-Qur'an">
+  <meta name="twitter:description" content="Rencana hafalan sesuai waktumu, ziyadah terpandu, dan murojaah terjadwal otomatis. Gratis.">
+  <meta name="twitter:image" content="https://mutqinlab.pages.dev/og-image.png">
+  <link rel="canonical" href="https://mutqinlab.pages.dev/">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Reem+Kufi:wght@400;600;700&family=Amiri+Quran&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="tahfidz.css">
+  <link rel="stylesheet" href="ai.css">
+  <link rel="stylesheet" href="dialog.css">
 </head>
-<body class="min-h-screen pb-12 text-slate-100 selection:bg-blue-600 selection:text-white">
-<div id="splash" role="status" aria-label="Memuat TeacherFlow"><div class="sp-logo" data-logo></div><div class="sp-title">TeacherFlow</div><div class="sp-sub">Agenda &amp; pengingat guru terpadu</div><div class="sp-bar"><span></span></div></div>
+<body>
+  <noscript><p style="padding:24px;font:16px system-ui">MutqinLab membutuhkan JavaScript. Aktifkan JavaScript di peramban Anda.</p></noscript>
 
-    <!-- Toast Notification Container -->
-    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+  <!-- Sprite ikon -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></symbol>
+    <symbol id="i-type" viewBox="0 0 24 24"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></symbol>
+    <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+    <symbol id="i-cap" viewBox="0 0 24 24"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5M22 10v6"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/></symbol>
+    <symbol id="i-volume" viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><path d="M8 2v16M16 6v16"/></symbol>
+    <symbol id="i-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><path d="M22 4L12 14l-3-3"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3 1.9-5.4 5.1-6.5C9.3 13.7 12 13 12 13"/></symbol>
+    <symbol id="i-auto" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></symbol>
+    <symbol id="i-prev" viewBox="0 0 24 24"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+    <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></symbol>
+    <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.8-3.4L23 10M1 14l4.7 4.4A9 9 0 0 0 20.5 15"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 11v5M12 8h.01"/></symbol>
+  </svg>
 
-    <div class="max-w-6xl mx-auto px-4 py-4 sm:py-6 space-y-6">
+  <a class="skip" href="#teks">Lewati ke teks mushaf</a>
 
-        <!-- ================= TOP HEADER BAR ================= -->
-        <header class="glass-panel rounded-2xl p-4 sm:p-6 shadow-xl flex flex-row items-center justify-between gap-3 border border-white/10">
-            <!-- Title & Live Date/Time -->
-            <div class="flex items-center min-w-0">
-                <div class="flex items-center gap-3 min-w-0">
-                    <div class="w-12 h-12 rounded-xl shadow-lg overflow-hidden shrink-0" data-logo></div>
-                    <div>
-                        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-100">TeacherFlow</h1>
-                        <p id="tagline" class="text-xs text-slate-400">Agenda &amp; pengingat guru terpadu</p>
-                    </div>
-                </div>
-                
-            </div>
+  <div id="splash" class="splash" role="status" aria-live="polite">
+    <div class="splash-content">
+      <div class="splash-emblem"><span class="ring" aria-hidden="true"></span><span class="ring r2" aria-hidden="true"></span><img src="icon.svg" alt="" width="86" height="86"></div>
+      <strong class="splash-name">MutqinLab</strong>
+      <span class="splash-status">Menyiapkan mushaf</span>
+      <span class="splash-line" aria-hidden="true"><i></i></span>
+      <small class="splash-tag">Menghafal · Mengulang · Mengokohkan</small>
+    </div>
+  </div>
 
-            <!-- Digital Clock & Desktop Status Switcher -->
-            <div class="flex items-center shrink-0">
-                <div class="flex items-center gap-2">
-                    <span id="net-badge" class="hidden px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30"><i class="fa-solid fa-wifi"></i> Offline</span>
-                    <button id="install-btn" onclick="installApp()" class="hidden px-3 h-10 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold" aria-label="Pasang aplikasi"><i class="fa-solid fa-download"></i> Pasang</button>
-                    <button onclick="quickTheme()" class="hbtn" aria-label="Ganti tema" title="Ganti tema"><i id="theme-icon" class="fa-solid fa-moon"></i></button><button onclick="openGuide()" class="hbtn" aria-label="Info &amp; panduan" title="Info &amp; panduan"><i class="fa-solid fa-circle-info"></i></button><button onclick="openSettings()" class="hbtn" aria-label="Pengaturan" title="Pengaturan"><i class="fa-solid fa-gear"></i></button>
-                </div>
-                
-            </div>
-        </header>
+  <!-- Bilah atas -->
+  <header class="topbar">
+    <div class="brand">
+      <img class="brand-logo" src="icon.svg" alt="" width="38" height="38">
+      <span class="brand-txt"><span class="brand-name">MutqinLab</span></span>
+    </div>
+    <div class="header-actions">
+      <button id="btnAbout" class="about-btn" type="button" data-guide="auto" aria-label="Panduan & informasi" title="Panduan & informasi">
+        <svg class="ik" aria-hidden="true"><use href="#i-info"/></svg>
+      </button>
+      <button id="btnTheme" class="about-btn" type="button" title="Ganti tema"><svg class="ik" aria-hidden="true"><use id="themeIcon" href="#i-moon"/></svg><span class="sr">Ganti tema</span></button>
+      <button id="btnInstall" class="about-btn" type="button" aria-label="Instal aplikasi" title="Instal aplikasi"><svg class="ik" aria-hidden="true"><use href="#i-download"/></svg></button>
+      <button id="btnSettings" class="about-btn" type="button" title="Pengaturan" aria-label="Pengaturan"><svg class="ik" aria-hidden="true"><use href="#i-sliders"/></svg></button>
+      <div class="auth-box">
+        <svg class="ik" aria-hidden="true"><use href="#i-user"/></svg>
+        <span id="userStatus">Tamu</span>
+        <button id="authBtn" type="button">Masuk</button>
+      </div>
+    </div>
+  </header>
 
-        <!-- ================= FOCUS CARD (UPCOMING EVENT / COUNTDOWN) ================= -->
-        <section id="focus-card-section" class="agenda-only glass-panel rounded-2xl p-5 sm:p-6 shadow-2xl relative overflow-hidden glow-active border border-blue-500/30">
-            <!-- Background Glow Decor -->
-            <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+  <!-- Toolbar -->
+  <nav class="viewbar" id="viewbar" aria-label="Menu utama">
+    <button type="button" data-view="mushaf" aria-current="page"><svg class="ik" aria-hidden="true"><use href="#i-book"/></svg>Mushaf</button>
+    <button type="button" data-view="g"><svg class="ik" aria-hidden="true"><use href="#i-target"/></svg>Beranda</button>
+    <button type="button" data-view="z"><svg class="ik" aria-hidden="true"><use href="#i-cap"/></svg>Ziyadah</button>
+    <button type="button" data-view="m"><svg class="ik" aria-hidden="true"><use href="#i-repeat"/></svg>Murojaah<span class="dot" id="thDot" hidden></span></button>
+    <button type="button" data-view="t"><svg class="ik" aria-hidden="true"><use href="#i-check"/></svg>Tes</button>
+  </nav>
 
-            <div id="hello-row" class="relative z-10 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 mb-5 pb-4 border-b border-white/25 text-white" style="margin-bottom:20px;padding-bottom:16px">
-                <span class="flex items-center gap-2.5 text-base sm:text-lg font-semibold"><i class="fa-regular fa-calendar-check text-xl"></i><span id="live-date">Sabtu, 7 November 2026</span></span>
-                <span class="flex items-center gap-2.5"><i class="fa-regular fa-clock text-xl"></i><span id="card-time" class="tabular-nums text-2xl sm:text-3xl font-extrabold tracking-tight">00:00</span></span>
-            </div>
+  <div class="misi" id="misi" hidden></div>
 
-            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
-                <div class="space-y-3 w-full lg:w-auto">
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <span class="px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase bg-blue-500/20 text-blue-300 border border-blue-500/30 flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span>
-                            Agenda Terdekat
-                        </span>
-                        <span id="focus-type-badge" class="px-3 py-1 rounded-full text-xs font-semibold">
-                            <!-- Type Badge via JS -->
-                        </span>
-                    </div>
-
-                    <div>
-                        <h2 id="focus-title" class="text-2xl sm:text-3xl font-extrabold text-slate-100 tracking-tight">Menyiapkan Agenda...</h2>
-                        <p id="focus-subtitle" class="text-sm text-slate-300 mt-1">-</p>
-                        <p class="text-xs text-slate-400 mt-1 flex items-center gap-2"><i class="fa-solid fa-location-dot"></i> <span id="focus-location">-</span></p>
-                    </div>
-
-                    <div class="flex items-center gap-4 text-xs text-slate-400 pt-1">
-                        <span class="flex items-center gap-1.5"><i class="fa-regular fa-clock text-blue-400"></i> Waktu: <strong id="focus-time-range" class="text-slate-200">-</strong></span>
-                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-users text-purple-400"></i> Sasaran: <strong id="focus-target" class="text-slate-200">Anggota</strong></span>
-                    </div>
-                </div>
-
-                <!-- Countdown & Action Button -->
-                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full lg:w-auto border-t lg:border-t-0 border-slate-700/60 pt-4 lg:pt-0">
-                    <!-- Action Button -->
-                    <button id="focus-action-btn" onclick="completeFocusAgenda()" class="px-6 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-sm shadow-lg shadow-blue-600/30 active:scale-95 transition-all flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-circle-check text-lg"></i>
-                        <span>Tandai Selesai / Masuk</span>
-                    </button>
-                </div>
-            </div>
-            <div id="focus-bar"><i></i></div>
-            <div id="moti"><span class="mi" id="moti-ic">✨</span><div><b id="moti-t"></b><small id="moti-s"></small></div><button type="button" onclick="motiNext()" aria-label="Pesan lain" title="Pesan lain"><i class="fa-solid fa-shuffle"></i></button></div>
-        </section>
-        <div id="clash-banner" class="agenda-only warnbox hidden" role="alert"></div>
-        <div id="day-banner" class="agenda-only dbn hidden"></div>
-
-        <!-- ================= RINGKASAN HARI INI ================= -->
-        <section class="agenda-only grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <div class="stat" style="background:var(--st1)"><div class="ic" style="background:#6F5BD0"><i class="fa-regular fa-calendar-check"></i></div>Agenda selesai<b id="st-agenda">0/0</b><i class="s">hari ini</i></div>
-            <div class="stat" style="background:var(--st2)"><div class="ic" style="background:#E5566B"><i class="fa-solid fa-fire"></i></div>Tugas urgent<b id="st-urgent">0</b><i class="s">prioritas tinggi</i></div>
-            <div class="stat" style="background:var(--st3)"><div class="ic" style="background:#C77D07"><i class="fa-solid fa-list-check"></i></div>Tugas aktif<b id="st-tasks">0</b><i class="s">belum selesai</i></div>
-            <div class="stat" style="background:var(--st4)"><div class="ic" style="background:#4A7FDB"><i class="fa-regular fa-note-sticky"></i></div>Catatan<b id="st-notes">0</b><i class="s">tersimpan</i></div>
-        </section>
-
-        <!-- ================= MAIN NAVIGATION TABS ================= -->
-        <nav id="main-nav" aria-label="Menu utama">
-            <button id="tab-timeline-btn" onclick="switchTab('timeline')" class="tb">
-                <i class="fa-solid fa-house"></i><span>Beranda</span>
-            </button>
-            <button id="tab-week-btn" onclick="switchTab('week')" class="tb"><i class="fa-solid fa-calendar-week"></i><span>Jadwal</span></button>
-            <button id="tab-tasks-btn" onclick="switchTab('tasks')" class="tb">
-                <i class="fa-solid fa-list-check"></i><span>Tugas</span> 
-                <span id="task-badge-count" class="bd">0</span>
-            </button>
-            <button id="tab-calendar-btn" onclick="switchTab('calendar')" class="tb">
-                <i class="fa-solid fa-calendar-days"></i><span>Kalender</span>
-            </button>
-        </nav>
-
-        <!-- ================= TAB CONTENT 1: TIMELINE HARIAN ================= -->
-        <main id="tab-timeline-content" class="space-y-4">
-            <!-- Controls & Filter Bar -->
-            <div class="glass-panel p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <span class="text-xs text-slate-400 font-medium">Filter Agenda:</span>
-                    <select id="timeline-filter" onchange="renderTimeline()" class="glass-input text-xs rounded-lg px-3 py-1.5 flex-1 sm:flex-none">
-                        <option value="ALL">Semua Jenis Agenda</option>
-                        <option value="Mengajar">Mengajar Kelas</option>
-                        <option value="Halaqah">Halaqah</option>
-                        <option value="Ekstrakurikuler">Ekstrakurikuler</option>
-                    <option value="Piket">Piket</option><option value="Lainnya">Lainnya</option></select>
-                </div>
-                <button onclick="openAgendaModal()" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md shadow-blue-600/20 active:scale-95 transition-all flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-plus"></i> Tambah Agenda Harian
-                </button>
-            </div>
-
-            <div class="flex flex-wrap items-center gap-2">
-                <button onclick="shiftDate(-1)" class="w-9 h-9 rounded-xl glass-card text-slate-300" aria-label="Hari sebelumnya"><i class="fa-solid fa-chevron-left"></i></button>
-                <input type="date" id="timeline-date" onchange="renderTimeline()" class="glass-input rounded-xl p-2 text-xs" aria-label="Tanggal agenda">
-                <button onclick="shiftDate(1)" class="w-9 h-9 rounded-xl glass-card text-slate-300" aria-label="Hari berikutnya"><i class="fa-solid fa-chevron-right"></i></button>
-                <button onclick="todayDate()" class="px-3 py-2 rounded-xl glass-card text-xs font-semibold text-slate-200">Hari ini</button>
-                <span id="timeline-daylabel" class="text-xs font-semibold text-slate-300"></span>
-            </div>
-            <!-- Legend Badge Indicators -->
-            <div class="flex items-center gap-4 flex-wrap text-[11px] font-medium text-slate-300 px-1">
-                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-sky-500"></span> Mengajar</span>
-                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-orange-500"></span> Piket</span>
-                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500"></span> Halaqah</span>
-                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-fuchsia-500"></span> Ekstrakurikuler</span>
-                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-gray-500"></span> Lainnya</span>
-            </div>
-
-            <!-- Timeline List Container -->
-            <div id="timeline-list" class="space-y-3">
-                <!-- Rendered dynamically by JS -->
-            </div>
-
-            <!-- Tugas & Deadline (tampil sampai batas waktu) -->
-            <div id="home-tasks" class="space-y-3"></div>
-        </main>
-
-        <!-- ================= TAB CONTENT 2: TUGAS & DEADLINE ================= -->
-        <main id="tab-week-content" class="space-y-4 hidden">
-            <div class="flex flex-wrap items-center gap-2">
-                <button onclick="shiftWeek(-1)" class="w-9 h-9 rounded-xl glass-card text-slate-300" aria-label="Pekan sebelumnya"><i class="fa-solid fa-chevron-left"></i></button>
-                <span id="week-range" class="text-sm font-bold text-slate-100 min-w-[11rem] text-center"></span>
-                <button onclick="shiftWeek(1)" class="w-9 h-9 rounded-xl glass-card text-slate-300" aria-label="Pekan berikutnya"><i class="fa-solid fa-chevron-right"></i></button>
-                <button onclick="shiftWeek(0)" class="px-3 py-2 rounded-xl glass-card text-xs font-semibold text-slate-200">Pekan ini</button>
-                <select id="week-filter" onchange="renderWeek()" class="glass-input rounded-xl p-2 text-xs" aria-label="Filter jenis kegiatan"><option value="ALL">Semua kegiatan</option><option value="Mengajar">Mengajar saja</option><option value="Halaqah">Halaqah</option><option value="Ekstrakurikuler">Ekstrakurikuler</option><option value="Piket">Piket</option><option value="Lainnya">Lainnya</option></select>
-                <div class="flex glass-card rounded-xl p-1 gap-1" role="group" aria-label="Tampilan jadwal"><button id="wv-table" onclick="setWeekView('table')" class="px-3 py-2 text-xs font-semibold rounded-lg">Tabel jam</button><button id="wv-card" onclick="setWeekView('card')" class="px-3 py-2 text-xs font-semibold rounded-lg">Kartu</button></div>
-                <span class="ml-auto flex gap-2 flex-wrap"><button onclick="copyWeek()" class="px-3 py-2 rounded-xl glass-card text-xs font-semibold text-slate-200"><i class="fa-regular fa-copy"></i> Salin jadwal</button><button onclick="openExport()" class="px-3 py-2 rounded-xl glass-card text-xs font-semibold text-slate-200"><i class="fa-solid fa-file-export"></i> Ekspor</button></span>
-                <button onclick="openAgendaModal()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md"><i class="fa-solid fa-plus"></i> Tambah</button>
-            </div>
-            <p id="week-summary" class="text-xs text-slate-400"></p>
-            <p class="text-[11px] text-slate-400 -mt-2"><i class="fa-solid fa-lock"></i> Jadwal tetap tersimpan di perangkat ini dan berulang tiap pekan sampai Anda menghapusnya.</p>
-            <div id="week-table" class="glass-panel rounded-2xl p-2 overflow-x-auto hidden"></div>
-            <div id="week-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-start"></div>
-        </main>
-
-        <main id="tab-tasks-content" class="space-y-4 hidden">
-            <!-- Controls & Filter Bar -->
-            <div class="glass-panel p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <span class="text-xs text-slate-400 font-medium">Prioritas:</span>
-                    <select id="task-filter-priority" onchange="renderTasks()" class="glass-input text-xs rounded-lg px-3 py-1.5">
-                        <option value="ALL">Semua Prioritas</option>
-                        <option value="Tinggi">Tinggi (Urgent)</option>
-                        <option value="Sedang">Sedang</option>
-                        <option value="Rendah">Rendah</option>
-                    </select>
-                    <select id="task-filter-status" onchange="renderTasks()" class="glass-input text-xs rounded-lg px-3 py-1.5">
-                        <option value="ALL">Semua Status</option>
-                        <option value="PENDING">Belum Selesai</option>
-                        <option value="COMPLETED">Sudah Selesai</option>
-                    </select>
-                </div>
-                <button onclick="openTaskModal()" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md shadow-blue-600/20 active:scale-95 transition-all flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-plus"></i> Tambah Tugas / Deadline
-                </button>
-            </div>
-
-            <!-- Tasks List Container -->
-            <div id="tasks-list" class="space-y-3">
-                <!-- Rendered dynamically by JS -->
-            </div>
-        </main>
-
-        <!-- ================= TAB CONTENT 4: KALENDER (+ CATATAN) ================= -->
-        <main id="tab-calendar-content" class="space-y-4 hidden">
-            <section class="glass-panel p-4 rounded-2xl space-y-3">
-                <div class="flex items-center gap-2">
-                    <button type="button" onclick="calShift(-1)" class="cal-nav" aria-label="Bulan sebelumnya" title="Bulan sebelumnya"><i class="fa-solid fa-chevron-left"></i></button>
-                    <select id="cal-month" onchange="calJump()" class="glass-input rounded-xl px-3 py-2 text-sm font-semibold flex-1 min-w-0" aria-label="Bulan"></select>
-                    <select id="cal-year" onchange="calJump()" class="glass-input rounded-xl px-3 py-2 text-sm font-semibold" aria-label="Tahun"></select>
-                    <button type="button" onclick="calShift(1)" class="cal-nav" aria-label="Bulan berikutnya" title="Bulan berikutnya"><i class="fa-solid fa-chevron-right"></i></button>
-                </div>
-                <div class="cal-head" aria-hidden="true"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div>
-                <div id="cal-grid" class="cal-grid" role="grid" aria-label="Kalender"></div>
-                <div class="flex items-center gap-4 flex-wrap text-[11px] text-slate-400 px-1">
-                    <span class="flex items-center gap-1.5"><span class="cal-lg" style="background:#0ea5e9"></span> Agenda / jadwal</span>
-                    <span class="flex items-center gap-1.5"><span class="cal-lg sq" style="background:#a855f7"></span> Ada catatan</span>
-                    <span class="flex items-center gap-1.5"><span class="cal-lg ring"></span> Hari ini</span>
-                    <button type="button" onclick="calToday()" class="ml-auto px-3 py-1.5 rounded-xl glass-card text-xs font-semibold text-slate-200">Ke hari ini</button>
-                </div>
-            </section>
-
-            <section id="cal-day" class="glass-panel p-4 rounded-2xl space-y-3" aria-live="polite"></section>
-
-            <section class="glass-panel p-4 rounded-2xl space-y-3">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                    <h3 class="text-sm font-bold text-slate-100 flex items-center gap-2"><i class="fa-solid fa-note-sticky text-purple-400"></i> Catatan</h3>
-                    <button type="button" onclick="openNoteModal()" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold shadow-md shadow-purple-600/20 active:scale-95 transition-all flex items-center gap-2"><i class="fa-solid fa-pen-to-square"></i> Catatan Baru</button>
-                </div>
-                <p class="text-[11px] text-slate-400"><i class="fa-solid fa-lock"></i> Catatan baru tersimpan pada tanggal yang sedang dipilih di kalender.</p>
-                <div class="flex flex-col sm:flex-row gap-2">
-                    <div class="relative flex-1">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                        <input type="text" id="note-search" oninput="renderNotes()" placeholder="Cari catatan..." class="glass-input text-xs rounded-xl pl-9 pr-3 py-2 w-full">
-                    </div>
-                    <select id="note-scope" onchange="renderNotes()" class="glass-input text-xs rounded-xl px-3 py-2" aria-label="Tampilkan catatan">
-                        <option value="day">Tanggal terpilih</option>
-                        <option value="ALL">Semua tanggal</option>
-                    </select>
-                    <select id="note-filter-tag" onchange="renderNotes()" class="glass-input text-xs rounded-xl px-3 py-2">
-                        <option value="ALL">Semua Tag Catatan</option>
-                        <option value="Mengajar">Mengajar</option>
-                        <option value="Halaqah">Halaqah</option>
-                        <option value="Ekstrakurikuler">Ekstrakurikuler</option>
-                        <option value="Umum">Umum</option>
-                        <option value="Jurnal">Jurnal Mengajar</option>
-                    </select>
-                </div>
-                <div id="notes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-            </section>
-        </main>
-
-    <footer id="app-footer" class="mt-6 pt-4 border-t border-slate-700/40 text-center space-y-2">
-                        <p class="text-[11px] text-slate-400 max-w-xl mx-auto">Agenda, jadwal mengajar, tugas, pengingat, dan catatan guru dalam satu aplikasi. Data tersimpan di perangkat Anda.</p>
-            <div id="footer-social" class="flex items-center justify-center gap-2 flex-wrap"></div>
-            <p class="app-footer text-[11px] text-slate-400">Crafted with <span class="text-rose-400" aria-label="cinta">&hearts;</span> by <a href="https://kurniapedia.my.id" target="_blank" rel="noopener noreferrer" class="text-blue-400 font-bold hover:underline"><strong>Kurniapedia</strong></a> 2026</p>
-        </footer>
+  <nav class="toolbar" aria-label="Kontrol mushaf">
+    <div class="seg" id="modeGroup" role="radiogroup" aria-label="Mode hafalan">
+        <button type="button" role="radio" data-mode="normal" aria-checked="true" title="Mode Normal (1)">
+        <svg class="ik" aria-hidden="true"><use href="#i-book"/></svg><span class="sr">Normal</span>
+      </button>
+      <button type="button" role="radio" data-mode="blur" aria-checked="false" title="Tutup semua kata (2)">
+        <svg class="ik" aria-hidden="true"><use href="#i-eye-off"/></svg><span class="sr">Tutup</span>
+      </button>
+      <button type="button" role="radio" data-mode="first" aria-checked="false" title="Hanya kata pertama tiap ayat (3)">
+        <svg class="ik" aria-hidden="true"><use href="#i-type"/></svg><span class="sr">Kata awal</span>
+      </button>
     </div>
 
-    <!-- ================= MODALS SECTION ================= -->
+    <button id="btnNavOpen" class="chip" type="button" title="Navigasi surat, juz, dan ayat (/)">
+      <svg class="ik" aria-hidden="true"><use href="#i-compass"/></svg>
+      <span id="navLabel">Pilih surat</span>
+    </button>
 
-    <!-- MODAL 1: AGENDA HARIAN (Mengajar / Dinas / Halaqah / Ekstra) -->
-    <div id="modal-agenda" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden">
-        <div class="glass-panel w-full max-w-lg rounded-2xl p-6 border border-white/10 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between border-b border-slate-700/60 pb-3">
-                <h3 id="modal-agenda-title-text" class="text-lg font-bold text-slate-100 flex items-center gap-2">
-                    <i class="fa-solid fa-calendar-plus text-blue-400"></i> Tambah Agenda Harian
-                </h3>
-                <button onclick="closeModal('modal-agenda')" class="text-slate-400 hover:text-slate-100 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
+    <div class="aksi">
+      <button id="btnMoreActions" class="icon-btn" type="button" aria-expanded="false" aria-controls="actionItems" aria-label="Aksi halaman" title="Aksi halaman">
+        <svg class="ik" aria-hidden="true"><use href="#i-more"/></svg>
+      </button>
+      <div id="actionItems" class="aksi-items" role="group" aria-label="Aksi halaman" hidden>
+      <button id="btnBookmark" class="icon-btn" type="button" aria-pressed="false" title="Simpan penanda halaman (B)"><svg class="ik" aria-hidden="true"><use href="#i-bookmark"/></svg><span class="sr">Penanda</span></button>
+      <button id="btnBookmarks" class="icon-btn" type="button" title="Daftar penanda"><svg class="ik" aria-hidden="true"><use href="#i-list"/></svg><span class="sr">Daftar penanda</span></button>
+      <button id="btnMemo" class="icon-btn" type="button" aria-pressed="false" title="Tandai halaman ini sudah hafal (M)"><svg class="ik" aria-hidden="true"><use href="#i-check"/></svg><span class="sr">Tandai hafal</span></button>
+      <button id="btnProgress" class="icon-btn" type="button" title="Progres hafalan"><svg class="ik" aria-hidden="true"><use href="#i-chart"/></svg><span class="sr">Progres hafalan</span></button>
+      </div>
+    </div>
+  </nav>
 
-            <form id="form-agenda" onsubmit="saveAgenda(event)" class="space-y-4 text-xs">
-                <input type="hidden" id="agenda-id">
-                
-                <div>
-                    <label class="block text-slate-300 font-medium mb-1">Jenis Kegiatan</label>
-                    <select id="agenda-type" required class="glass-input rounded-xl p-2.5 w-full">
-                        <option value="Mengajar">Mengajar Reguler Kelas</option>
-                        <option value="Halaqah">Halaqah / Bimbingan Keagamaan</option>
-                        <option value="Ekstrakurikuler">Ekstrakurikuler / Pembinaan</option>
-                    <option value="Piket">Piket / Tugas Tambahan</option><option value="Lainnya">Kegiatan Lain</option></select>
-                </div>
+  <!-- Halaman mushaf -->
+  <!-- Program tahfidz: Rencana · Ziyadah · Murojaah · Tes -->
+  <section id="tahfidz" hidden aria-label="Program tahfidz">
+    <div class="thclock"><b id="thClk"></b><span id="thHij"></span><span id="thCdn"></span></div>
+    <div id="thBody"></div>
+  </section>
 
-                <div>
-                    <label class="block text-slate-300 font-medium mb-1">Judul Kegiatan / Mata Pelajaran</label>
-                    <input type="text" id="agenda-title" required placeholder="Contoh: Matematika Wajib Kelas X-A" class="glass-input rounded-xl p-2.5 w-full">
-                </div>
+  <main id="wrap">
+    <section class="frame" id="frame" aria-label="Halaman mushaf">
+      <div class="edge e-top"></div><div class="edge e-bottom"></div>
+      <div class="edge e-left"></div><div class="edge e-right"></div>
+      <svg class="corner c1" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 28 Q2 2 28 2"/><path d="M2 2 H12 M2 2 V12"/><circle cx="9" cy="9" r="2.6" fill="currentColor" stroke="none"/></svg>
+      <svg class="corner c2" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 28 Q2 2 28 2"/><path d="M2 2 H12 M2 2 V12"/><circle cx="9" cy="9" r="2.6" fill="currentColor" stroke="none"/></svg>
+      <svg class="corner c3" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 28 Q2 2 28 2"/><path d="M2 2 H12 M2 2 V12"/><circle cx="9" cy="9" r="2.6" fill="currentColor" stroke="none"/></svg>
+      <svg class="corner c4" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 28 Q2 2 28 2"/><path d="M2 2 H12 M2 2 V12"/><circle cx="9" cy="9" r="2.6" fill="currentColor" stroke="none"/></svg>
 
-                <div class="glass-card rounded-xl p-3 space-y-2">
-                    <label class="block text-slate-300 font-medium">Jam pelajaran ke (opsional)</label>
-                    <div class="grid grid-cols-2 gap-3"><select id="agenda-jam-from" onchange="onJamChange()" class="glass-input rounded-xl p-2.5 w-full" aria-label="Mulai jam ke"></select><select id="agenda-jam-to" onchange="onJamChange()" class="glass-input rounded-xl p-2.5 w-full" aria-label="Sampai jam ke"></select></div>
-                    <p id="jam-hint" class="text-[11px] text-slate-400"></p>
-                </div>
+      <div id="kepala"><span id="kSurah"></span><span id="kJuz"></span></div>
+      <div id="teks" lang="ar" dir="rtl"></div>
+      <div id="kaki"><span id="kNo"></span></div>
+    </section>
+  </main>
 
-                <div id="agenda-clash" class="warnbox hidden" role="alert"></div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-slate-300 font-medium mb-1">Jam Mulai</label>
-                        <input type="time" id="agenda-start-time" required class="glass-input rounded-xl p-2.5 w-full">
-                    </div>
-                    <div>
-                        <label class="block text-slate-300 font-medium mb-1">Jam Selesai</label>
-                        <input type="time" id="agenda-end-time" required class="glass-input rounded-xl p-2.5 w-full">
-                    </div>
-                </div>
+  <footer class="site-footer">
+    <p>Crafted with <span class="heart">♥</span> by <span class="creator">Kurniapedia</span> 2026</p>
+    <p class="foot-link"><a href="privasi.html">Kebijakan Privasi</a></p>
+  </footer>
 
-                <div class="flex items-center gap-2 flex-wrap -mt-1"><span class="text-[11px] text-slate-400">Durasi cepat:</span><button type="button" onclick="setDur(35)" class="px-3 py-1 rounded-full glass-card text-slate-200 text-[11px] font-semibold">35 mnt</button><button type="button" onclick="setDur(40)" class="px-3 py-1 rounded-full glass-card text-slate-200 text-[11px] font-semibold">40 mnt</button><button type="button" onclick="setDur(45)" class="px-3 py-1 rounded-full glass-card text-slate-200 text-[11px] font-semibold">45 mnt</button><button type="button" onclick="setDur(60)" class="px-3 py-1 rounded-full glass-card text-slate-200 text-[11px] font-semibold">60 mnt</button><button type="button" onclick="setDur(90)" class="px-3 py-1 rounded-full glass-card text-slate-200 text-[11px] font-semibold">90 mnt</button></div>
+  <!-- Kartu ayat terpilih -->
+  <aside id="ayatSheet" class="ayat-sheet" hidden aria-label="Ayat terpilih">
+    <div class="as-head">
+      <strong id="asKey">QS</strong>
+      <button id="asClose" class="icon-btn kecil" type="button" aria-label="Tutup"><svg class="ik" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <p id="asText" class="as-text"></p>
+    <div class="as-act">
+      <button id="asPlay" type="button"><svg class="ik f" aria-hidden="true"><use href="#i-play"/></svg>Putar ayat</button>
+      <button id="asDrill" type="button" title="Putar ayat, beri jeda sepanjang ayat agar Anda melantunkannya, ulang 5x"><svg class="ik" aria-hidden="true"><use href="#i-target"/></svg>Latih hafalan</button>
+      <button id="asFrom" type="button"><svg class="ik" aria-hidden="true"><use href="#i-next"/></svg>Lanjut sampai akhir surat</button>
+    </div>
+  </aside>
 
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-slate-300 font-medium mb-1">Ruangan / Lokasi</label>
-                        <input type="text" id="agenda-location" placeholder="Contoh: Lab Komputer / R. Masjid" class="glass-input rounded-xl p-2.5 w-full">
-                    </div>
-                    <div>
-                        <label class="block text-slate-300 font-medium mb-1">Kelompok Anggota / Kelas</label>
-                        <input type="text" id="agenda-target" placeholder="Contoh: Anggota Kelas 10-A" class="glass-input rounded-xl p-2.5 w-full">
-                    </div>
-                </div>
+  <!-- Pemutar audio -->
+  <footer class="player" id="player" aria-label="Pemutar audio">
+    <div class="pl-progress" aria-hidden="true"><i id="plBar"></i></div>
+    <div class="pl-main">
+      <div class="pl-ctrl">
+        <button id="plPrev" class="icon-btn" type="button" aria-label="Ayat sebelumnya"><svg class="ik" aria-hidden="true"><use href="#i-prev"/></svg></button>
+        <button id="plPlay" class="icon-btn utama" type="button" aria-label="Putar"><svg class="ik f" aria-hidden="true"><use id="plPlayIcon" href="#i-play"/></svg></button>
+        <button id="plNext" class="icon-btn" type="button" aria-label="Ayat berikutnya"><svg class="ik" aria-hidden="true"><use href="#i-next"/></svg></button>
+        <button id="plStop" class="icon-btn" type="button" aria-label="Berhenti"><svg class="ik f" aria-hidden="true"><use href="#i-stop"/></svg></button>
+      </div>
+      <div class="pl-status" aria-live="polite">
+        <strong id="plTitle">Murattal</strong>
+        <small id="plSub">Siap diputar</small>
+      </div>
+      <button id="plMore" class="icon-btn" type="button" aria-expanded="false" aria-controls="plPanel" aria-label="Opsi audio"><svg class="ik" aria-hidden="true"><use href="#i-up"/></svg></button>
+    </div>
+    <div class="pl-panel" id="plPanel" hidden>
+      <label>Qari
+        <select id="selQari"></select>
+      </label>
+      <label>Cakupan putar
+        <select id="selMode">
+          <option value="page">Seluruh halaman ini</option>
+          <option value="ayah">Ayat terpilih</option>
+          <option value="range">Rentang ayat</option>
+          <option value="surah">Dari ayat terpilih sampai akhir surat</option>
+        </select>
+      </label>
+      <div class="rentang" id="rngWrap" hidden>
+        <label>Surat <select id="rngSurah"></select></label>
+        <label>Dari ayat <input type="number" id="rngFrom" min="1" value="1" inputmode="numeric"></label>
+        <label>Sampai <input type="number" id="rngTo" min="1" value="1" inputmode="numeric"></label>
+      </div>
+      <label>Ulang tiap ayat
+        <select id="selRepAyat">
+          <option value="1">1×</option><option value="2">2×</option><option value="3">3×</option>
+          <option value="5">5×</option><option value="7">7×</option><option value="10">10×</option><option value="0">Tanpa batas</option>
+        </select>
+      </label>
+      <label>Ulang seluruh rentang
+        <select id="selRepRange">
+          <option value="1">1×</option><option value="2">2×</option><option value="3">3×</option>
+          <option value="5">5×</option><option value="10">10×</option><option value="0">Tanpa batas</option>
+        </select>
+      </label>
+      <label>Kecepatan
+        <select id="selSpeed">
+          <option value="0.6">0,6×</option><option value="0.75">0,75×</option><option value="0.9">0,9×</option>
+          <option value="1">1× (normal)</option><option value="1.1">1,1×</option><option value="1.25">1,25×</option><option value="1.5">1,5×</option>
+        </select>
+      </label>
+      <label>Jeda antar ayat
+        <select id="selGap">
+          <option value="0">Tanpa jeda</option><option value="1">1 detik</option><option value="2">2 detik</option>
+          <option value="3">3 detik</option><option value="-1">Sepanjang ayat (giliran Anda)</option>
+        </select>
+      </label>
+    </div>
+  </footer>
 
-                <div><label class="block text-slate-300 font-medium mb-1">Berulang pada hari (kosong = setiap hari)</label><div class="flex flex-wrap gap-2"><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="1"> Sen</label><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="2"> Sel</label><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="3"> Rab</label><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="4"> Kam</label><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="5"> Jum</label><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="6"> Sab</label><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="0"> Min</label></div></div><div><label class="block text-slate-300 font-medium mb-1">Atau tanggal khusus (sekali jalan, mis. kegiatan insidental)</label><input type="date" id="agenda-date" class="glass-input rounded-xl p-2.5 w-full"></div>
-                <div>
-                    <label class="block text-slate-300 font-medium mb-1">Catatan Tambahan / Instraksi Singkat</label>
-                    <textarea id="agenda-notes" rows="2" placeholder="Catatan persiapan atau pengingat khusus..." class="glass-input rounded-xl p-2.5 w-full"></textarea>
-                </div>
-
-                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-700/60">
-                    <button type="button" onclick="closeModal('modal-agenda')" class="px-4 py-2 rounded-xl text-slate-300 hover:bg-slate-800 font-medium">Batal</button>
-                    <button type="submit" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold shadow-md shadow-blue-600/30">Simpan Agenda</button>
-                </div>
-            </form>
+  <!-- Dialog: Navigasi -->
+  <dialog id="dlgNav" class="modal" aria-labelledby="navTitle">
+    <div class="modal-box">
+      <header class="modal-head">
+        <h2 id="navTitle">Navigasi</h2>
+        <button class="icon-btn kecil" type="button" data-close aria-label="Tutup"><svg class="ik" aria-hidden="true"><use href="#i-x"/></svg></button>
+      </header>
+      <div class="tabs" role="tablist" aria-label="Jenis navigasi">
+        <button type="button" role="tab" id="tabSurat" aria-selected="true" aria-controls="panSurat">Surat</button>
+        <button type="button" role="tab" id="tabJuz" aria-selected="false" aria-controls="panJuz" tabindex="-1">Juz</button>
+        <button type="button" role="tab" id="tabAyat" aria-selected="false" aria-controls="panAyat" tabindex="-1">Ayat</button>
+      </div>
+      <div class="modal-body">
+        <div id="panSurat" role="tabpanel" aria-labelledby="tabSurat">
+          <label class="search"><svg class="ik" aria-hidden="true"><use href="#i-search"/></svg>
+            <input id="navSearch" type="search" placeholder="Cari surat, atau ketik 2:255" autocomplete="off" aria-label="Cari surat atau ayat">
+          </label>
+          <ul id="listSurat" class="list"></ul>
         </div>
-    </div>
-
-    <!-- MODAL 2: TUGAS & DEADLINE -->
-    <div id="modal-task" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden">
-        <div class="glass-panel w-full max-w-lg rounded-2xl p-6 border border-white/10 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between border-b border-slate-700/60 pb-3">
-                <h3 id="modal-task-title-text" class="text-lg font-bold text-slate-100 flex items-center gap-2">
-                    <i class="fa-solid fa-tasks text-blue-400"></i> Tambah Tugas & Deadline
-                </h3>
-                <button onclick="closeModal('modal-task')" class="text-slate-400 hover:text-slate-100 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-
-            <form id="form-task" onsubmit="saveTask(event)" class="space-y-4 text-xs">
-                <input type="hidden" id="task-id">
-
-                <div>
-                    <label class="block text-slate-300 font-medium mb-1">Judul Tugas / Administrasi</label>
-                    <input type="text" id="task-title" required placeholder="Contoh: Input Nilai Penilaian Harian Anggota" class="glass-input rounded-xl p-2.5 w-full">
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-slate-300 font-medium mb-1">Prioritas</label>
-                        <select id="task-priority" required class="glass-input rounded-xl p-2.5 w-full">
-                            <option value="Tinggi">Tinggi (Urgent - Merah)</option>
-                            <option value="Sedang">Sedang (Kuning)</option>
-                            <option value="Rendah">Rendah (Hijau)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-slate-300 font-medium mb-1">Kategori</label>
-                        <select id="task-category" required class="glass-input rounded-xl p-2.5 w-full">
-                            <option value="Administrasi">Administrasi Guru</option>
-                            <option value="Penilaian">Penilaian & Koreksi</option>
-                            <option value="Halaqah">Kegiatan Halaqah</option>
-                            <option value="Ekstrakurikuler">Ekstrakurikuler</option>
-                        <option value="Wali Kelas">Wali Kelas / Kesiswaan</option></select>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-slate-300 font-medium mb-1">Batas Waktu (Deadline)</label>
-                    <input type="datetime-local" id="task-deadline" required class="glass-input rounded-xl p-2.5 w-full">
-                </div>
-
-                <div>
-                    <label class="block text-slate-300 font-medium mb-1">Rincian Tugas</label>
-                    <textarea id="task-desc" rows="3" placeholder="Langkah-langkah atau kelengkapan yang harus disiapkan..." class="glass-input rounded-xl p-2.5 w-full"></textarea>
-                </div>
-
-                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-700/60">
-                    <button type="button" onclick="closeModal('modal-task')" class="px-4 py-2 rounded-xl text-slate-300 hover:bg-slate-800 font-medium">Batal</button>
-                    <button type="submit" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold shadow-md shadow-blue-600/30">Simpan Tugas</button>
-                </div>
-            </form>
+        <div id="panJuz" role="tabpanel" aria-labelledby="tabJuz" hidden>
+          <div id="gridJuz" class="grid-juz"></div>
         </div>
-    </div>
-
-    <!-- MODAL 3: CATATAN CEPAT (NOTE) -->
-    <div id="modal-note" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden">
-        <div class="glass-panel w-full max-w-lg rounded-2xl p-6 border border-white/10 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between border-b border-slate-700/60 pb-3">
-                <h3 id="modal-note-title-text" class="text-lg font-bold text-slate-100 flex items-center gap-2">
-                    <i class="fa-solid fa-note-sticky text-purple-400"></i> Catatan Cepat / Observasi
-                </h3>
-                <button onclick="closeModal('modal-note')" class="text-slate-400 hover:text-slate-100 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-
-            <form id="form-note" onsubmit="saveNote(event)" class="space-y-4 text-xs">
-                <input type="hidden" id="note-id">
-
-                <div>
-                    <label class="block text-slate-300 font-medium mb-1">Judul Catatan</label>
-                    <input type="text" id="note-title" required placeholder="Contoh: Observasi Perkembangan Hafalan Anggota" class="glass-input rounded-xl p-2.5 w-full">
-                </div>
-
-                <div>
-                    <label class="block text-slate-300 font-medium mb-1">Tag / Kategori Catatan</label>
-                    <select id="note-tag" required class="glass-input rounded-xl p-2.5 w-full">
-                        <option value="Mengajar">Mengajar Kelas</option>
-                        <option value="Halaqah">Halaqah</option>
-                        <option value="Ekstrakurikuler">Ekstrakurikuler</option>
-                        <option value="Umum">Umum / Lainnya</option>
-                    <option value="Jurnal">Jurnal Mengajar</option></select>
-                </div>
-
-                <div>
-                    <label class="block text-slate-300 font-medium mb-1">Isi Catatan</label>
-                    <textarea id="note-content" rows="5" required placeholder="Tuliskan poin penting, pencapaian anggota, hasil rapat, atau pengingat mendadak di sini..." class="glass-input rounded-xl p-2.5 w-full"></textarea>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <input type="checkbox" id="note-pinned" class="w-4 h-4 rounded accent-purple-500">
-                    <label for="note-pinned" class="text-slate-300 font-medium cursor-pointer">Sematkan Catatan Ini di Atas (Pin)</label>
-                </div>
-
-                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-700/60">
-                    <button type="button" onclick="closeModal('modal-note')" class="px-4 py-2 rounded-xl text-slate-300 hover:bg-slate-800 font-medium">Batal</button>
-                    <button type="submit" class="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold shadow-md shadow-purple-600/30">Simpan Catatan</button>
-                </div>
-            </form>
+        <div id="panAyat" role="tabpanel" aria-labelledby="tabAyat" hidden>
+          <div class="form-ayat">
+            <label>Surat <select id="ayatSurah"></select></label>
+            <label>Ayat <input id="ayatNo" type="number" min="1" value="1" inputmode="numeric"></label>
+            <button id="ayatGo" type="button" class="btn-utama">Buka ayat</button>
+          </div>
+          <p class="catatan">Halaman ayat dicari lewat Quran.com API. Jika sedang luring, aplikasi membuka awal surat.</p>
         </div>
+      </div>
     </div>
+  </dialog>
 
+  <!-- Dialog: Penanda -->
+  <dialog id="dlgBm" class="modal" aria-labelledby="bmTitle">
+    <div class="modal-box">
+      <header class="modal-head">
+        <h2 id="bmTitle">Penanda halaman</h2>
+        <button class="icon-btn kecil" type="button" data-close aria-label="Tutup"><svg class="ik" aria-hidden="true"><use href="#i-x"/></svg></button>
+      </header>
+      <div class="modal-body">
+        <ul id="bmList" class="list"></ul>
+      </div>
+      <footer class="modal-foot"><button id="bmAdd" type="button" class="btn-utama">Simpan halaman ini</button></footer>
+    </div>
+  </dialog>
 
-    <!-- ================= JAVASCRIPT APP LOGIC ================= -->
-    <script src="js/holidays.js"></script>
-    <script src="js/logic.js"></script>
-    <script src="js/xlsx.js"></script>
-    <script src="js/tasks-notes.js"></script>
-    <script src="js/core.js"></script>
-    <script src="js/schedule.js"></script>
-    <script src="js/dialogs.js"></script>
-    <script src="js/sync.js"></script>
-    <script src="js/extras.js"></script>
-    <script src="js/export.js"></script>
+  <!-- Dialog: Progres -->
+  <dialog id="dlgPrg" class="modal" aria-labelledby="prgTitle">
+    <div class="modal-box">
+      <header class="modal-head">
+        <h2 id="prgTitle">Progres hafalan</h2>
+        <button class="icon-btn kecil" type="button" data-close aria-label="Tutup"><svg class="ik" aria-hidden="true"><use href="#i-x"/></svg></button>
+      </header>
+      <div class="modal-body">
+        <div class="prg-total">
+          <div class="prg-angka"><strong id="prgPct">0%</strong><span id="prgText">0 / 604 halaman</span></div>
+          <div class="bar"><i id="prgBar"></i></div>
+        </div>
+        <h3 class="sub">Per juz <small>(ketuk untuk membuka)</small></h3>
+        <ul id="prgJuz" class="list juz-list"></ul>
+      </div>
+      <footer class="modal-foot"><button id="prgMark" type="button" class="btn-utama">Tandai halaman ini hafal</button></footer>
+    </div>
+  </dialog>
+
+  <!-- Dialog: Pengaturan -->
+  <dialog id="dlgSet" class="modal" aria-labelledby="setTitle">
+    <div class="modal-box">
+      <header class="modal-head">
+        <h2 id="setTitle">Pengaturan</h2>
+        <button class="icon-btn kecil" type="button" data-close aria-label="Tutup"><svg class="ik" aria-hidden="true"><use href="#i-x"/></svg></button>
+      </header>
+      <div class="modal-body set-body">
+        <fieldset class="grp">
+          <legend>Tema</legend>
+          <div class="radio-row">
+            <label><input type="radio" name="theme" value="auto"><span>Otomatis</span></label>
+            <label><input type="radio" name="theme" value="light"><span>Terang</span></label>
+            <label><input type="radio" name="theme" value="dark"><span>Gelap</span></label>
+            <label><input type="radio" name="theme" value="sepia"><span>Sepia</span></label>
+            <label><input type="radio" name="theme" value="goldblack"><span>Emas Hitam</span></label>
+            <label><input type="radio" name="theme" value="goldwhite"><span>Emas Putih</span></label>
+          </div>
+        </fieldset>
+        <div class="grp">
+          <label class="row" for="setWidth"><span>Lebar halaman</span><output id="setWidthVal">700 px</output></label>
+          <input id="setWidth" type="range" min="480" max="960" step="20" value="700">
+        </div>
+        <div class="grp">
+          <label class="check"><input id="setReveal" type="checkbox"><span>Buka ayat otomatis saat audio memutarnya <small>(pada mode Tutup / Kata awal)</small></span></label>
+          <label class="check"><input id="setTrans" type="checkbox"><span>Tampilkan terjemahan Indonesia saat ayat dipilih</span></label>
+          <label class="check"><input id="setWake" type="checkbox"><span>Jaga layar tetap menyala</span></label>
+        </div>
+        <div class="grp">
+          <h3 class="sub">Data</h3>
+          <div class="btn-row">
+            <button id="btnExport" type="button" class="btn"><svg class="ik" aria-hidden="true"><use href="#i-download"/></svg>Ekspor cadangan</button>
+            <button id="btnImport" type="button" class="btn"><svg class="ik" aria-hidden="true"><use href="#i-upload"/></svg>Impor cadangan</button>
+            <button id="btnDiag" type="button" class="btn"><svg class="ik" aria-hidden="true"><use href="#i-list"/></svg>Salin info diagnostik</button>
+            <button id="btnReset" type="button" class="btn bahaya"><svg class="ik" aria-hidden="true"><use href="#i-trash"/></svg>Hapus data lokal</button>
+            <button id="btnDelAcc" type="button" class="btn bahaya" hidden><svg class="ik" aria-hidden="true"><use href="#i-trash"/></svg>Hapus akun &amp; data cloud</button>
+          </div>
+          <input id="fileImport" type="file" accept="application/json,.json" hidden>
+          <p class="catatan">Masuk dengan Google untuk menyinkronkan progres, penanda, dan pengaturan antar perangkat.</p>
+          <p class="catatan" id="delAccInfo" hidden>“Hapus akun &amp; data cloud” menghapus progres di cloud dan akun MutqinLab-mu secara permanen. Data di perangkat ini tetap ada sampai kamu menghapusnya sendiri.</p>
+        </div>
+        <div class="grp">
+          <h3 class="sub">Mode luring</h3>
+          <p class="catatan" id="offInfo">Unduh seluruh mushaf (604 halaman beserta fontnya) agar bisa dibaca tanpa internet. Ukuran sekitar puluhan MB, sebaiknya lewat Wi-Fi.</p>
+          <div class="bar off-bar" id="offBarWrap" hidden><i id="offBar"></i></div>
+          <div class="btn-row">
+            <button id="btnOffline" type="button" class="btn"><svg class="ik" aria-hidden="true"><use href="#i-download"/></svg><span id="offLabel">Unduh seluruh mushaf</span></button>
+            <button id="btnOfflineClear" type="button" class="btn" hidden><svg class="ik" aria-hidden="true"><use href="#i-trash"/></svg>Hapus unduhan</button>
+          </div>
+        </div>
+        <div class="grp sumber">
+          <h3 class="sub">Sumber data</h3>
+          <p class="catatan">Teks &amp; font: mushaf Madinah (QCF v4) · Peta ayat, halaman &amp; terjemahan Indonesia (Kemenag): Quran.com API · Audio: EveryAyah.com. Semua sumber gratis.</p>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <div id="toasts" role="status" aria-live="polite"></div>
+
+  <script src="dialog.js" defer></script>
+  <script src="app.js" defer></script>
+  <script src="tahfidz.js" defer></script>
+  <script src="panduan.js" defer></script>
+  <script src="ai.js" defer></script>
 </body>
 </html>

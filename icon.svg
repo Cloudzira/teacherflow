@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="MutqinLab">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0c2f28"/><stop offset=".55" stop-color="#06181a"/><stop offset="1" stop-color="#030c0b"/></linearGradient>
+    <radialGradient id="aura" cx=".5" cy=".45" r=".55"><stop offset="0" stop-color="#2fd6b0" stop-opacity=".4"/><stop offset="1" stop-color="#2fd6b0" stop-opacity="0"/></radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbeab8"/><stop offset=".5" stop-color="#e2c27a"/><stop offset="1" stop-color="#b8892a"/></linearGradient>
+    <linearGradient id="em" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7cf0d6"/><stop offset="1" stop-color="#119a80"/></linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <rect width="512" height="512" fill="url(#aura)"/>
+  <g fill="none" stroke="url(#gold)" stroke-opacity=".28" stroke-width="1.5">
+    <circle cx="256" cy="256" r="196"/><circle cx="256" cy="256" r="168" stroke-dasharray="3 9"/>
+    <path d="M60 256H452M256 60V452" stroke-opacity=".1"/>
+  </g>
+  <g filter="url(#glow)" fill="none" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M146 366V168L256 288L366 168V366" stroke="url(#gold)" stroke-width="28"/>
+    <path d="M146 366V168L256 288L366 168V366" stroke="#fff7dc" stroke-width="4" stroke-opacity=".7"/>
+  </g>
+  <g filter="url(#glow)">
+    <circle cx="146" cy="168" r="14" fill="#fff6d6"/><circle cx="256" cy="288" r="14" fill="#fff6d6"/><circle cx="366" cy="168" r="14" fill="#fff6d6"/>
+    <circle cx="146" cy="366" r="10" fill="url(#em)"/><circle cx="366" cy="366" r="10" fill="url(#em)"/>
+  </g>
+  <g stroke="url(#gold)" stroke-linecap="round" stroke-opacity=".6">
+    <path d="M146 404H366" stroke-width="3"/>
+    <path d="M146 396V412M201 399V409M256 396V412M311 399V409M366 396V412" stroke-width="2.5"/>
+  </g>
+</svg>

@@ -1,24 +1,70 @@
 {
-  "name": "TeacherFlow - Agenda & Pengingat Guru",
-  "short_name": "TeacherFlow",
-  "description": "Agenda mengajar, jadwal pekan, halaqah, ekstrakurikuler, tugas, dan catatan guru.",
-  "id": "./",
-  "start_url": "./index.html",
-  "categories": ["education", "productivity"],
-  "shortcuts": [
-    {"name": "Agenda Hari Ini", "url": "index.html?tab=timeline", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]},
-    {"name": "Tugas & Deadline", "url": "index.html?tab=tasks", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]},
-    {"name": "Jadwal Pekan", "url": "index.html?tab=week", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]}
-  ],
+  "name": "MutqinLab — Hafalan & Murojaah Al-Qur'an",
+  "short_name": "MutqinLab",
+  "description": "Mushaf Madinah 604 halaman untuk menghafal Al-Qur'an: mode tutup ayat, audio per ayat dengan pengulangan, penanda, pelacak hafalan, serta program tahfidz terpandu (rencana, ziyadah, murojaah, tes).",
+  "lang": "id",
+  "dir": "ltr",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
-  "lang": "id",
-  "background_color": "#7c3aed",
-  "theme_color": "#7c3aed",
+  "orientation": "any",
+  "background_color": "#060d0b",
+  "theme_color": "#060d0b",
+  "categories": [
+    "education",
+    "books"
+  ],
   "icons": [
-    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
-    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
-    {"src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "id": "./",
+  "shortcuts": [
+    {
+      "name": "Murojaah hari ini",
+      "short_name": "Murojaah",
+      "url": "./?v=m",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Buka Mushaf",
+      "short_name": "Mushaf",
+      "url": "./?v=mushaf",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
   ]
 }
