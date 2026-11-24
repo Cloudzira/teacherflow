@@ -29,7 +29,7 @@ function saveStateToStorage(silent){
   }catch(e){showToast('Penyimpanan penuh atau diblokir browser. Ekspor cadangan dari Pengaturan.','warn',6000)}
   if(silent!==true){
     try{localStorage.setItem('tf_updatedAt',String(Date.now()))}catch(e){}
-    if(fbUser&&fb){clearTimeout(fbPushT);fbState='busy';fbUi();fbPushT=setTimeout(()=>{if(!navigator.onLine){fbPending=true;fbState='ready';fbUi();return}fbPush().then(()=>{fbState='in';fbUi()}).catch(e=>{fbPending=true;fbState='err';fbUi();showToast('Gagal mengunggah ke cloud ('+(e.code||e.message)+'). Data tetap aman di perangkat.','error',6000)})},1500)}
+    if(fbUser&&fb){clearTimeout(fbPushT);fbState='busy';fbUi();fbPushT=setTimeout(()=>{if(!navigator.onLine){fbPending=true;fbState='ready';fbUi();return}fbPush().then(r=>{fbState=r===false?'ready':'in';fbUi()}).catch(e=>{fbPending=true;fbState='err';fbUi();showToast('Gagal mengunggah ke cloud ('+(e.code||e.message)+'). Data tetap aman di perangkat.','error',6000)})},1500)}
   }
   try{renderCalendar();renderNotes()}catch(e){}
 }

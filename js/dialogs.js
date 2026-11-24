@@ -167,7 +167,7 @@ function tfOnboard(force){
 
 /* ---------- Pengaturan, cadangan, install ---------- */
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;if(typeof tfNetUi==='function')tfNetUi()});
-const TF_LOCAL=['tf_onboarded','tf_fired','tf_fbconfig','tf_device','tf_updatedAt','tf_dinasDate','tf_fbon'];
+const TF_LOCAL=['tf_onboarded','tf_fired','tf_fbconfig','tf_device','tf_updatedAt','tf_dinasDate','tf_fbon','tf_backup'];
 const tfKeys=()=>Object.keys(localStorage).filter(k=>/^(gf_|tf_)/.test(k)&&!TF_LOCAL.includes(k));
 function openSettings(){setTimeout(fbUi,0);
   const s=state.settings,perm='Notification'in window?Notification.permission:'tidak didukung';
@@ -216,5 +216,5 @@ window.addEventListener('offline',()=>{tfNetUi();showToast('Anda offline. Teache
 window.addEventListener('online',()=>{
   tfNetUi();showToast('Kembali online.','success');
   if(fbCfg()&&localStorage.getItem('tf_fbon')==='1'&&!fb)fbInit().catch(()=>{});
-  else if(fbUser&&fb&&fbPending){fbPending=false;fbPush().then(()=>{fbState='in';fbUi()}).catch(()=>{fbState='err';fbUi()})}
+  else if(fbUser&&fb){if(!fbSynced)fbStart();else if(fbPending){fbPending=false;fbPush().then(()=>{fbState='in';fbUi()}).catch(()=>{fbState='err';fbUi()})}}
 });
