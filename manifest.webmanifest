@@ -8,7 +8,7 @@
   "shortcuts": [
     {"name": "Agenda Hari Ini", "url": "index.html?tab=timeline", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]},
     {"name": "Tugas & Deadline", "url": "index.html?tab=tasks", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]},
-    {"name": "Jadwal Pekan", "url": "index.html?tab=week", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]}
+    {"name": "Agenda Pekan", "url": "index.html?tab=week", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]}
   ],
   "scope": "./",
   "display": "standalone",

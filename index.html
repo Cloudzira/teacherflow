@@ -144,7 +144,7 @@
             <button id="tab-timeline-btn" onclick="switchTab('timeline')" class="tb">
                 <i class="fa-solid fa-house"></i><span>Beranda</span>
             </button>
-            <button id="tab-week-btn" onclick="switchTab('week')" class="tb"><i class="fa-solid fa-calendar-week"></i><span>Jadwal</span></button>
+            <button id="tab-week-btn" onclick="switchTab('week')" class="tb"><i class="fa-solid fa-calendar-week"></i><span>Agenda</span></button>
             <button id="tab-tasks-btn" onclick="switchTab('tasks')" class="tb">
                 <i class="fa-solid fa-list-check"></i><span>Tugas</span> 
                 <span id="task-badge-count" class="bd">0</span>
@@ -247,7 +247,7 @@
                     <select id="cal-year" onchange="calJump()" class="glass-input rounded-xl px-3 py-2 text-sm font-semibold" aria-label="Tahun"></select>
                     <button type="button" onclick="calShift(1)" class="cal-nav" aria-label="Bulan berikutnya" title="Bulan berikutnya"><i class="fa-solid fa-chevron-right"></i></button>
                 </div>
-                <div class="cal-head" aria-hidden="true"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div>
+                <div class="cal-head" aria-hidden="true"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Ahd</span></div>
                 <div id="cal-grid" class="cal-grid" role="grid" aria-label="Kalender"></div>
                 <div class="flex items-center gap-4 flex-wrap text-[11px] text-slate-400 px-1">
                     <span class="flex items-center gap-1.5"><span class="cal-lg" style="background:#0ea5e9"></span> Agenda / jadwal</span>
@@ -354,7 +354,7 @@
                     </div>
                 </div>
 
-                <div><label class="block text-slate-300 font-medium mb-1">Berulang pada hari (kosong = setiap hari)</label><div class="flex flex-wrap gap-2"><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="1"> Sen</label><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="2"> Sel</label><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="3"> Rab</label><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="4"> Kam</label><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="5"> Jum</label><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="6"> Sab</label><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="0"> Min</label></div></div><div><label class="block text-slate-300 font-medium mb-1">Atau tanggal khusus (sekali jalan, mis. kegiatan insidental)</label><input type="date" id="agenda-date" class="glass-input rounded-xl p-2.5 w-full"></div>
+                <div><label class="block text-slate-300 font-medium mb-1">Berulang pada hari (kosong = setiap hari)</label><div class="flex flex-wrap gap-2"><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="1"> Sen</label><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="2"> Sel</label><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="3"> Rab</label><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="4"> Kam</label><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="5"> Jum</label><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="6"> Sab</label><label class="flex items-center gap-1.5 glass-card rounded-full px-3 py-1.5 cursor-pointer text-slate-200"><input type="checkbox" name="agenda-day" value="0"> Ahd</label></div></div><div><label class="block text-slate-300 font-medium mb-1">Atau tanggal khusus (sekali jalan, mis. kegiatan insidental)</label><input type="date" id="agenda-date" class="glass-input rounded-xl p-2.5 w-full"></div>
                 <div>
                     <label class="block text-slate-300 font-medium mb-1">Catatan Tambahan / Instraksi Singkat</label>
                     <textarea id="agenda-notes" rows="2" placeholder="Catatan persiapan atau pengingat khusus..." class="glass-input rounded-xl p-2.5 w-full"></textarea>

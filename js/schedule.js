@@ -18,7 +18,7 @@ function updateFocusCard(){
   if(!next){
     const inf=tfDayInfo(ds),lib=!list.length&&inf.off;
     set('focus-title',list.length?'Semua Agenda Hari Ini Selesai!':lib?'Hari Libur':'Belum Ada Agenda Hari Ini');
-    set('focus-subtitle',list.length?'Istirahat yang cukup atau siapkan administrasi esok hari.':lib?inf.reason+'. Jadwal berulang disembunyikan hari ini.':'Tambah agenda lewat tombol Tambah di Beranda atau tab Jadwal.');
+    set('focus-subtitle',list.length?'Istirahat yang cukup atau siapkan administrasi esok hari.':lib?inf.reason+'. Jadwal berulang disembunyikan hari ini.':'Tambah agenda lewat tombol Tambah di Beranda atau tab Agenda.');
     set('focus-location','-');set('focus-time-range','--:--');set('focus-target','-');set('focus-countdown','00:00:00');
     $('focus-type-badge').className='px-3 py-1 rounded-full text-xs font-semibold border '+BADGE.emerald;$('focus-type-badge').innerText=list.length?'Tuntas':lib?'Libur':'Kosong';
     $('focus-action-btn').style.display='none';currentFocusAgenda=null;tfFocusExtras();return;
@@ -38,7 +38,7 @@ function completeFocusAgenda(){
   if(!currentFocusAgenda)return;state.doneOn[dstr()+'|'+currentFocusAgenda.id]=1;saveStateToStorage();
   triggerAudioBeep(800);triggerVibration([100,50,100]);showToast(`Agenda "${currentFocusAgenda.title}" ditandai selesai!`,'success');
   renderTimeline();renderWeek();updateFocusCard();updateStats();
-  if(state.settings.motivasi!==false)setTimeout(()=>showToast('Alhamdulillah, satu agenda tuntas. Terus semangat!','success'),600);
+  if(state.settings.motivasi!==false)setTimeout(()=>showToast(MCOMPLETE[Math.floor(Math.random()*MCOMPLETE.length)],'success'),600);
 }
 function toggleAgendaComplete(id){const k=tfSel()+'|'+id;state.doneOn[k]?delete state.doneOn[k]:state.doneOn[k]=1;saveStateToStorage();triggerVibration(50);renderTimeline();renderWeek();updateFocusCard();updateStats()}
 

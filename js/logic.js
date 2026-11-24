@@ -1,6 +1,7 @@
 /* TeacherFlow: logika murni (tanpa DOM) supaya mudah diuji dengan `node --test`.
    Bergantung pada variabel global `state` yang disediakan js/tasks-notes.js. */
-const TF_DAYS=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+const TF_DAYS=['Ahad','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+const TF_DAYS_S=['Ahd','Sen','Sel','Rab','Kam','Jum','Sab'];
 const dstr=(d=new Date())=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const tmin=s=>{const[a,b]=String(s).split(':').map(Number);return a*60+b};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -10,7 +11,7 @@ const jamText=a=>a&&a.jamFrom?(a.jamTo&&a.jamTo!==a.jamFrom?`Jam ke: ${a.jamFrom
 const minToT=m=>p2(Math.floor(m/60)%24)+':'+p2(m%60);
 const occursOn=(a,ds)=>a.date?a.date===ds:(!a.days||!a.days.length||a.days.includes(new Date(ds+'T00:00:00').getDay()));
 const tfOcc=ds=>{const off=tfDayInfo(ds).off;return state.agendas.filter(a=>occursOn(a,ds)&&!(off&&!a.date)).map(a=>({...a,completed:!!state.doneOn[ds+'|'+a.id]})).sort((a,b)=>a.startTime.localeCompare(b.startTime))};
-const repeatText=a=>a.date?'Sekali: '+a.date.split('-').reverse().join('/'):(a.days&&a.days.length?a.days.map(d=>TF_DAYS[d].slice(0,3)).join(', '):'Setiap hari');
+const repeatText=a=>a.date?'Sekali: '+a.date.split('-').reverse().join('/'):(a.days&&a.days.length?a.days.map(d=>TF_DAYS_S[d]).join(', '):'Setiap hari');
 const tfMonday=o=>{const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7)+o*7);return d};
 const fmtD=d=>p2(d.getDate())+'/'+p2(d.getMonth()+1);
 function clashPairs(ds){const l=tfOcc(ds),o=[];for(let i=0;i<l.length;i++)for(let j=i+1;j<l.length;j++)if(tmin(l[i].startTime)<tmin(l[j].endTime)&&tmin(l[j].startTime)<tmin(l[i].endTime))o.push([l[i],l[j]]);return o}

@@ -78,14 +78,14 @@ function openGuide(){
     'Gunakan panah dan tombol <b>Hari ini</b> pada daftar agenda untuk berpindah tanggal. Jika ada jadwal yang saling bertabrakan, banner peringatan <b>Bentrok</b> akan muncul.'
   ]),true)}
   ${sec('fa-plus','Menambah &amp; mengubah agenda',li([
-    'Tekan <b>Tambah</b> di Beranda atau tab Jadwal, lalu isi judul, jenis (Mengajar, Halaqah, Ekstrakurikuler, Piket, Lainnya), jam mulai dan selesai.',
+    'Tekan <b>Tambah</b> di Beranda atau tab Agenda, lalu isi judul, jenis (Mengajar, Halaqah, Ekstrakurikuler, Piket, Lainnya), jam mulai dan selesai.',
     'Isi <b>Jam ke</b> bila jadwal mengikuti jam pelajaran; jam mulai dan selesai akan terisi otomatis sesuai pengaturan Jam pelajaran.',
     '<b>Berulang pada hari</b>: centang hari tertentu (kosong berarti setiap hari). Untuk kegiatan sekali jalan, pilih <b>tanggal khusus</b>.',
     'Tambahkan ruangan/lokasi, kelompok atau kelas, dan catatan singkat. Jika waktunya bertabrakan, formulir langsung memberi peringatan, tetapi jadwal tetap bisa disimpan.',
     'Ketuk agenda yang sudah ada untuk mengubah atau menghapusnya. Agenda, tugas, atau catatan yang terhapus tidak sengaja bisa dikembalikan lewat tombol <b>Batalkan</b> yang muncul beberapa detik.'
   ]))}
   ${sec('fa-calendar-week','Jadwal pekanan',li([
-    'Tab <b>Jadwal</b> menampilkan seluruh agenda satu pekan. Pindah pekan dengan panah, atau kembali dengan <b>Pekan ini</b>.',
+    'Tab <b>Agenda</b> menampilkan seluruh agenda satu pekan. Pindah pekan dengan panah, atau kembali dengan <b>Pekan ini</b>.',
     'Pilih tampilan <b>Tabel jam</b> (per jam pelajaran) atau <b>Kartu</b> (per hari).',
     'Tombol <b>Salin jadwal</b> menyalin jadwal pekan ke clipboard sehingga mudah dibagikan lewat WhatsApp atau dokumen.'
   ]))}
@@ -95,7 +95,7 @@ function openGuide(){
     'Buka <b>Pengaturan &gt; Kalender akademik</b> untuk menambah acara sekolah seperti libur semester atau jadwal ujian. Satu acara bisa mencakup beberapa hari.'
   ]))}
   ${sec('fa-file-export','Ekspor &amp; cetak jadwal',li([
-    'Di tab <b>Jadwal</b>, tekan <b>Ekspor</b>. Pilih <b>Cetak / simpan PDF</b> untuk tabel jadwal pekan yang sedang tampil, atau <b>Unduh Excel</b> berisi lembar jadwal pekan, semua agenda, tugas, dan kalender akademik.',
+    'Di tab <b>Agenda</b>, tekan <b>Ekspor</b>. Pilih <b>Cetak / simpan PDF</b> untuk tabel jadwal pekan yang sedang tampil, atau <b>Unduh Excel</b> berisi lembar jadwal pekan, semua agenda, tugas, dan kalender akademik.',
     'Untuk PDF, pada dialog cetak pilih tujuan <b>Simpan sebagai PDF</b>.'
   ]))}
   ${sec('fa-list-check','Tugas &amp; administrasi',li([
@@ -117,7 +117,6 @@ function openGuide(){
   ]))}
   ${sec('fa-cloud-arrow-up','Cadangan &amp; sinkronisasi',li([
     '<b>Ekspor JSON</b> menyimpan seluruh data ke berkas, dan <b>Impor JSON</b> memulihkannya, misalnya saat berganti HP. Lakukan ekspor secara berkala sebagai cadangan.',
-    'Sinkronisasi antar perangkat bersifat <b>opsional</b> (masuk dengan Google). Cara menyiapkannya ada di berkas SETUP-FIREBASE.md; tanpa itu aplikasi tetap berfungsi penuh secara lokal.',
     'Tombol <b>Hapus semua data</b> di Pengaturan tidak dapat dibatalkan, jadi buat cadangan terlebih dahulu.'
   ]))}
   ${sec('fa-download','Memasang sebagai aplikasi',li([
